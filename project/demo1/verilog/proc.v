@@ -53,7 +53,7 @@ module proc (/*AUTOARG*/
    decode iDECODE0(.clk(clk), .rst(rst), .read1RegSel(instruction[10:8]), .read2RegSel(instruction[7:5]), .writeRegSel(writeRegSel), .writeData(writeData), .writeEn(regWrite), 
                     .imm_5(instruction[4:0]), .imm_8(instruction[7:0]), .imm_11(instruction[10:0]), .immExtSel(immExtSel), .read1Data(read1Data), .read2Data(read2Data), .err(err_decode), .immExt(immExt));
                     
-   control_alu iCONTROL_ALU0(.aluOp(instruction[15:11]), .function(instruction[1:0]), .aluSel());
+   control_alu iCONTROL_ALU0(.aluOp(instruction[15:11]), .function(instruction[1:0]), .aluSel(aluSel));
    
 endmodule // proc
 `default_nettype wire
