@@ -1,0 +1,48 @@
+/*
+   CS/ECE 552 Fall '24
+  
+   Filename        : control.v
+   Description     : This is a module that handles all of the control signals.
+*/
+module control(opcode, halt, jumpImm, link, regDst, jump, branch, memRead, memWrite, aluSrc, regWrite, immExtSel, invB, exception);
+
+    input [4:0] opcode;
+    output halt, jumpImm, link, jump, branch, memRead, memWrite, aluSrc, regWrite, invB, exception;
+    output [1:0] regDst;
+    output [2:0] immExtSel;
+   
+    assign halt = (opcode == 5'b0_0000) ? 1'b1 : 1'b0;
+   
+    assign jumpImm = (opcode[4:2] == 3'b001 & opcode[0] == 1'b1) ? 1'b1 : 1'b0;
+   
+    assign link = (opcode[4:1] == 4'b0011) ? 1'b1 : 1'b0;
+   
+    assign regDst = (opcode[4:1] == 4'b0011) ? 2'b11 : 
+                    (opcode[4:1] == 4'b1001 | opcode == 5'b1_1000) ? 2'b10 : 
+                    (opcode[4:2] == 3'b010 | opcode[4:2] == 3'b101 | opcode == 5'b1_0001) ? 2'b01 :
+                    2'b00;
+                    // (opcode[4:2] == 3'b110 | opcode[4:2] == 3'b111) ? 2'b00 : // wrote this out before realizing I didn't need it and could just use an else statement
+    
+    assign jump = (opcode[4:2] == 3'b001) ? 1'b1 : 1'b0;
+    
+    assign branch = (opcode[4:2] == 3'b011 | opcode == 11000 | opcode == 10010) ? 1'b1 : 1'b0;
+    
+    assign memRead = (opcode == 5'b1_0001) ? 1'b1 : 1'b0;
+    
+    assign memWrite = (opcode == 5'b1_0000 | opcode == 5'b1_0011) ? 1'b1 : 1'b0;
+    
+    assign aluSrc = (opcode[4:2] == 3'b010 | opcode[4:2] == 3'b101 | opcode[4:2] == 3'b100) ? 1'b1 : 1'b0; // 3'b100 would include SLBI - ok? Should aluSrc be one if any immediate opcode is detected (like JR)?
+    
+    assign regWrite = (opcode[4:2] == 3'b010 | opcode[4:2] == 3'b101 | opcode == 5'b1_0001 | opcode == 4'b1001 | opcode[4:2] == 3'b110 | opcode[4:2] == 3'b111) ? 1'b1 : 1'b0;
+    
+    assign immExtSel =  (opcode[4:2] == 3'b001 & opcode[0] == 1'b0) ? 3'b100 :
+                        (opcode[4:2] == 3'b011 | opcode == 5'b1_1000 | (opcode[4:2] == 3'b001 & opcode[0] == 1'b1)) ? 3'b011 :
+                        (opcode == 5'b1_0010) ? 3'b010 : 
+                        (opcode[4:1] == 4'b0101 ? 3'b000 :
+                        3'b001;
+                        
+    assign invB = (opcode == 5'b0_1011) ? 1'b1 : 1'b0;
+    
+    // assign exception = (opcode[4:2} == 3'b000) ? 1'b1 : 1'b0; // not active until final demo
+
+endmodule;
