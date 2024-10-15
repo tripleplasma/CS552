@@ -4,7 +4,7 @@
 
     A wrapper for a multi-bit ALU module combined with clkrst.
 */
-module alu_hier(InA, InB, Cin, Oper, sign, Out, zf, sf, of, cf);
+module alu_hier(InA, InB, Oper, Out, zf, sf, of, cf);
 
     // declare constant for size of inputs, outputs, and operations
     parameter OPERAND_WIDTH = 16;    
@@ -12,7 +12,6 @@ module alu_hier(InA, InB, Cin, Oper, sign, Out, zf, sf, of, cf);
        
     input  [OPERAND_WIDTH -1:0] InA ; // Input operand A
     input  [OPERAND_WIDTH -1:0] InB ; // Input operand B
-    input                       Cin ; // Carry in
     input  [NUM_OPERATIONS-1:0] Oper; // Operation type
     input                       sign; // Signal for signed operation
     output [OPERAND_WIDTH -1:0] Out ; // Result of computation
@@ -39,9 +38,7 @@ module alu_hier(InA, InB, Cin, Oper, sign, Out, zf, sf, of, cf);
              // Inputs
              .InA(InA),
              .InB(InB), 
-             .Cin(Cin), 
-             .Oper(Oper), 
-             .sign(sign));
+             .Oper(Oper));
    
     clkrst c0(// Outputs
               .clk                       (clk),

@@ -9,16 +9,14 @@
     of the operation, as well as drive the output signals Zero and Overflow
     (OFL).
 */
-module alu (InA, InB, Cin, Oper, sign, Out, zf, sf, of, cf);
+module alu (InA, InB, Oper, Out, zf, sf, of, cf);
 
     parameter OPERAND_WIDTH = 16;    
     parameter NUM_OPERATIONS = 4;
        
     input  [OPERAND_WIDTH-1:0]  InA ; // Input operand A
     input  [OPERAND_WIDTH-1:0]  InB ; // Input operand B
-    input                       Cin ; // Carry in
     input  [NUM_OPERATIONS-1:0] Oper; // Operation type
-    input                       sign; // Signal for signed operation
     output [OPERAND_WIDTH-1:0]  Out ; // Result of computation
     output                      of  ; // Signal if overflow occured
     output                      sf  ; // Signal if Out is negative or positive
@@ -30,9 +28,16 @@ module alu (InA, InB, Cin, Oper, sign, Out, zf, sf, of, cf);
     wire [OPERAND_WIDTH-1:0] A_int, B_int;
     wire [OPERAND_WIDTH-1:0] shift_result, sum, xor_result, andn_result;
     wire [3:0]               ShAmt;
-    
+    wire Cin, sign;
+
+    // SLBI unsigned, rest signed
+    assign sign = (Oper == 3'b1111) 1'b0 : 1'b1;
+
     // Invert A and B if specified (for subtraction and ANDN)
+    // 2's complement for subtraction
     assign A_int = (Oper == 3'b0101) ? ~InA : InA;
+    assign Cin = (Oper == 3'b0101) ? 1'b1 : 1'b0;
+
     assign B_int = (Oper == 3'b0111 || Oper == 3'b10XX) ? ~InB : InB;
     
     // Barrel shifter, shift amount is 8 for SLBI, 4 lower bits of B otherwise
@@ -75,6 +80,5 @@ module alu (InA, InB, Cin, Oper, sign, Out, zf, sf, of, cf);
                     (Oper[2:0] == 3'b100)   ? cf :                      // Set if A + B generates a carry out
                     (Oper[2:0] == 3'b101)   ? InB :                     // LBI: Out = InB
                     (Oper[2:0] == 3'b110)   ? brt :                     // Reverse the bits
-                    (Oper[2:0] == 3'b111)   ? (shift_result | InB) :    // SLBI: Rs<<8 | I(zero ext.)
-                    ;
+                    (shift_result | InB);                               // SLBI: Rs<<8 | I(zero ext.)
 endmodule

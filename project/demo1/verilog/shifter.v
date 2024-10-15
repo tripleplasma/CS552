@@ -19,13 +19,13 @@ module shifter (In, ShAmt, Oper, Out);
     input  [NUM_OPERATIONS-1:0] Oper ; // Operation type
     output [OPERAND_WIDTH -1:0] Out  ; // Result of shift/rotate
     
-    wire [OPERAND_WIDTH-1:0] left_shift_rot_result, shift_right_arith_log_result;
+    wire [OPERAND_WIDTH-1:0] left_shift_rot_result, shift_right_rot_log_result;
 
     // shift/rotate left logic
     left_shift_rot iLSR(.In(In), .ShAmt(ShAmt), .Rot(~Oper[0]), .Out(left_shift_rot_result));
 
     // arithmetic/logical shift right logic
-    right_shift_arith_log iRSAL(.In(In), .ShAmt(ShAmt), .Arith(~Oper[0]), .Out(shift_right_arith_log_result));
+    right_shift_rot_log iRSAL(.In(In), .ShAmt(ShAmt), .Rot(~Oper[0]), .Out(shift_right_rot_log_result));
 
     // determine if we're shifting left or right
     assign Out = (Oper[1]) ? shift_right_arith_log_result : left_shift_rot_result;

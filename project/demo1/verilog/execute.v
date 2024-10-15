@@ -38,9 +38,7 @@ module execute (read1Data, read2Data, opcode, extention, aluSrc, immExt, aluOut,
       iALU(// Inputs
          .InA(read1Data), 
          .InB(inB), 
-         .Cin(0), 
          .Oper(aluOp), 
-         .sign(1),
          // Outputs 
          .Out(aluOut), 
          .zf(zf), 
