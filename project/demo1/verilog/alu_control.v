@@ -40,6 +40,13 @@ module execute (opcode, extention, aluOp);
                     (extention == 2'b01)        ?   4'b0001 :   // SLL ALU Operation
                     (extention == 2'b10)        ?   4'b0010 :   // ROR ALU Operation     
                     4'b0011                     :               // SRL ALU Operation
+                    (opcode[4:2] == 3'b111)     ?               // If R set instruction
+                    (opcode[1:0] == 2'b00)      ?   4'b1000 :   // SEQ ALU Operation
+                    (opcode[1:0] == 2'b01)      ?   4'b1001 :   // SLT ALU Operation
+                    (opcode[1:0] == 2'b10)      ?   4'b1010 :   // SLE ALU Operation     
+                    4'b1100                     :               // SCO ALU Operation
+                    // Branch instructions
+                    
 
                     
 
