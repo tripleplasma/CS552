@@ -35,13 +35,13 @@ module proc (/*AUTOARG*/
    // wire PC;  // placeholder for real PC
    
    // control signals
-   wire halt, jumpImm, link, jump, branch, memRead, memWrite, aluSrc, regWrite, invB, exception;
+   wire halt, jumpImm, link, jump, branch, memRead, memToReg, memWrite, aluSrc, regWrite, invB, exception;
    wire [1:0] regDst;
    wire [2:0] immExtSel;
    
    // determine control signals based on opcode
    control iCONTROL0(.opcode(instruction[15:11]), .halt(halt), .jumpImm(jumpImm), .link(link), .regDst(regDst), .jump(jump), .branch(branch), .memRead(memRead), 
-                    .memWrite(memWrite), .aluSrc(aluSrc), .regWrite(regWrite), .immExtSel(immExtSel), .invB(invB), .exception(exception));
+                    .memToReg(memToReg), .memWrite(memWrite), .aluSrc(aluSrc), .regWrite(regWrite), .immExtSel(immExtSel), .invB(invB), .exception(exception));
    
    assign writeRegSel = (regDst == 2'b00) ? instruction[4:2] :
                         (regDst == 2'b01) ? instruction[7:5] :

@@ -4,11 +4,12 @@
    Filename        : control.v
    Description     : This is a module that handles all of the control signals.
 */
-module control(opcode, halt, jumpImm, link, regDst, jump, branch, memRead, memWrite, aluSrc, regWrite, immExtSel, invB, exception);
+module control(opcode, halt, jumpImm, link, regDst, jump, branch, memRead, memToReg, memWrite, aluSrc, regWrite, immExtSel, invB, exception);
 
     input [4:0] opcode;
-    output halt, jumpImm, link, jump, branch, memRead, memWrite, aluSrc, regWrite, invB, exception;
+    output halt, jumpImm, link, jump, memRead, memToReg, memWrite, aluSrc, regWrite, invB, exception;
     output [1:0] regDst;
+    output [2:0] branch;
     output [2:0] immExtSel;
    
     assign halt = (opcode == 5'b0_0000) ? 1'b1 : 1'b0;
@@ -25,9 +26,11 @@ module control(opcode, halt, jumpImm, link, regDst, jump, branch, memRead, memWr
     
     assign jump = (opcode[4:2] == 3'b001) ? 1'b1 : 1'b0;
     
-    assign branch = (opcode[4:2] == 3'b011 | opcode == 11000 | opcode == 10010) ? 1'b1 : 1'b0;
+    assign branch = (opcode[4:2] == 3'b011) ? opcode[2:0] : 3'b000;
     
     assign memRead = (opcode == 5'b1_0001) ? 1'b1 : 1'b0;
+    
+    assign memToReg = (opcode == 5'b1_0001) ? 1'b1 : 1'b0;
     
     assign memWrite = (opcode == 5'b1_0000 | opcode == 5'b1_0011) ? 1'b1 : 1'b0;
     
@@ -43,6 +46,6 @@ module control(opcode, halt, jumpImm, link, regDst, jump, branch, memRead, memWr
                         
     assign invB = (opcode == 5'b0_1011) ? 1'b1 : 1'b0;
     
-    // assign exception = (opcode[4:2} == 3'b000) ? 1'b1 : 1'b0; // not active until final demo
+    assign exception = (opcode[4:2} == 3'b000) ? 1'b1 : 1'b0; // not active until final demo - comment out?
 
 endmodule;
