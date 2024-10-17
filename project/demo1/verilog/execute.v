@@ -7,8 +7,8 @@
 `default_nettype none
 module execute (read1Data, read2Data, opcode, extention, aluSrc, immExt, aluOut, zf, sf, of, cf);
 
-   input [15:0]   read1Data ;    // Input operand A
-   input [15:0]   read2Data ;    // Output of the 2nd read of the register file
+   input [15:0]   read1Data;     // Input operand A
+   input [15:0]   read2Data;     // Output of the 2nd read of the register file
    input [4:0]    opcode;        // Top 5 bits of instruction
    input [1:0]    extention;     // Bottom 2 bits for R-format instructions
    input          aluSrc;        // Indicates if inB to ALU should be the output of the register file
