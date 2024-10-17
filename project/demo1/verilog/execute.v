@@ -22,19 +22,19 @@ module execute (read1Data, read2Data, opcode, extention, aluSrc, immExt, aluOut,
    output   of; // Signal if overflow occured
    output   cf; // Signal if carry out is 1
 
-   // Combination of opcode and the the opcode extention
-   // to for the opcode fed into the ALU
-   wire [7:0] aluOp;
-   assign aluOp = {opcode, extention};
+   // Output of ALU control
+   wire [3:0] aluOp;
+   // B input to ALU
+   wire  [15:0] InB;
+
+   // Calculate the ALU opcode with the ALU controle module
+   alu_control iALUCONTROL(.*);
 
    // Assign InB based on aluSrc value
-   wire  [15:0] InB;
    assign InB = (aluSrc) ? immExt : read2Data;
 
-   // TODO SLBI unsigned
-
    // Create the ALU
-   alu_hier #(.NUM_OPERATIONS(4)) 
+   alu #(.NUM_OPERATIONS(4)) 
       iALU(// Inputs
          .InA(read1Data), 
          .InB(inB), 

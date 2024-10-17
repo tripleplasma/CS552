@@ -1,13 +1,8 @@
 /*
-    CS/ECE 552 FALL '22
-    Homework #2, Problem 3
-
-    A multi-bit ALU module (defaults to 16-bit). It is designed to choose
-    the correct operation to perform on 2 multi-bit numbers from rotate
-    left, shift left, shift right arithmetic, shift right logical, add,
-    or, xor, & and.  Upon doing this, it should output the multi-bit result
-    of the operation, as well as drive the output signals Zero and Overflow
-    (OFL).
+   CS/ECE 552 Spring '22
+  
+   Filename        : alu.v
+   Description     : This module does the arthmetic for the processor.
 */
 module alu (InA, InB, Oper, Out, zf, sf, of, cf);
 
@@ -39,12 +34,12 @@ module alu (InA, InB, Oper, Out, zf, sf, of, cf);
     assign Cin = (Oper == 3'b0101 || Oper == 3'b10XX) ? 1'b1 : 1'b0;
 
     // Invert B for ANDN, 0 for branch instructions
-    assign B_int = (Oper == 3'b0111) ? ~InB 
-                   (Oper == 3'b1101) ? {OPERAND_WIDTH{1'b0}}    : 
+    assign B_int = (Oper == 4'b0111) ? ~InB 
+                   (Oper == 4'b1101) ? {OPERAND_WIDTH{1'b0}} : 
                    InB;
     
     // Barrel shifter, shift amount is 8 for SLBI, 4 lower bits of B otherwise
-    assign ShAmt = (Oper == 4'b1100) ? 4'b1000 : B_int[3:0];
+    assign ShAmt = (Oper == 4'b1111) ? 4'b1000 : B_int[3:0];
     shifter iSHIFTER(.InA(A_int), .ShAmt(ShAmt), .Oper(Oper[1:0]), .Out(shift_result));
     
     // Arithmetic addition

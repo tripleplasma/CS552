@@ -5,14 +5,12 @@
    Description     : This module generates the alu opcode.
 */
 `default_nettype none
-module execute (opcode, extention, aluOp);
+module alu_control (opcode, extention, aluOp);
 
    input [4:0]    opcode;        // Top 5 bits of instruction
    input [1:0]    extention;     // Bottom 2 bits for R-format instructions
-
    
-   output   [15:0]   aluOp;      // Opcode going to the alu
-
+   output   [3:0]   aluOp;      // Opcode going to the alu
    
    assign aluOp =
                      // I type instructions 
@@ -45,11 +43,12 @@ module execute (opcode, extention, aluOp);
                     (opcode[1:0] == 2'b01)      ?   4'b1001 :   // SLT ALU Operation
                     (opcode[1:0] == 2'b10)      ?   4'b1010 :   // SLE ALU Operation     
                     4'b1100                     :               // SCO ALU Operation
-                    // Branch instructions
-                    
+                    // SLBI
+                    (opcode == 5'b10010)        ?   4'b1111 :   // ALU out = (Rs << 8)|InB
+                    // LBI and Branch instructions
+                    4'b1101;                                    // ALU out = InB, also A + 0, default
 
-                    
-
+                    // Does nothing for jump instructions
    
 endmodule
 `default_nettype wire
