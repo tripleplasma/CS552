@@ -24,14 +24,10 @@ module fetch ( clk, rst,
    output [15:0] instr;
    output output_clk;
 
-   // TODO: might need to switch these for flip flops
-   wire[15:0] PC;
-   wire[15:0] ECP;
+   wire[15:0] PC = 16'b0;
+   wire[15:0] ECP = 16'b0;
 
-   // TODO: 
-   // 1. [DONE] Implement most of the branch/jump logic that doesn't require the ALU
-   // 2. Figure out how to read instruction memory and output that as a wire for decode module
-   // 3. [DONE] Figure out the PC and Halt logic
+   //NOTE: do I need to add a clk here to update the PC on every clock cycle?
 
    wire[15:0] PC_2 = PC + 2;
    wire[15:0] PC_jump_Imm = {PC_2[15:9], (instr[7:0]>>1)};
@@ -46,6 +42,6 @@ module fetch ( clk, rst,
    assign PC = except_sig ? 16'h02 : addr_pre_exception;
    assign ECP = except_sig ? PC_2 : ECP;
 
-   // br_control br_cntrl(); Add the br_control module outside of fetch and just pass the br_control_sig into this module
+   memory2c instr_mem(.data_out(instr), .addr(PC), .enable(1'b1), .wr(1'b0), .clk(output_clk), .rst(rst));
 endmodule
 `default_nettype wire
