@@ -5,10 +5,10 @@
    Description     : This module generates the alu opcode.
 */
 `default_nettype none
-module alu_control (opcode, extention, aluOp);
+module alu_control (opcode, extension, aluOp);
 
    input [4:0]    opcode;        // Top 5 bits of instruction
-   input [1:0]    extention;     // Bottom 2 bits for R-format instructions
+   input [1:0]    extension;     // Bottom 2 bits for R-format instructions
    
    output   [3:0]   aluOp;      // Opcode going to the alu
    
@@ -29,14 +29,14 @@ module alu_control (opcode, extention, aluOp);
                     // R Type instructions
                     (opcode == 5'b11001)        ?   4'b1110 :   // If BTR instruction
                     (opcode == 5'b11011)        ?               // If R instruction that uses ALU
-                    (extention == 2'b00)        ?   4'b0100 :   // Add ALU Operation
-                    (extention == 2'b01)        ?   4'b0101 :   // Subtract ALU Operation
-                    (extention == 2'b10)        ?   4'b0110 :   // XOR ALU Operation     
+                    (extension == 2'b00)        ?   4'b0100 :   // Add ALU Operation
+                    (extension == 2'b01)        ?   4'b0101 :   // Subtract ALU Operation
+                    (extension == 2'b10)        ?   4'b0110 :   // XOR ALU Operation     
                     4'b0111                     :               // ANDN ALU Operation
                     (opcode == 5'b11010)        ?               // If shift/rotate R instruction
-                    (extention == 2'b00)        ?   4'b0000 :   // ROL ALU Operation
-                    (extention == 2'b01)        ?   4'b0001 :   // SLL ALU Operation
-                    (extention == 2'b10)        ?   4'b0010 :   // ROR ALU Operation     
+                    (extension == 2'b00)        ?   4'b0000 :   // ROL ALU Operation
+                    (extension == 2'b01)        ?   4'b0001 :   // SLL ALU Operation
+                    (extension == 2'b10)        ?   4'b0010 :   // ROR ALU Operation     
                     4'b0011                     :               // SRL ALU Operation
                     (opcode[4:2] == 3'b111)     ?               // If R set instruction
                     (opcode[1:0] == 2'b00)      ?   4'b1000 :   // SEQ ALU Operation

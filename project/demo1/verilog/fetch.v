@@ -8,7 +8,7 @@
 module fetch ( clk, rst, 
                halt_sig, jump_imm_sig, jump_sig, except_sig, br_contr_sig, 
                imm_jump_reg_val, imm_br_val,
-               instr, output_clk);
+               PC, instr, output_clk);
    input clk;
    input rst;
 
@@ -24,7 +24,7 @@ module fetch ( clk, rst,
    output [15:0] instr;
    output output_clk;
 
-   wire[15:0] PC = 16'b0;
+   output [15:0] PC = 16'b0;
    wire[15:0] ECP = 16'b0;
 
    //NOTE: do I need to add a clk here to update the PC on every clock cycle?

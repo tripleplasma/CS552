@@ -41,11 +41,11 @@ module control(opcode, halt, jumpImm, link, regDst, jump, branch, memRead, memTo
     assign immExtSel =  (opcode[4:2] == 3'b001 & opcode[0] == 1'b0) ? 3'b100 :
                         (opcode[4:2] == 3'b011 | opcode == 5'b1_1000 | (opcode[4:2] == 3'b001 & opcode[0] == 1'b1)) ? 3'b011 :
                         (opcode == 5'b1_0010) ? 3'b010 : 
-                        (opcode[4:1] == 4'b0101 ? 3'b000 :
+                        (opcode[4:1] == 4'b0101) ? 3'b000 :
                         3'b001;
                         
     assign invB = (opcode == 5'b0_1011) ? 1'b1 : 1'b0;
     
-    assign exception = (opcode[4:2} == 3'b000) ? 1'b1 : 1'b0; // not active until final demo - comment out?
+    assign exception = (opcode[4:2] == 3'b000) ? 1'b1 : 1'b0; // not active until final demo - comment out?
 
 endmodule;
