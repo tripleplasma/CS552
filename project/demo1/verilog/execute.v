@@ -29,7 +29,7 @@ module execute (read1Data, read2Data, aluOp, aluSrc, immExt, aluOut, zf, sf, of,
    
 
    // Create the ALU
-   alu #(.NUM_OPERATIONS(4)) 
+   alu #(.NUM_OPERATIONS(4))
       iALU(// input wires
          .InA(read1Data), 
          .InB(InB), 

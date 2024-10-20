@@ -9,13 +9,13 @@ z2
 cModel Technology
 Z0 d/home/kung/CS552/CS552/project/demo1/verilog
 valu
-Z1 !s110 1729448541
+Z1 !s110 1729450757
 !i10b 1
-!s100 `WI48gD3d=EcSiPfOagCj2
-IVULP3XEdDDcSLl]z[>>gL3
+!s100 @UFJ<e[VI@<f@U;WaT5Uh0
+I>5;L6]QEoK[dM=D2gcY2k0
 Z2 VDg1SIo80bB@j0V0VzS_@n1
 R0
-w1729447949
+w1729450508
 8alu.v
 Falu.v
 L0 7
@@ -23,7 +23,7 @@ Z3 OP;L;10.7c;67
 r1
 !s85 0
 31
-Z4 !s108 1729448541.000000
+Z4 !s108 1729450757.000000
 !s107 xor2.v|wb.v|shifter.v|right_shift_rot_log.v|register.v|regFile.v|regFile_bypass.v|regFile_bypass_hier.v|proc.v|proc_hier.v|proc_hier_bench.v|overflow.v|not1.v|nor2.v|nand2.v|memory.v|memory2c.v|left_shift_rot.v|fullAdder_1b.v|fetch.v|extension.v|execute.v|dff.v|decode.v|control.v|clkrst.v|cla_4b.v|cla_16b.v|carry_4b.v|carry_1b.v|br_control.v|alu.v|alu_control.v|
 Z5 !s90 +define+RANDSEED=3|-work|__work|alu_control.v|alu.v|br_control.v|carry_1b.v|carry_4b.v|cla_16b.v|cla_4b.v|clkrst.v|control.v|decode.v|dff.v|execute.v|extension.v|fetch.v|fullAdder_1b.v|left_shift_rot.v|memory2c.v|memory.v|nand2.v|nor2.v|not1.v|overflow.v|proc_hier_bench.v|proc_hier.v|proc.v|regFile_bypass_hier.v|regFile_bypass.v|regFile.v|register.v|right_shift_rot_log.v|shifter.v|wb.v|xor2.v|
 !i113 1
@@ -209,11 +209,11 @@ R8
 vdecode
 R1
 !i10b 1
-!s100 ^gJD;GdeSgZ_TZbCC:M<C2
-I>2cTBhY`6UhU@i`WV4aGg1
+!s100 IMYO>08;:96Fiz`VWK`7R0
+I5n?c9_cLC[:2gWZ0ITeeU3
 R2
 R0
-w1729448146
+w1729449910
 8decode.v
 Fdecode.v
 L0 8
@@ -257,7 +257,7 @@ R1
 Ib=iEcF;Fl84Lc=NmfhCnj1
 R2
 R0
-w1729448197
+w1729450421
 8execute.v
 Fexecute.v
 L0 8
@@ -297,11 +297,11 @@ R8
 vfetch
 R1
 !i10b 1
-!s100 :eO7n;`JUm7dFDW>^LNR^2
-I=Q3g_C_hNCdT`F1DJ2f010
+!s100 BCcV?cAS^V_[DmIZ1h0i43
+Ic?Cz[D]>eATfjAU>^7:C00
 R2
 R0
-w1729448447
+w1729449714
 8fetch.v
 Ffetch.v
 L0 8
@@ -364,11 +364,11 @@ R8
 vmemory
 R1
 !i10b 1
-!s100 0TRA3om4lTg>F9CbGMZjU3
-IKkJzij;^cFDdjHMCX`NFH1
+!s100 YBNY01lBHZkRkfD3?;obc2
+IKERE4J]EPed7H_;P0mJiS3
 R2
 R0
-w1729448476
+w1729450742
 8memory.v
 Fmemory.v
 L0 9
@@ -474,11 +474,11 @@ R8
 voverflow
 R1
 !i10b 1
-!s100 G<BllkJkoCUH?]YDIaE]63
-IJb6BAWL`?RAT[W^Nh83ZU1
+!s100 NzCXbeNYXd@heFJ7NilQf3
+IV1Pf;6`;Sa^W0SC9kbF6W1
 R2
 R0
-R10
+w1729450577
 8overflow.v
 Foverflow.v
 L0 5
@@ -496,11 +496,11 @@ R8
 vproc
 R1
 !i10b 1
-!s100 QZBam2Q6HAeJY7RYG9H_H2
-Icd1dlmO5SaXCOzBl0icA92
+!s100 7d0hS?PGaR[0_mT<gffeJ2
+IlEoZ0E4g[VNLjIKaT:Q_Z0
 R2
 R0
-w1729446533
+w1729450691
 8proc.v
 Fproc.v
 L0 5
@@ -585,11 +585,11 @@ nreg@file
 vregFile_bypass
 R1
 !i10b 1
-!s100 [42_:H4^OoKV4D7H6]B<E2
-IK:SZKIGmzdAUE18L56L5K3
+!s100 YMi]Le2=X2`J?[3UCPzMf1
+I96OP?0Xd=e50dd;JZb_YB1
 R2
 R0
-R10
+w1729450198
 8regFile_bypass.v
 FregFile_bypass.v
 L0 8
@@ -608,11 +608,11 @@ nreg@file_bypass
 vregFile_bypass_hier
 R1
 !i10b 1
-!s100 5nR^6B]Qi[22aZ_5VW7KF0
-I1Enf3GCa5Bka4F5hlVZ:V2
+!s100 zP7zm@5a<I@]G>8LR0:BC2
+I74dFbEzojKHS_V=V4jOJU2
 R2
 R0
-R10
+w1729450060
 8regFile_bypass_hier.v
 FregFile_bypass_hier.v
 R11
@@ -653,11 +653,11 @@ R8
 vright_shift_rot_log
 R1
 !i10b 1
-!s100 1o;C4^=oh]?TUA>CU[WN90
-Ig<CkP:CDdo[dQ^aJHoo092
+!s100 leDE>N]SaJ_h8lPKBNUo12
+I`VLTLKNfjU1fhI00<Zd;`3
 R2
 R0
-w1729446837
+w1729450654
 8right_shift_rot_log.v
 Fright_shift_rot_log.v
 L0 5

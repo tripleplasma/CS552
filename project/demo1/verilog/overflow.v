@@ -2,7 +2,7 @@
  * Description: determines if an overflow occurred through either signed or unsigned addition
  * Author: Khiem Vu
  */
-module overflow(A, B, sum, carry_out, Oper, sign, Ofl);
+module overflow(A, B, sum, carry_out, Oper, sign, of);
 
     input [15:0] A;
     input [15:0] B;
@@ -10,7 +10,7 @@ module overflow(A, B, sum, carry_out, Oper, sign, Ofl);
     input        carry_out;
     input [2:0]  Oper;
     input        sign;
-    output       Ofl;
+    output       of;
     
     // intermediate signals
     wire signed_overflow, unsigned_overflow;
@@ -22,6 +22,6 @@ module overflow(A, B, sum, carry_out, Oper, sign, Ofl);
     assign unsigned_overflow = (Oper == 3'b100 & ~sign) ? carry_out : 1'b0;
 
     // Combine signed and unsigned overflow detection
-    assign Ofl = signed_overflow | unsigned_overflow;
+    assign of = signed_overflow | unsigned_overflow;
 
 endmodule

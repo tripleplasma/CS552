@@ -11,14 +11,14 @@ module regFile_bypass_hier (
                             // Outputs
                             read1Data, read2Data, 
                             // Inputs
-                            read1RegSel, read2RegSel, writeRegSel, writeData, writeEn
+                            read1RegSel, read2RegSel, writeregsel, writedata, write
                             );
 
    input [2:0]  read1RegSel;
    input [2:0]  read2RegSel;
-   input [2:0]  writeRegSel;
-   input [15:0] writeData;
-   input        writeEn;
+   input [2:0]  writeregsel;
+   input [15:0] writedata;
+   input        write;
 
    output [15:0] read1Data;
    output [15:0] read2Data;
@@ -38,8 +38,8 @@ module regFile_bypass_hier (
                          .rst                          (rst),
                          .read1RegSel                  (read1RegSel[2:0]),
                          .read2RegSel                  (read2RegSel[2:0]),
-                         .writeRegSel                  (writeRegSel[2:0]),
-                         .writeData                    (writeData[15:0]),
-                         .writeEn                      (writeEn));
+                         .writeregsel                  (writeregsel[2:0]),
+                         .writedata                    (writedata[15:0]),
+                         .write                      (write));
 
 endmodule

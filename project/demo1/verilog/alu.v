@@ -40,7 +40,7 @@ module alu (InA, InB, Oper, Out, zf, sf, of, cf);
     
     // Barrel shifter, shift amount is 8 for SLBI, 4 lower bits of B otherwise
     assign ShAmt = (Oper == 4'b1111) ? 4'b1000 : B_int[3:0];
-    shifter iSHIFTER(.InA(A_int), .ShAmt(ShAmt), .Oper(Oper[1:0]), .Out(shift_result));
+    shifter iSHIFTER(.In(A_int), .ShAmt(ShAmt), .Oper(Oper[1:0]), .Out(shift_result));
     
     // Arithmetic addition
     cla_16b iCLA_16b(.sum(sum), .c_out(cf),.a(A_int), .b(B_int), .c_in(Cin));

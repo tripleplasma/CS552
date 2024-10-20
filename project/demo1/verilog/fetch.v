@@ -8,7 +8,7 @@
 module fetch ( clk, rst, 
                halt_sig, jump_imm_sig, jump_sig, except_sig, br_contr_sig, 
                imm_jump_reg_val, imm_br_val,
-               PC, instr, output_wire_clk);
+               pcCurrent, instr, output_clk);
    input wire clk;
    input wire rst;
 
@@ -22,14 +22,14 @@ module fetch ( clk, rst,
    input wire imm_br_val;
 
    output wire [15:0] instr;
-   output wire output_wire_clk;
+   output wire output_clk;
 
-   output wire [15:0] PC;
+   output wire [15:0] pcCurrent;
    wire[15:0] ECP = 16'b0;
 
    //NOTE: do I need to add a clk here to update the PC on every clock cycle?
 
-   wire[15:0] PC_2 = PC + 2;
+   wire[15:0] PC_2 = pcCurrent + 2;
    wire[15:0] PC_jump_Imm = {PC_2[15:9], (instr[7:0]>>1)};
 
    wire[15:0] jump_imm_addr = jump_imm_sig ? PC_jump_Imm : imm_jump_reg_val; 
@@ -37,11 +37,11 @@ module fetch ( clk, rst,
 
    wire[15:0] addr_pre_exception = jump_sig ? jump_imm_addr : br_imm_addr;
 
-   //output wire_clk is for managing the Halt instruction
-   assign output_wire_clk = halt_sig ? 1'b0 : clk;
-   assign PC = rst ? 16'b0 : (except_sig ? 16'h02 : addr_pre_exception);
+   //output_clk is for managing the Halt instruction
+   assign output_clk = halt_sig ? 1'b0 : clk;
+   assign pcCurrent = rst ? 16'b0 : (except_sig ? 16'h02 : addr_pre_exception);
    assign ECP = except_sig ? PC_2 : ECP;
 
-   memory2c instr_mem(.data_out(instr), .addr(PC), .enable(1'b1), .wr(1'b0), .clk(output_wire_clk), .rst(rst));
+   memory2c instr_mem(.data_out(instr), .addr(pcCurrent), .enable(1'b1), .wr(1'b0), .clk(output_clk), .rst(rst));
 endmodule
 `default_nettype wire

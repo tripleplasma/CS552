@@ -6,13 +6,14 @@
                      processor.
 */
 `default_nettype none
-module memory (addr, writeData, memWrite, memRead, memDump, clk, rst, readData);
+module memory (aluResult, writeData, memWrite, memRead, halt, clk, rst, readData, memReadorWrite);
 
-   input wire [15:0]   addr;          // Address to memory
+   input wire [15:0]   aluResult;          // aluResultess to memory
    input wire [15:0]   writeData;     // Data to write into the ALU
    input wire          memWrite;      // Controls if memory writes
    input wire          memRead;       // Controls if memory reads
-   input wire          memDump;       // Dumps the memory to a file
+   input wire          memReadorWrite; //NOTE: IDK what this does, but the compiler needed it lol
+   input wire          halt;       // Dumps the memory to a file
    input wire          clk;
    input wire          rst;
 
@@ -26,10 +27,10 @@ module memory (addr, writeData, memWrite, memRead, memDump, clk, rst, readData);
                      .data_out(readData), 
                      // input wires
                      .data_in(writeData), 
-                     .addr(addr), 
+                     .addr(aluResult), 
                      .enable(enable), 
                      .wr(writeData), 
-                     .createdump(memDump), 
+                     .createdump(halt), 
                      .clk(clk), 
                      .rst(rst));
    

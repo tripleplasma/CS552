@@ -53,10 +53,10 @@ module proc (/*AUTOARG*/
    br_control iBRANCH_CONTROL0(.zf(zero_flag), .sf(signed_flag), .of(overflow_flag), .cf(carry_flag), .br_sig(branch), .br_contr_sig(br_contr));
 
    //Fetch
-   fetch iFETCH0(.clk(clk), .rst(rst), 
+   fetch fetch0(.clk(clk), .rst(rst), 
                .halt_sig(halt), .jump_imm_sig(jumpImm), .jump_sig(jump), .except_sig(exception), .br_contr_sig(br_contr), 
                .imm_jump_reg_val(aluOut), .imm_br_val(immExt),
-               .instr(instruction), .output_clk(internal_clock), .PC(PC));
+               .instr(instruction), .output_clk(internal_clock), .pcCurrent(PC));
 
    
    //----Want inside decode----
@@ -68,7 +68,7 @@ module proc (/*AUTOARG*/
    // assign writeData = (link) ? PC + 2 : wbData;
    //----END----
    
-   decode iDECODE0(.clk(internal_clock), .rst(rst), .read1RegSel(instruction[10:8]), .read2RegSel(instruction[7:5]), .writeRegSel(writeRegSel), .writeData(writeData), .writeEn(regWrite), 
+   decode decode0(.clk(internal_clock), .rst(rst), .read1RegSel(instruction[10:8]), .read2RegSel(instruction[7:5]), .writeregsel(writeRegSel), .writedata(writeData), .write(regWrite), 
                     .imm_5(instruction[4:0]), .imm_8(instruction[7:0]), .imm_11(instruction[10:0]), .immExtSel(immExtSel), .read1Data(read1Data), .read2Data(read2Data), .err(err_decode), .immExt(immExt));
                     
    alu_control iCONTROL_ALU0(.opcode(instruction[15:11]), .extension(instruction[1:0]), .aluOp(aluSel));
@@ -77,7 +77,7 @@ module proc (/*AUTOARG*/
                      .zf(zero_flag), .sf(signed_flag), .of(overflow_flag), .cf(carry_flag));
 
    wire [15:0] readData;
-   memory iMEMORY0(.addr(aluOut), .writeData(read2Data), .memWrite(memWrite), .memRead(memRead), .memDump(halt), .clk(internal_clock), .rst(rst), .readData(readData));
+   memory memory0(.aluResult(aluOut), .writeData(read2Data), .memWrite(memWrite), .memReadorWrite(memRead), .halt(halt), .clk(internal_clock), .rst(rst), .readData(readData));
 
    wb iWRITEBACK0(.readData(readData), .addr(aluOut), .nextPC(PC), .memToReg(memToReg), .link(link), .writeData(writeData));
    

@@ -1,5 +1,5 @@
 # vsim -c proc_hier_bench -lib __work -voptargs="+acc" -wlf dump.wlf -do "log -howmany -rec /* ; run -all" 
-# Start time: 13:22:22 on Oct 20,2024
+# Start time: 13:59:18 on Oct 20,2024
 # //  ModelSim DE 10.7c Aug 17 2018Linux 5.15.0-124-generic
 # //
 # //  Copyright 1991-2018 Mentor Graphics Corporation
@@ -45,38 +45,27 @@
 # Loading __work.memory
 # Loading __work.wb
 # Loading __work.dff
-# ** Warning: (vsim-3008) [CNNODP] - Component name (decode0) is not on a downward path.
-#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_bench File: proc_hier_bench.v Line: 131
-# ** Error: (vsim-3043) Unresolved reference to 'decode0' in DUT.p0.decode0.
-#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_bench File: proc_hier_bench.v Line: 131
-# ** Warning: (vsim-3008) [CNNODP] - Component name (fetch0) is not on a downward path.
-#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_bench File: proc_hier_bench.v Line: 128
-# ** Error: (vsim-3043) Unresolved reference to 'fetch0' in DUT.p0.fetch0.
-#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_bench File: proc_hier_bench.v Line: 128
-# ** Warning: (vsim-3008) [CNNODP] - Component name (memory0) is not on a downward path.
-#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_bench File: proc_hier_bench.v Line: 140
-# ** Error: (vsim-3043) Unresolved reference to 'memory0' in DUT.p0.memory0.
-#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_bench File: proc_hier_bench.v Line: 140
 # ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (16) for port 'imm_jump_reg_val'. The port definition is at: fetch.v(10).
-#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_bench/DUT/p0/iFETCH0 File: proc.v Line: 56
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_bench/DUT/p0/fetch0 File: proc.v Line: 56
 # ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (16) for port 'imm_br_val'. The port definition is at: fetch.v(10).
-#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_bench/DUT/p0/iFETCH0 File: proc.v Line: 56
-# ** Error: (vsim-3063) Port 'output_clk' not found in the connected module (11th connection).
-#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_bench/DUT/p0/iFETCH0 File: proc.v Line: 56
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_bench/DUT/p0/fetch0 File: proc.v Line: 56
 # ** Warning: (vsim-2685) [TFMPC] - Too few port connections for 'instr_mem'.  Expected 8, found 6.
-#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_bench/DUT/p0/iFETCH0/instr_mem File: fetch.v Line: 45
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_bench/DUT/p0/fetch0/instr_mem File: fetch.v Line: 45
 # ** Warning: (vsim-3722) fetch.v(45): [TFMPC] - Missing connection for port 'data_in'.
 # ** Warning: (vsim-3722) fetch.v(45): [TFMPC] - Missing connection for port 'createdump'.
-# ** Error: (vsim-3063) Port 'InA' not found in the connected module (1st connection).
-#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_bench/DUT/p0/iEXECUTE0/iALU/iSHIFTER File: alu.v Line: 43
-# ** Error: (vsim-3063) Port 'Rot' not found in the connected module (3rd connection).
-#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_bench/DUT/p0/iEXECUTE0/iALU/iSHIFTER/iRSAL File: shifter.v Line: 28
 # ** Warning: (vsim-3015) [PCDPC] - Port size (3) does not match connection size (4) for port 'Oper'. The port definition is at: overflow.v(5).
 #    Time: 0 ns  Iteration: 0  Instance: /proc_hier_bench/DUT/p0/iEXECUTE0/iALU/iOVERFLOW File: alu.v Line: 53
-# ** Error: (vsim-3063) Port 'of' not found in the connected module (7th connection).
-#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_bench/DUT/p0/iEXECUTE0/iALU/iOVERFLOW File: alu.v Line: 53
+# ** Warning: (vsim-2685) [TFMPC] - Too few port connections for 'memory0'.  Expected 9, found 8.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_bench/DUT/p0/memory0 File: proc.v Line: 80
+# ** Warning: (vsim-3722) proc.v(80): [TFMPC] - Missing connection for port 'memRead'.
 # ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (16) for port 'wr'. The port definition is at: memory2c.v(35).
-#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_bench/DUT/p0/iMEMORY0/iMEMORY File: memory.v Line: 25
-# Error loading design
-# End time: 13:22:22 on Oct 20,2024, Elapsed time: 0:00:00
-# Errors: 7, Warnings: 10
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_bench/DUT/p0/memory0/iMEMORY File: memory.v Line: 26
+# log -howmany -rec /* 
+# 1749
+#  run -all
+# Hello world...simulation starting
+# See verilogsim.log and verilogsim.trace for output
+# ** Note: $finish    : proc_hier_bench.v(97)
+#    Time: 300 ns  Iteration: 1  Instance: /proc_hier_bench
+# End time: 13:59:18 on Oct 20,2024, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 9

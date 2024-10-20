@@ -7,7 +7,7 @@
 `default_nettype none
 module decode (/* TODO: Add appropriate input wires/output wires for your decode stage here*/
                 // input wires
-                clk, rst, read1RegSel, read2RegSel, writeRegSel, writeData, writeEn, imm_5, imm_8, imm_11, immExtSel,
+                clk, rst, read1RegSel, read2RegSel, writeregsel, writedata, write, imm_5, imm_8, imm_11, immExtSel,
                 // output wires
                 read1Data, read2Data, err, immExt
                 );
@@ -16,9 +16,9 @@ module decode (/* TODO: Add appropriate input wires/output wires for your decode
     input wire        clk, rst;
     input wire [2:0]  read1RegSel;
     input wire [2:0]  read2RegSel;
-    input wire [2:0]  writeRegSel;
-    input wire [15:0] writeData;
-    input wire        writeEn;
+    input wire [2:0]  writeregsel;
+    input wire [15:0] writedata;
+    input wire        write;
     input wire [4:0]  imm_5;
     input wire [7:0]  imm_8;
     input wire [10:0] imm_11;
@@ -31,7 +31,7 @@ module decode (/* TODO: Add appropriate input wires/output wires for your decode
     
     
     // bypass register file
-    regFile_bypass rf_b_0(
+    regFile_bypass regFile0(
                          // output wires
                          .read1Data                    (read1Data[15:0]),
                          .read2Data                    (read2Data[15:0]),
@@ -41,9 +41,9 @@ module decode (/* TODO: Add appropriate input wires/output wires for your decode
                          .rst                          (rst),
                          .read1RegSel                  (read1RegSel[2:0]),
                          .read2RegSel                  (read2RegSel[2:0]),
-                         .writeRegSel                  (writeRegSel[2:0]),
-                         .writeData                    (writeData[15:0]),
-                         .writeEn                      (writeEn));
+                         .writeregsel                  (writeregsel[2:0]),
+                         .writedata                    (writedata[15:0]),
+                         .write                        (write));
     
     // register file with no bypass, not sure if we're using it or not.
     // regFile iRF0(
@@ -56,7 +56,7 @@ module decode (/* TODO: Add appropriate input wires/output wires for your decode
                 // .rst                          (rst),
                 // .read1RegSel                  (read1RegSel[2:0]),
                 // .read2RegSel                  (read2RegSel[2:0]),
-                // .writeRegSel                  (writeRegSel[2:0]),
+                // .writeregsel                  (writeregsel[2:0]),
                 // .writeData                    (writeData[15:0]),
                 // .writeEn                      (writeEn));
                 
