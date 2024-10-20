@@ -8,23 +8,23 @@
 module fetch ( clk, rst, 
                halt_sig, jump_imm_sig, jump_sig, except_sig, br_contr_sig, 
                imm_jump_reg_val, imm_br_val,
-               PC, instr, output_clk);
-   input clk;
-   input rst;
+               PC, instr, output_wire_clk);
+   input wire clk;
+   input wire rst;
 
-   input halt_sig;
-   input jump_imm_sig;
-   input jump_sig;
-   input except_sig;
-   input br_contr_sig; //This will come from branch control that has the bne, beq,
+   input wire halt_sig;
+   input wire jump_imm_sig;
+   input wire jump_sig;
+   input wire except_sig;
+   input wire br_contr_sig; //This will come from branch control that has the bne, beq,
 
-   input imm_jump_reg_val; //The jump value when adding Rs with the Jump's Imm
-   input imm_br_val;
+   input wire imm_jump_reg_val; //The jump value when adding Rs with the Jump's Imm
+   input wire imm_br_val;
 
-   output [15:0] instr;
-   output output_clk;
+   output wire [15:0] instr;
+   output wire output_wire_clk;
 
-   output [15:0] PC = 16'b0;
+   output wire [15:0] PC;
    wire[15:0] ECP = 16'b0;
 
    //NOTE: do I need to add a clk here to update the PC on every clock cycle?
@@ -37,11 +37,11 @@ module fetch ( clk, rst,
 
    wire[15:0] addr_pre_exception = jump_sig ? jump_imm_addr : br_imm_addr;
 
-   //output_clk is for managing the Halt instruction
-   assign output_clk = halt_sig ? 1'b0 : clk;
-   assign PC = except_sig ? 16'h02 : addr_pre_exception;
+   //output wire_clk is for managing the Halt instruction
+   assign output_wire_clk = halt_sig ? 1'b0 : clk;
+   assign PC = rst ? 16'b0 : (except_sig ? 16'h02 : addr_pre_exception);
    assign ECP = except_sig ? PC_2 : ECP;
 
-   memory2c instr_mem(.data_out(instr), .addr(PC), .enable(1'b1), .wr(1'b0), .clk(output_clk), .rst(rst));
+   memory2c instr_mem(.data_out(instr), .addr(PC), .enable(1'b1), .wr(1'b0), .clk(output_wire_clk), .rst(rst));
 endmodule
 `default_nettype wire

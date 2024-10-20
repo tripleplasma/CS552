@@ -48,4 +48,4 @@ module control(opcode, halt, jumpImm, link, regDst, jump, branch, memRead, memTo
     
     assign exception = (opcode[4:2] == 3'b000) ? 1'b1 : 1'b0; // not active until final demo - comment out?
 
-endmodule;
+endmodule

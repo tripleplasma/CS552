@@ -7,10 +7,10 @@
 `default_nettype none
 module alu_control (opcode, extension, aluOp);
 
-   input [4:0]    opcode;        // Top 5 bits of instruction
-   input [1:0]    extension;     // Bottom 2 bits for R-format instructions
+   input wire [4:0]    opcode;        // Top 5 bits of instruction
+   input wire [1:0]    extension;     // Bottom 2 bits for R-format instructions
    
-   output   [3:0]   aluOp;      // Opcode going to the alu
+   output wire [3:0]   aluOp;      // Opcode going to the alu
    
    assign aluOp =
                      // I type instructions 

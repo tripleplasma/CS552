@@ -28,6 +28,6 @@ module shifter (In, ShAmt, Oper, Out);
     right_shift_rot_log iRSAL(.In(In), .ShAmt(ShAmt), .Rot(~Oper[0]), .Out(shift_right_rot_log_result));
 
     // determine if we're shifting left or right
-    assign Out = (Oper[1]) ? shift_right_arith_log_result : left_shift_rot_result;
+    assign Out = (Oper[1]) ? shift_right_rot_log_result : left_shift_rot_result;
 
 endmodule // shifter

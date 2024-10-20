@@ -8,23 +8,23 @@
 `default_nettype none
 module memory (addr, writeData, memWrite, memRead, memDump, clk, rst, readData);
 
-   input [15:0]   addr;          // Address to memory
-   input [15:0]   writeData;     // Data to write into the ALU
-   input          memWrite;      // Controls if memory writes
-   input          memRead;       // Controls if memory reads
-   input          memDump;       // Dumps the memory to a file
-   input          clk;
-   input          rst;
+   input wire [15:0]   addr;          // Address to memory
+   input wire [15:0]   writeData;     // Data to write into the ALU
+   input wire          memWrite;      // Controls if memory writes
+   input wire          memRead;       // Controls if memory reads
+   input wire          memDump;       // Dumps the memory to a file
+   input wire          clk;
+   input wire          rst;
 
-   output   [15:0]   readData;   // Read data from memory
+   output wire   [15:0]   readData;   // Read data from memory
 
    // Enable on reading and writing
    wire enable;
    assign enable = readData | writeData;
 
-   memory2c iMEMORY( // Outputs
+   memory2c iMEMORY( // output wires
                      .data_out(readData), 
-                     // Inputs
+                     // input wires
                      .data_in(writeData), 
                      .addr(addr), 
                      .enable(enable), 

@@ -5,38 +5,38 @@
    Description     : This is the module for the overall decode stage of the processor.
 */
 `default_nettype none
-module decode (/* TODO: Add appropriate inputs/outputs for your decode stage here*/
-                // Inputs
+module decode (/* TODO: Add appropriate input wires/output wires for your decode stage here*/
+                // input wires
                 clk, rst, read1RegSel, read2RegSel, writeRegSel, writeData, writeEn, imm_5, imm_8, imm_11, immExtSel,
-                // Outputs
+                // output wires
                 read1Data, read2Data, err, immExt
                 );
                 
     // TODO: Your code here
-    input        clk, rst;
-    input [2:0]  read1RegSel;
-    input [2:0]  read2RegSel;
-    input [2:0]  writeRegSel;
-    input [15:0] writeData;
-    input        writeEn;
-    input [4:0]  imm_5;
-    input [7:0]  imm_8;
-    input [10:0] imm_11;
-    input [2:0]  immExtSel;
+    input wire        clk, rst;
+    input wire [2:0]  read1RegSel;
+    input wire [2:0]  read2RegSel;
+    input wire [2:0]  writeRegSel;
+    input wire [15:0] writeData;
+    input wire        writeEn;
+    input wire [4:0]  imm_5;
+    input wire [7:0]  imm_8;
+    input wire [10:0] imm_11;
+    input wire [2:0]  immExtSel;
 
-    output [15:0] read1Data;
-    output [15:0] read2Data;
-    output        err;
-    output [15:0] immExt;
+    output wire [15:0] read1Data;
+    output wire [15:0] read2Data;
+    output wire        err;
+    output wire [15:0] immExt;
     
     
     // bypass register file
     regFile_bypass rf_b_0(
-                         // Outputs
+                         // output wires
                          .read1Data                    (read1Data[15:0]),
                          .read2Data                    (read2Data[15:0]),
                          .err                          (err),
-                         // Inputs
+                         // input wires
                          .clk                          (clk),
                          .rst                          (rst),
                          .read1RegSel                  (read1RegSel[2:0]),
@@ -47,11 +47,11 @@ module decode (/* TODO: Add appropriate inputs/outputs for your decode stage her
     
     // register file with no bypass, not sure if we're using it or not.
     // regFile iRF0(
-                // // Outputs
+                // // output wires
                 // .read1Data                    (read1Data[15:0]),
                 // .read2Data                    (reg_out[1]),
                 // .err                          (err),
-                // // Inputs
+                // // input wires
                 // .clk                          (clk),
                 // .rst                          (rst),
                 // .read1RegSel                  (read1RegSel[2:0]),

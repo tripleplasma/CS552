@@ -7,21 +7,21 @@
 `default_nettype none
 module execute (read1Data, read2Data, aluOp, aluSrc, immExt, aluOut, zf, sf, of, cf);
 
-   input [15:0]   read1Data;     // Input operand A
-   input [15:0]   read2Data;     // Output of the 2nd read of the register file
-   input [3:0]    aluOp;
-   input          aluSrc;        // Indicates if inB to ALU should be the output of the register file
-                                 // or the output of the extension module
-   input [15:0]   immExt ;       // Output of the immediate extension module
+   input wire [15:0]   read1Data;     // input wire operand A
+   input wire [15:0]   read2Data;     // output wire of the 2nd read of the register file
+   input wire [3:0]    aluOp;
+   input wire          aluSrc;        // Indicates if inB to ALU should be the output wire of the register file
+                                 // or the output wire of the extension module
+   input wire [15:0]   immExt ;       // output wire of the immediate extension module
    
-   output   [15:0]   aluOut;  // ALU output value
-   output   sf; // Signal if Out is negative or positive
-   output   zf; // Signal if Out is 0
-   output   of; // Signal if overflow occured
-   output   cf; // Signal if carry out is 1
+   output wire   [15:0]   aluOut;  // ALU output wire value
+   output wire   sf; // Signal if Out is negative or positive
+   output wire   zf; // Signal if Out is 0
+   output wire   of; // Signal if overflow occured
+   output wire   cf; // Signal if carry out is 1
 
-   // B input to ALU
-   wire  [15:0] InB;
+   // B input wire to ALU
+   wire [15:0] InB;
 
    // Assign InB based on aluSrc value
    assign InB = (aluSrc) ? immExt : read2Data;
@@ -30,11 +30,11 @@ module execute (read1Data, read2Data, aluOp, aluSrc, immExt, aluOut, zf, sf, of,
 
    // Create the ALU
    alu #(.NUM_OPERATIONS(4)) 
-      iALU(// Inputs
+      iALU(// input wires
          .InA(read1Data), 
-         .InB(inB), 
+         .InB(InB), 
          .Oper(aluOp), 
-         // Outputs 
+         // output wires 
          .Out(aluOut), 
          .zf(zf), 
          .sf(sf),
