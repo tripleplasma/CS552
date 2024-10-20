@@ -25,10 +25,11 @@ module fetch ( clk, rst,
    output wire output_clk;
 
    output wire [15:0] pcCurrent;
-   wire[15:0] ECP = 16'b0;
+   // wire[15:0] EPC = 16'b0;
+   wire[15:0] nextPC;
 
-   //NOTE: do I need to add a clk here to update the PC on every clock cycle?
-
+   register PC(.clk(output_clk), .rst(rst), .writeEn(1'b1), .writeData(nextPC), .readData(pcCurrent));
+   
    wire[15:0] PC_2 = pcCurrent + 2;
    wire[15:0] PC_jump_Imm = {PC_2[15:9], (instr[7:0]>>1)};
 
@@ -39,8 +40,9 @@ module fetch ( clk, rst,
 
    //output_clk is for managing the Halt instruction
    assign output_clk = halt_sig ? 1'b0 : clk;
-   assign pcCurrent = rst ? 16'b0 : (except_sig ? 16'h02 : addr_pre_exception);
-   assign ECP = except_sig ? PC_2 : ECP;
+   // assign nextPC = rst ? 16'b0 : (except_sig ? 16'h02 : addr_pre_exception);
+   assign nextPC = rst ? 16'b0 : addr_pre_exception;
+   // assign EPC = except_sig ? PC_2 : EPC;
 
    memory2c instr_mem(.data_out(instr), .data_in(16'b0), .addr(pcCurrent), .enable(1'b1), .wr(1'b0), .createdump(1'b0), .clk(output_clk), .rst(rst));
 endmodule
