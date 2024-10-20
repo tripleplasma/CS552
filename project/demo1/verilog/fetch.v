@@ -18,8 +18,8 @@ module fetch ( clk, rst,
    input wire except_sig;
    input wire br_contr_sig; //This will come from branch control that has the bne, beq,
 
-   input wire imm_jump_reg_val; //The jump value when adding Rs with the Jump's Imm
-   input wire imm_br_val;
+   input wire [15:0] imm_jump_reg_val; //The jump value when adding Rs with the Jump's Imm
+   input wire [15:0] imm_br_val;
 
    output wire [15:0] instr;
    output wire output_clk;
@@ -42,6 +42,6 @@ module fetch ( clk, rst,
    assign pcCurrent = rst ? 16'b0 : (except_sig ? 16'h02 : addr_pre_exception);
    assign ECP = except_sig ? PC_2 : ECP;
 
-   memory2c instr_mem(.data_out(instr), .addr(pcCurrent), .enable(1'b1), .wr(1'b0), .clk(output_clk), .rst(rst));
+   memory2c instr_mem(.data_out(instr), .data_in(16'b0), .addr(pcCurrent), .enable(1'b1), .wr(1'b0), .createdump(1'b0), .clk(output_clk), .rst(rst));
 endmodule
 `default_nettype wire

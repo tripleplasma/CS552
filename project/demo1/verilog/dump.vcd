@@ -1,5 +1,5 @@
 $date
-	Sun Oct 20 13:59:18 2024
+	Sun Oct 20 14:12:03 2024
 $end
 $version
 	ModelSim Version 10.7c
@@ -328,8 +328,38 @@ $var wire 1 /" jump_imm_sig $end
 $var wire 1 1" jump_sig $end
 $var wire 1 8" except_sig $end
 $var wire 1 9" br_contr_sig $end
-$var wire 1 V" imm_jump_reg_val $end
-$var wire 1 w! imm_br_val $end
+$var wire 1 G" imm_jump_reg_val [15] $end
+$var wire 1 H" imm_jump_reg_val [14] $end
+$var wire 1 I" imm_jump_reg_val [13] $end
+$var wire 1 J" imm_jump_reg_val [12] $end
+$var wire 1 K" imm_jump_reg_val [11] $end
+$var wire 1 L" imm_jump_reg_val [10] $end
+$var wire 1 M" imm_jump_reg_val [9] $end
+$var wire 1 N" imm_jump_reg_val [8] $end
+$var wire 1 O" imm_jump_reg_val [7] $end
+$var wire 1 P" imm_jump_reg_val [6] $end
+$var wire 1 Q" imm_jump_reg_val [5] $end
+$var wire 1 R" imm_jump_reg_val [4] $end
+$var wire 1 S" imm_jump_reg_val [3] $end
+$var wire 1 T" imm_jump_reg_val [2] $end
+$var wire 1 U" imm_jump_reg_val [1] $end
+$var wire 1 V" imm_jump_reg_val [0] $end
+$var wire 1 h! imm_br_val [15] $end
+$var wire 1 i! imm_br_val [14] $end
+$var wire 1 j! imm_br_val [13] $end
+$var wire 1 k! imm_br_val [12] $end
+$var wire 1 l! imm_br_val [11] $end
+$var wire 1 m! imm_br_val [10] $end
+$var wire 1 n! imm_br_val [9] $end
+$var wire 1 o! imm_br_val [8] $end
+$var wire 1 p! imm_br_val [7] $end
+$var wire 1 q! imm_br_val [6] $end
+$var wire 1 r! imm_br_val [5] $end
+$var wire 1 s! imm_br_val [4] $end
+$var wire 1 t! imm_br_val [3] $end
+$var wire 1 u! imm_br_val [2] $end
+$var wire 1 v! imm_br_val [1] $end
+$var wire 1 w! imm_br_val [0] $end
 $var wire 1 $! instr [15] $end
 $var wire 1 %! instr [14] $end
 $var wire 1 &! instr [13] $end
@@ -4823,6 +4853,7 @@ $var wire 1 l+ sum [2] $end
 $var wire 1 m+ sum [1] $end
 $var wire 1 n+ sum [0] $end
 $var wire 1 F" carry_out $end
+$var wire 1 x! Oper [3] $end
 $var wire 1 y! Oper [2] $end
 $var wire 1 z! Oper [1] $end
 $var wire 1 {! Oper [0] $end
@@ -4830,6 +4861,7 @@ $var wire 1 6, sign $end
 $var wire 1 7, of $end
 $var wire 1 z0 signed_overflow $end
 $var wire 1 {0 unsigned_overflow $end
+$var wire 1 |0 OpcodeCheck $end
 $upscope $end
 $upscope $end
 $upscope $end
@@ -4868,8 +4900,8 @@ $var wire 1 d! writeData [2] $end
 $var wire 1 e! writeData [1] $end
 $var wire 1 f! writeData [0] $end
 $var wire 1 4" memWrite $end
-$var wire 1 |0 memRead $end
-$var wire 1 2" memReadorWrite $end
+$var wire 1 2" memRead $end
+$var wire 1 }0 memReadorWrite $end
 $var wire 1 ." halt $end
 $var wire 1 :" clk $end
 $var wire 1 } rst $end
@@ -4889,7 +4921,7 @@ $var wire 1 c" readData [3] $end
 $var wire 1 d" readData [2] $end
 $var wire 1 e" readData [1] $end
 $var wire 1 f" readData [0] $end
-$var wire 1 }0 enable $end
+$var wire 1 ~0 enable $end
 
 $scope module iMEMORY $end
 $var wire 1 W" data_out [15] $end
@@ -4940,15 +4972,15 @@ $var wire 1 S" addr [3] $end
 $var wire 1 T" addr [2] $end
 $var wire 1 U" addr [1] $end
 $var wire 1 V" addr [0] $end
-$var wire 1 }0 enable $end
-$var wire 1 f! wr $end
+$var wire 1 ~0 enable $end
+$var wire 1 4" wr $end
 $var wire 1 ." createdump $end
 $var wire 1 :" clk $end
 $var wire 1 } rst $end
-$var reg 1 ~0 loaded $end
-$var reg 17 !1 largest [16:0] $end
-$var integer 32 "1 mcd $end
-$var integer 32 #1 i $end
+$var reg 1 !1 loaded $end
+$var reg 17 "1 largest [16:0] $end
+$var integer 32 #1 mcd $end
+$var integer 32 $1 i $end
 $upscope $end
 $upscope $end
 
@@ -5159,8 +5191,8 @@ x|)
 x{)
 xz)
 xy)
-0~0
-b0 !1
+0!1
+b0 "1
 b10000 F$
 b10000 q%
 b10000 E&
@@ -5186,8 +5218,8 @@ b100 z
 b1 "!
 bx $$
 b10000000000000000 %$
-bx "1
-b10000000000000000 #1
+bx #1
+b10000000000000000 $1
 00
 0/
 0.
@@ -5241,7 +5273,7 @@ xG
 xF
 xE
 0U
-zV
+0V
 xf
 xe
 xd
@@ -5476,21 +5508,21 @@ xy"
 0.#
 0-#
 xL#
-0K#
-0J#
-0I#
-0H#
-0G#
-0F#
-0E#
-0D#
-0C#
-0B#
-0A#
-0@#
-0?#
-0>#
-0=#
+xK#
+xJ#
+xI#
+xH#
+xG#
+xF#
+xE#
+xD#
+xC#
+xB#
+xA#
+x@#
+x?#
+x>#
+x=#
 0\#
 1[#
 0Z#
@@ -6559,6 +6591,7 @@ xy0
 07,
 0z0
 0{0
+0|0
 x8,
 xf"
 xe"
@@ -6576,27 +6609,27 @@ xZ"
 xY"
 xX"
 xW"
-x}0
-z|0
+x~0
+0}0
+0!$
 0~#
 1}#
-z|#
-z{#
-zz#
-zy#
-zx#
-zw#
-zv#
-zu#
-zt#
-zs#
-zr#
-zq#
-zp#
-zo#
-zn#
-zm#
-z!$
+0|#
+0{#
+0z#
+0y#
+0x#
+0w#
+0v#
+0u#
+0t#
+0s#
+0r#
+0q#
+0p#
+0o#
+0n#
+0m#
 0X)
 0&)
 0R(

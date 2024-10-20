@@ -29,7 +29,7 @@ module memory (aluResult, writeData, memWrite, memRead, halt, clk, rst, readData
                      .data_in(writeData), 
                      .addr(aluResult), 
                      .enable(enable), 
-                     .wr(writeData), 
+                     .wr(memWrite), 
                      .createdump(halt), 
                      .clk(clk), 
                      .rst(rst));

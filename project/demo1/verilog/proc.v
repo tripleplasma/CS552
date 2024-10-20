@@ -77,7 +77,7 @@ module proc (/*AUTOARG*/
                      .zf(zero_flag), .sf(signed_flag), .of(overflow_flag), .cf(carry_flag));
 
    wire [15:0] readData;
-   memory memory0(.aluResult(aluOut), .writeData(read2Data), .memWrite(memWrite), .memReadorWrite(memRead), .halt(halt), .clk(internal_clock), .rst(rst), .readData(readData));
+   memory memory0(.aluResult(aluOut), .writeData(read2Data), .memWrite(memWrite), .memRead(memRead), .halt(halt), .clk(internal_clock), .rst(rst), .readData(readData), .memReadorWrite(1'b0));
 
    wb iWRITEBACK0(.readData(readData), .addr(aluOut), .nextPC(PC), .memToReg(memToReg), .link(link), .writeData(writeData));
    
