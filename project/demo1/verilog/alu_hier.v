@@ -4,22 +4,21 @@
 
     A wrapper for a multi-bit ALU module combined with clkrst.
 */
-module alu_hier(InA, InB, Cin, Oper, invA, invB, sign, Out, Zero, Ofl);
+module alu_hier(InA, InB, Oper, Out, zf, sf, of, cf);
 
     // declare constant for size of inputs, outputs, and operations
     parameter OPERAND_WIDTH = 16;    
-    parameter NUM_OPERATIONS = 3;
+    parameter NUM_OPERATIONS = 4;
        
     input  [OPERAND_WIDTH -1:0] InA ; // Input operand A
     input  [OPERAND_WIDTH -1:0] InB ; // Input operand B
-    input                       Cin ; // Carry in
     input  [NUM_OPERATIONS-1:0] Oper; // Operation type
-    input                       invA; // Signal to invert A
-    input                       invB; // Signal to invert B
     input                       sign; // Signal for signed operation
     output [OPERAND_WIDTH -1:0] Out ; // Result of computation
-    output                      Zero; // Signal if Out is 0
-    output                      Ofl ; // Signal if overflow occured
+    output                      zf  ; // Signal if Out is 0
+    output                      sf  ; // Signal if Out is negative or positive
+    output                      of  ; // Signal if overflow occured
+    output                      cf  ; // Signal if carry out is 1
 
     // clkrst signals
     wire clk;
@@ -32,16 +31,14 @@ module alu_hier(InA, InB, Cin, Oper, invA, invB, sign, Out, Zero, Ofl);
           .NUM_OPERATIONS(NUM_OPERATIONS)) 
         DUT (// Outputs
              .Out(Out),
-             .Ofl(Ofl), 
-             .Zero(Zero),
+             .zf(zf),
+             .sf(sf),
+             .cf(cf),
+             .of(of), 
              // Inputs
-             .InA(InA), 
+             .InA(InA),
              .InB(InB), 
-             .Cin(Cin), 
-             .Oper(Oper), 
-             .invA(invA), 
-             .invB(invB), 
-             .sign(sign));
+             .Oper(Oper));
    
     clkrst c0(// Outputs
               .clk                       (clk),
