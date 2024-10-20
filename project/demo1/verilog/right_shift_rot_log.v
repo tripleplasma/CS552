@@ -1,4 +1,4 @@
-/* Filename: right_shift_arith_log.sv
+/* Filename: right_shift_rot_log.sv
  * Description: A submodule of the barrel shifter module that handles the rotate and logical shift right logic.
  * Author: Khiem Vu
  */
