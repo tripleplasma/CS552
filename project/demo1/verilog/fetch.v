@@ -26,6 +26,7 @@ module fetch ( clk, rst,
 
    output wire [15:0] PC_2;
    // wire[15:0] EPC = 16'b0;
+   wire[15:0] nextPC;
    wire[15:0] pcCurrent;
 
    register PC(.clk(output_clk), .rst(rst), .writeEn(1'b1), .writeData(nextPC), .readData(pcCurrent));
