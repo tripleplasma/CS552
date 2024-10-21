@@ -24,13 +24,13 @@ module regFile_bypass (
 
    /* YOUR CODE HERE */
    wire [15:0] reg_out[1:0];
-
-   wire [15:0] read1WithBypass, read2WithBypass;
    
    regFile iRF0(
                 // Outputs
-                .read1Data                    (reg_out[0]),
-                .read2Data                    (reg_out[1]),
+                // .read1Data                    (reg_out[0]),
+                // .read2Data                    (reg_out[1]),
+                .read1Data                    (read1Data),
+                .read2Data                    (read2Data),
                 .err                          (err),
                 // Inputs
                 .clk                          (clk),
@@ -40,12 +40,9 @@ module regFile_bypass (
                 .writeRegSel                  (writeregsel[2:0]),
                 .writeData                    (writedata[15:0]),
                 .writeEn                      (write));
-
-   assign read1WithBypass = (write & (read1RegSel == writeregsel)) ? writedata : reg_out[0];
-   assign read2WithBypass = (write & (read2RegSel == writeregsel)) ? writedata : reg_out[1];
-
-   register iREGISTER_0(.clk(clk), .rst(rst), .writeEn(write), .writeData(read1WithBypass), .readData(read1Data));
-   register iREGISTER_1(.clk(clk), .rst(rst), .writeEn(write), .writeData(read2WithBypass), .readData(read2Data));
    
+   // Remove bypassing for now
+   // assign read1Data = (write & (read1RegSel == writeregsel)) ? writedata : reg_out[0];
+   // assign read2Data = (write & (read2RegSel == writeregsel)) ? writedata : reg_out[1];
 
 endmodule
