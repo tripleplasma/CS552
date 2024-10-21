@@ -42,7 +42,7 @@ module alu (InA, InB, Oper, Out, zf, sf, of, cf);
     // Barrel shifter, shift amount is 8 for SLBI, 4 lower bits of B otherwise
     assign ShAmt = (Oper == 4'b1111) ? 4'b1000 : B_int[3:0];
     // Shift operation is 10 for SLBI, otherise its the lower two bits of the opcode
-    assign shifterOper = (Oper == 4'b1111) ? 2'b10 : Oper[1:0];
+    assign shifterOper = (Oper == 4'b1111) ? 2'b01 : Oper[1:0];
 
     shifter iSHIFTER(.In(A_int), .ShAmt(ShAmt), .Oper(shifterOper), .Out(shift_result));
     
