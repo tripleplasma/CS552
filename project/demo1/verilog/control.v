@@ -34,7 +34,7 @@ module control(opcode, halt, jumpImm, link, regDst, jump, branch, memRead, memTo
     
     assign memWrite = (opcode == 5'b1_0000 | opcode == 5'b1_0011) ? 1'b1 : 1'b0;
     
-    assign aluSrc = (opcode[4:2] == 3'b010 | opcode[4:2] == 3'b101 | opcode[4:2] == 3'b100 | opcode == 5'b11000) ? 1'b1 : 1'b0; // 3'b100 would include SLBI - ok? Should aluSrc be one if any immediate opcode is detected (like JR)?
+    assign aluSrc = (opcode[4:2] == 3'b010 | opcode[4:2] == 3'b101 | opcode[4:2] == 3'b100 | opcode == 5'b11000 | opcode == 5'b10010) ? 1'b1 : 1'b0; // 3'b100 would include SLBI - ok? Should aluSrc be one if any immediate opcode is detected (like JR)?
     
     assign regWrite = (opcode[4:2] == 3'b010 | opcode[4:2] == 3'b101 | opcode == 5'b1_0001 | opcode == 4'b1001 | opcode[4:2] == 3'b110 | opcode[4:2] == 3'b111) ? 1'b1 : 1'b0;
     
