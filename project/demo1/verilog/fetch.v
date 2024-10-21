@@ -32,9 +32,9 @@ module fetch ( clk, rst,
    register PC(.clk(output_clk), .rst(rst), .writeEn(1'b1), .writeData(nextPC), .readData(pcCurrent));
    
    assign PC_2 = pcCurrent + 2;
-   wire[15:0] PC_jump_Imm = {PC_2[15:9], (instr[7:0]>>1)};
+   wire[15:0] PC_jump_Imm = {PC_2[15:9], (instr[7:0]<<1)};
 
-   wire[15:0] jump_imm_addr = jump_imm_sig ? PC_jump_Imm : imm_jump_reg_val; 
+   wire[15:0] jump_imm_addr = jump_imm_sig ? imm_jump_reg_val : PC_jump_Imm; 
    wire[15:0] br_imm_addr = br_contr_sig ? PC_2 + imm_br_val : PC_2;
 
    wire[15:0] addr_pre_exception = jump_sig ? jump_imm_addr : br_imm_addr;
