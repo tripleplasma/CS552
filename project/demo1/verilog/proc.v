@@ -63,7 +63,7 @@ module proc (/*AUTOARG*/
    assign writeRegSel = (regDst == 2'b00) ? instruction[4:2] :
                         (regDst == 2'b01) ? instruction[7:5] :
                         (regDst == 2'b10) ? instruction[10:8] :
-                        2'b11;
+                        3'b111;
                         
    // assign writeData = (link) ? PC + 2 : wbData;
    //----END----
