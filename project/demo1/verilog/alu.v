@@ -57,10 +57,10 @@ module alu (InA, InB, Oper, Out, zf, sf, of, cf);
     overflow iOVERFLOW(.A(A_int), .B(B_int), .sum(sum), .carry_out(cf), .Oper(Oper), .sign(sign), .of(Ofl));
     
     // Zero flag
-    assign zf = (Out == 16'b0) ? 1'b1 : 1'b0;
+    assign zf = (sum == 16'b0) ? 1'b1 : 1'b0;
 
     // Sign flag, equal to MSB of output
-    assign sf = Out[OPERAND_WIDTH-1];
+    assign sf = sum[OPERAND_WIDTH-1];
 
     // Assign bit reversal
     wire brt;
