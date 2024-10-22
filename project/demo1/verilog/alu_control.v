@@ -45,10 +45,10 @@ module alu_control (opcode, extension, aluOp);
                     4'b1100                     :               // SCO ALU Operation
                     // SLBI
                     (opcode == 5'b10010)        ?   4'b1111 :   // ALU out = (Rs << 8)|InB
+                    // Jump Instructions
+                    (opcode[4:2] == 3'b001)     ?   4'b0100 :   // Add ALU operation
                     // LBI and Branch instructions
                     4'b1101;                                    // ALU out = InB, also A + 0, default
-
-                    // Does nothing for jump instructions
    
 endmodule
 `default_nettype wire
