@@ -20,7 +20,7 @@ module alu (InA, InB, Oper, Out, zf, sf, of, cf);
 
     /* YOUR CODE HERE */
     // Intermediate signals
-    wire [OPERAND_WIDTH-1:0] A_int, B_int;
+    wire [OPERAND_WIDTH-1:0] A_int, B_int, btr;
     wire [OPERAND_WIDTH-1:0] shift_result, sum, xor_result, andn_result;
     wire [3:0]               ShAmt;
     wire Cin, sign;
@@ -63,8 +63,7 @@ module alu (InA, InB, Oper, Out, zf, sf, of, cf);
     assign sf = sum[OPERAND_WIDTH-1];
 
     // Assign bit reversal
-    wire brt;
-    assign brt = {InA[0], InA[1], InA[2], InA[3], InA[4], InA[5], InA[6], InA[7], InA[8], InA[9], InA[10], InA[11], InA[12], InA[13], InA[14], InA[15]};
+    assign btr = {InA[0], InA[1], InA[2], InA[3], InA[4], InA[5], InA[6], InA[7], InA[8], InA[9], InA[10], InA[11], InA[12], InA[13], InA[14], InA[15]};
 
     // Output mux to select the correct operation result
     assign Out =    (Oper[3] == 0)          ?                           // Check if make use of the functions
@@ -78,6 +77,6 @@ module alu (InA, InB, Oper, Out, zf, sf, of, cf);
                     (Oper[2:0] == 3'b010)   ? {15'b0, (zf | ~sf)} :     // Set if A <= B, B - A sign
                     (Oper[2:0] == 3'b100)   ? {15'b0, cf} :             // Set if A + B generates a carry out
                     (Oper[2:0] == 3'b101)   ? InB :                     // LBI: Out = InB
-                    (Oper[2:0] == 3'b110)   ? brt :                     // Reverse the bits
+                    (Oper[2:0] == 3'b110)   ? btr :                     // Reverse the bits
                     (shift_result | InB);                               // SLBI: Rs<<8 | I(zero ext.)
 endmodule
