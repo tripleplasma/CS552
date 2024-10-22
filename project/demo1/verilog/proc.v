@@ -25,6 +25,7 @@ module proc (/*AUTOARG*/
    
    /* your code here -- should include instantiations of fetch, decode, execute, mem and wb modules */
    wire [15:0] instruction;
+   wire [2:0] decodeWriteRegSel;
    wire [2:0] writeRegSel;
    wire [15:0] writeData;
    wire [15:0] read1Data;
@@ -60,10 +61,12 @@ module proc (/*AUTOARG*/
 
    
    //----Want inside decode----
-   assign writeRegSel = (regDst == 2'b00) ? instruction[4:2] :
-                        (regDst == 2'b01) ? instruction[7:5] :
-                        (regDst == 2'b10) ? instruction[10:8] :
-                        2'b11;
+   assign decodeWriteRegSel = (regDst == 2'b00) ? instruction[4:2] :
+                              (regDst == 2'b01) ? instruction[7:5] :
+                              (regDst == 2'b10) ? instruction[10:8] :
+                              2'b11;
+   // Write reg is 7 when linking
+   assign writeRegSel = (link) ? 3'b111 : decodeWriteRegSel;
                         
    // assign writeData = (link) ? PC + 2 : wbData;
    //----END----
