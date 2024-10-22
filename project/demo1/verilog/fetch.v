@@ -7,7 +7,7 @@
 `default_nettype none
 module fetch ( clk, rst, 
                halt_sig, jump_imm_sig, jump_sig, except_sig, br_contr_sig, 
-               imm_jump_reg_val, imm_br_val,
+               imm_jump_reg_val, extend_val,
                PC_2, instr, output_clk);
    input wire clk;
    input wire rst;
@@ -18,8 +18,8 @@ module fetch ( clk, rst,
    input wire except_sig;
    input wire br_contr_sig; //This will come from branch control that has the bne, beq,
 
-   input wire [15:0] imm_jump_reg_val; //The jump value when adding Rs with the Jump's Imm
-   input wire [15:0] imm_br_val;
+   input wire [15:0] imm_jump_reg_val; //The jump value from Rs
+   input wire [15:0] extend_val;
 
    output wire [15:0] instr;
    output wire output_clk;
@@ -32,10 +32,12 @@ module fetch ( clk, rst,
    register PC(.clk(output_clk), .rst(rst), .writeEn(1'b1), .writeData(nextPC), .readData(pcCurrent));
    
    assign PC_2 = pcCurrent + 2;
-   wire[15:0] PC_jump_Imm = {PC_2[15:9], (instr[7:0]<<1)};
+   wire[15:0] disp_jump;
+   // Don't think we use since different from MIPS, we do relative jumping
+   // wire[15:0] PC_jump_Imm = {PC_2[15:9], (instr[7:0]<<1)};
 
-   wire[15:0] jump_imm_addr = jump_imm_sig ? imm_jump_reg_val : PC_jump_Imm; 
-   wire[15:0] br_imm_addr = br_contr_sig ? PC_2 + imm_br_val : PC_2;
+   wire[15:0] jump_imm_addr = jump_imm_sig ? imm_jump_reg_val + extend_val : PC_2 + extend_val; 
+   wire[15:0] br_imm_addr = br_contr_sig ? PC_2 + extend_val : PC_2;
 
    wire[15:0] addr_pre_exception = jump_sig ? jump_imm_addr : br_imm_addr;
 

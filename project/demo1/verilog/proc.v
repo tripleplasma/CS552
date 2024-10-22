@@ -55,7 +55,7 @@ module proc (/*AUTOARG*/
    //Fetch
    fetch fetch0(.clk(clk), .rst(rst), 
                .halt_sig(halt), .jump_imm_sig(jumpImm), .jump_sig(jump), .except_sig(exception), .br_contr_sig(br_contr), 
-               .imm_jump_reg_val(aluOut), .imm_br_val(immExt),
+               .imm_jump_reg_val(read1Data), .extend_val(immExt),
                .instr(instruction), .output_clk(internal_clock), .PC_2(PC));
 
    
