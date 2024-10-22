@@ -31,13 +31,20 @@ module fetch ( clk, rst,
 
    register PC(.clk(output_clk), .rst(rst), .writeEn(1'b1), .writeData(nextPC), .readData(pcCurrent));
    
-   assign PC_2 = pcCurrent + 2;
+   // increment PC
+   cla_16b iPC_ADDER(.sum(PC_2), .c_out(), .a(pcCurrent), .b(16'd2), .c_in(1'b0));
+   
    wire[15:0] disp_jump;
    // Don't think we use since different from MIPS, we do relative jumping
    // wire[15:0] PC_jump_Imm = {PC_2[15:9], (instr[7:0]<<1)};
 
-   wire[15:0] jump_imm_addr = jump_imm_sig ? imm_jump_reg_val + extend_val : PC_2 + extend_val; 
-   wire[15:0] br_imm_addr = br_contr_sig ? PC_2 + extend_val : PC_2;
+   wire[15:0] extend_imm_jump_reg_val;
+   wire[15:0] extend_PC_2;
+   cla_16b iJUMP_EXTEND(.sum(extend_imm_jump_reg_val), .c_out(), .a(imm_jump_reg_val), .b(extend_val), .c_in(1'b0));
+   cla_16b iPC_EXTEND(.sum(extend_PC_2), .c_out(), .a(PC_2), .b(extend_val), .c_in(1'b0));
+
+   wire[15:0] jump_imm_addr = jump_imm_sig ? extend_imm_jump_reg_val : extend_PC_2; 
+   wire[15:0] br_imm_addr = br_contr_sig ? extend_PC_2 : PC_2;
 
    wire[15:0] addr_pre_exception = jump_sig ? jump_imm_addr : br_imm_addr;
 
