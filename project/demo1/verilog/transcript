@@ -1,5 +1,5 @@
 # vsim -c proc_hier_bench -lib __work -voptargs="+acc" -wlf dump.wlf -do "log -howmany -rec /* ; run -all" 
-# Start time: 14:22:42 on Oct 20,2024
+# Start time: 18:30:06 on Oct 22,2024
 # //  ModelSim DE 10.7c Aug 17 2018Linux 5.15.0-124-generic
 # //
 # //  Copyright 1991-2018 Mentor Graphics Corporation
@@ -21,6 +21,15 @@
 # Loading __work.br_control
 # Loading __work.fetch
 # Loading __work.register
+# Loading __work.cla_16b
+# Loading __work.cla_4b
+# Loading __work.fullAdder_1b
+# Loading __work.xor2
+# Loading __work.nand2
+# Loading __work.not1
+# Loading __work.nor2
+# Loading __work.carry_4b
+# Loading __work.carry_1b
 # Loading __work.memory2c
 # Loading __work.decode
 # Loading __work.regFile_bypass
@@ -32,25 +41,16 @@
 # Loading __work.shifter
 # Loading __work.left_shift_rot
 # Loading __work.right_shift_rot_log
-# Loading __work.cla_16b
-# Loading __work.cla_4b
-# Loading __work.fullAdder_1b
-# Loading __work.xor2
-# Loading __work.nand2
-# Loading __work.not1
-# Loading __work.nor2
-# Loading __work.carry_4b
-# Loading __work.carry_1b
 # Loading __work.overflow
 # Loading __work.memory
 # Loading __work.wb
 # Loading __work.dff
 # log -howmany -rec /* 
-# 1837
+# 4235
 #  run -all
 # Hello world...simulation starting
 # See verilogsim.log and verilogsim.trace for output
 # ** Note: $finish    : proc_hier_bench.v(97)
-#    Time: 1100 ns  Iteration: 1  Instance: /proc_hier_bench
-# End time: 14:22:43 on Oct 20,2024, Elapsed time: 0:00:01
+#    Time: 215500 ns  Iteration: 1  Instance: /proc_hier_bench
+# End time: 18:30:06 on Oct 22,2024, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
