@@ -59,7 +59,7 @@ module alu (InA, InB, Oper, Out, zf, sf, of, cf);
     // Zero flag
     assign zf = (sum == 16'b0) ? 1'b1 : 1'b0;
 
-    // Sign flag, equal to MSB of output, 1 when negative and 0 when positive
+    // Sign flag, equal to MSB of output
     assign sf = sum[OPERAND_WIDTH-1];
 
     // Assign bit reversal
@@ -73,8 +73,8 @@ module alu (InA, InB, Oper, Out, zf, sf, of, cf);
                     (Oper[2:0] == 3'b110)   ? xor_result :              // A XOR B
                     andn_result             :                           // A AND ~B, else Oper[3] == 1
                     (Oper[2:0] == 3'b000)   ? {15'b0, zf} :             // Set if A = B
-                    (Oper[2:0] == 3'b001)   ? {15'b0, sf} :             // Set if A < B, B - A sign
-                    (Oper[2:0] == 3'b010)   ? {15'b0, (zf | sf)} :      // Set if A <= B, B - A sign
+                    (Oper[2:0] == 3'b001)   ? {15'b0, ~sf} :            // Set if A < B, B - A sign
+                    (Oper[2:0] == 3'b010)   ? {15'b0, (zf | ~sf)} :     // Set if A <= B, B - A sign
                     (Oper[2:0] == 3'b100)   ? {15'b0, cf} :             // Set if A + B generates a carry out
                     (Oper[2:0] == 3'b101)   ? InB :                     // LBI: Out = InB
                     (Oper[2:0] == 3'b110)   ? btr :                     // Reverse the bits
