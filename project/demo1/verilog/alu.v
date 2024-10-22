@@ -54,13 +54,13 @@ module alu (InA, InB, Oper, Out, zf, sf, of, cf);
     assign andn_result = A_int & B_int;
     
     // Overflow detection
-    overflow iOVERFLOW(.A(A_int), .B(B_int), .sum(sum), .carry_out(cf), .Oper(Oper), .sign(sign), .of(Ofl));
+    overflow iOVERFLOW(.A(A_int), .B(B_int), .sum(sum), .carry_out(cf), .Oper(Oper), .sign(sign), .of(of));
     
     // Zero flag
     assign zf = (sum == 16'b0) ? 1'b1 : 1'b0;
 
     // Sign flag, equal to MSB of output
-    assign sf = sum[OPERAND_WIDTH-1];
+    assign sf = (of) ? ((InA[OPERAND_WIDTH-1]) ? 1'b0 : 1'b1) : sum[OPERAND_WIDTH-1];
 
     // Assign bit reversal
     assign btr = {InA[0], InA[1], InA[2], InA[3], InA[4], InA[5], InA[6], InA[7], InA[8], InA[9], InA[10], InA[11], InA[12], InA[13], InA[14], InA[15]};
