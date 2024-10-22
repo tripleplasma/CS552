@@ -6,13 +6,12 @@
                      processor.
 */
 `default_nettype none
-module memory (aluResult, writeData, memWrite, memRead, halt, clk, rst, readData, memReadorWrite);
+module memory (aluResult, writeData, memWrite, memRead, halt, clk, rst, readData);
 
    input wire [15:0]   aluResult;          // aluResultess to memory
    input wire [15:0]   writeData;     // Data to write into the ALU
    input wire          memWrite;      // Controls if memory writes
    input wire          memRead;       // Controls if memory reads
-   input wire          memReadorWrite; //NOTE: IDK what this does, but the compiler needed it lol
    input wire          halt;       // Dumps the memory to a file
    input wire          clk;
    input wire          rst;
@@ -20,15 +19,15 @@ module memory (aluResult, writeData, memWrite, memRead, halt, clk, rst, readData
    output wire   [15:0]   readData;   // Read data from memory
 
    // Enable on reading and writing
-   wire enable;
-   assign enable = readData | writeData;
+   wire memReadorWrite;
+   assign memReadorWrite = memWrite | memRead;
 
    memory2c iMEMORY( // output wires
                      .data_out(readData), 
                      // input wires
                      .data_in(writeData), 
                      .addr(aluResult), 
-                     .enable(enable), 
+                     .enable(memReadorWrite), 
                      .wr(memWrite), 
                      .createdump(halt), 
                      .clk(clk), 
