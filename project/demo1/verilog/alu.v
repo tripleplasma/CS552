@@ -31,8 +31,8 @@ module alu (InA, InB, Oper, Out, zf, sf, of, cf);
 
     // Invert A and B if specified (for subtraction and ANDN)
     // 2's complement for subtraction, B - A
-    assign A_int = (Oper == 4'b0101 | Oper == 4'b10XX) ? ~InA : InA;
-    assign Cin = (Oper == 4'b0101 | Oper == 4'b10XX) ? 1'b1 : 1'b0;
+    assign A_int = (Oper == 4'b0101 | Oper[3:2] == 4'b10) ? ~InA : InA;
+    assign Cin = (Oper == 4'b0101 | Oper[3:2] == 4'b10) ? 1'b1 : 1'b0;
 
     // Invert B for ANDN, 0 for branch instructions
     assign B_int = (Oper == 4'b0111) ? ~InB :
@@ -73,10 +73,10 @@ module alu (InA, InB, Oper, Out, zf, sf, of, cf);
                     (Oper[2:0] == 3'b101)   ? sum :                     // B - A
                     (Oper[2:0] == 3'b110)   ? xor_result :              // A XOR B
                     andn_result             :                           // A AND ~B, else Oper[3] == 1
-                    (Oper[2:0] == 3'b000)   ? zf :                      // Set if A = B
-                    (Oper[2:0] == 3'b001)   ? ~sf :                     // Set if A < B, B - A sign
-                    (Oper[2:0] == 3'b010)   ? (zf | ~sf) :              // Set if A <= B, B - A sign
-                    (Oper[2:0] == 3'b100)   ? cf :                      // Set if A + B generates a carry out
+                    (Oper[2:0] == 3'b000)   ? {15'b0, zf} :             // Set if A = B
+                    (Oper[2:0] == 3'b001)   ? {15'b0, ~sf} :            // Set if A < B, B - A sign
+                    (Oper[2:0] == 3'b010)   ? {15'b0, (zf | ~sf)} :     // Set if A <= B, B - A sign
+                    (Oper[2:0] == 3'b100)   ? {15'b0, cf} :             // Set if A + B generates a carry out
                     (Oper[2:0] == 3'b101)   ? InB :                     // LBI: Out = InB
                     (Oper[2:0] == 3'b110)   ? brt :                     // Reverse the bits
                     (shift_result | InB);                               // SLBI: Rs<<8 | I(zero ext.)
