@@ -24,7 +24,7 @@ module alu_control (opcode, extension, aluOp);
                     (opcode[1:0] == 2'b01)      ?   4'b0001 :   // SLL ALU Operation
                     (opcode[1:0] == 2'b10)      ?   4'b0010 :   // ROR ALU Operation     
                     4'b0011                     :               // SRL ALU Operation
-                    (opcode == 5'b1000X)        ?   4'b0100 :   // If immediate load/store instruction, add in ALU
+                    (opcode[4:1] == 4'b1000)    ?   4'b0100 :   // If immediate load/store instruction, add in ALU
                     (opcode == 5'b10011)        ?   4'b0100 :   // If STU instruction, add in ALU
                     // R Type instructions
                     (opcode == 5'b11001)        ?   4'b1110 :   // If BTR instruction
