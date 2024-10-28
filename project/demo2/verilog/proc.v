@@ -62,12 +62,12 @@ module proc (/*AUTOARG*/
    wire [15:0] readData_m, readData_wb;
 
    //Fetch
-   fetch fetch0(.clk(clk), .rst(rst), .control_hazard(control_hazard), .data_hazard(data_hazard),                                                                    // still a little confused on control_hazard/data_hazard/nop
+   fetch fetch0(.clk(clk), .rst(rst), .nop(control_hazard | data_hazard),                                                                    // still a little confused on control_hazard/data_hazard/nop
                .halt_sig(halt_m), .jump_imm_sig(jumpImm_m), .jump_sig(jump_m), .except_sig(exception), .br_contr_sig(br_contr), 
                .imm_jump_reg_val(read1Data_m), .extend_val(immExt_m),
                .instr(instruction_f), .output_clk(internal_clock), .PC_2(PC));
    
-   fetch_decode_latch iFDLATCH0(.clk(internal_clock), .rst(rst), .nop(control_hazard | data_hazard), .instruction_f(instruction_f), .instruction_d(instruction_d));  // still a little confused on control_hazard/data_hazard/nop
+   fetch_decode_latch iFDLATCH0(.clk(internal_clock), .rst(rst), .nop(control_hazard), .instruction_f(instruction_f), .instruction_d(instruction_d));  // still a little confused on control_hazard/data_hazard/nop
    
    // determine control signals based on opcode
    control iCONTROL0(.opcode(instruction_d[15:11]), .halt(halt_d), .jumpImm(jumpImm_d), .link(link_d), .regDst(regDst), .jump(jump_d), .branch(branch_d), .memRead(memRead_d), 

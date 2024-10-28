@@ -11,20 +11,24 @@ module decode_execute_latch(clk, rst, nop, instruction_d, instruction_e, read1Da
     output wire halt_e, link_e, memRead_e, memToReg_e, memWrite_e, aluSrc_e, jumpImm_e, jump_e;
     output wire [2:0] branch_e;
 
-    register iINSTRUCTION_LATCH_DE(.clk(clk), .rst(rst), .writeEn(~nop), .writeData(instruction_d), .readData(instruction_e));              // might remove nop depending on fetch logic
-    register iREAD1DATA_LATCH_DE(.clk(clk), .rst(rst), .writeEn(~nop), .writeData(read1Data_d), .readData(read1Data_e));
-    register iREAD2DATA_LATCH_DE(.clk(clk), .rst(rst), .writeEn(~nop), .writeData(read2Data_d), .readData(read2Data_e));
-    register iIMMEXT_LATCH_DE(.clk(clk), .rst(rst), .writeEn(~nop), .writeData(immExt_d), .readData(immExt_e));
+    wire [15:0] instruction_de_int;
 
-    register #(REGISTER_WIDTH = 1) iHALT_LATCH_DE(.clk(clk), .rst(rst), .writeEn(~nop), .writeData(halt_d), .readData(halt_e));
-    register #(REGISTER_WIDTH = 1) iLINK_LATCH_DE(.clk(clk), .rst(rst), .writeEn(~nop), .writeData(link_d), .readData(link_e));
-    register #(REGISTER_WIDTH = 1) iMEMREAD_LATCH_DE(.clk(clk), .rst(rst), .writeEn(~nop), .writeData(memRead_d), .readData(memRead_e));
-    register #(REGISTER_WIDTH = 1) iMEMTOREG_LATCH_DE(.clk(clk), .rst(rst), .writeEn(~nop), .writeData(memToReg_d), .readData(memToReg_e));
-    register #(REGISTER_WIDTH = 1) iMEMWRITE_LATCH_DE(.clk(clk), .rst(rst), .writeEn(~nop), .writeData(memWrite_d), .readData(memWrite_e));
-    register #(REGISTER_WIDTH = 1) iALUSRC_LATCH_DE(.clk(clk), .rst(rst), .writeEn(~nop), .writeData(aluSrc_d), .readData(aluSrc_e));
-    register #(REGISTER_WIDTH = 1) iJUMPIMM_LATCH_DE(.clk(clk), .rst(rst), .writeEn(~nop), .writeData(jumpImm_d), .readData(jumpImm_e));
-    register #(REGISTER_WIDTH = 1) iJUMP_LATCH_DE(.clk(clk), .rst(rst), .writeEn(~nop), .writeData(jump_d), .readData(jump_e));
+    register iINSTRUCTION_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1), .writeData(instruction_d), .readData(instruction_de_int));              // rchanged writeEn from ~nop to 1, unsure about it here due to other signals
+    assign instruction_e = (nop) ? 16'b0000_1000_0000_0000 : instruction_de_int;
 
-    register #(REGISTER_WIDTH = 3) iBRANCH_LATCH_DE(.clk(clk), .rst(rst), .writeEn(~nop), .writeData(branch_d), .readData(branch_e));
+    register iREAD1DATA_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1), .writeData(read1Data_d), .readData(read1Data_e));
+    register iREAD2DATA_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1), .writeData(read2Data_d), .readData(read2Data_e));
+    register iIMMEXT_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1), .writeData(immExt_d), .readData(immExt_e));
+
+    register #(REGISTER_WIDTH = 1) iHALT_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1), .writeData(halt_d), .readData(halt_e));
+    register #(REGISTER_WIDTH = 1) iLINK_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1), .writeData(link_d), .readData(link_e));
+    register #(REGISTER_WIDTH = 1) iMEMREAD_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1), .writeData(memRead_d), .readData(memRead_e));
+    register #(REGISTER_WIDTH = 1) iMEMTOREG_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1), .writeData(memToReg_d), .readData(memToReg_e));
+    register #(REGISTER_WIDTH = 1) iMEMWRITE_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1), .writeData(memWrite_d), .readData(memWrite_e));
+    register #(REGISTER_WIDTH = 1) iALUSRC_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1), .writeData(aluSrc_d), .readData(aluSrc_e));
+    register #(REGISTER_WIDTH = 1) iJUMPIMM_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1), .writeData(jumpImm_d), .readData(jumpImm_e));
+    register #(REGISTER_WIDTH = 1) iJUMP_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1), .writeData(jump_d), .readData(jump_e));
+
+    register #(REGISTER_WIDTH = 3) iBRANCH_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1), .writeData(branch_d), .readData(branch_e));
 
 endmodule
