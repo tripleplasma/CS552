@@ -29,7 +29,6 @@ module decode (/* TODO: Add appropriate input wires/output wires for your decode
     output wire        err;
     output wire [15:0] immExt;
     
-    
     // bypass register file
     regFile_bypass regFile0(
                          // output wires
