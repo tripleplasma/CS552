@@ -1,0 +1,190 @@
+# vsim -c proc_hier_pbench -lib __work -voptargs="+acc" -wlf dump.wlf -do "log -howmany -rec /* ; run -all" 
+# Start time: 19:34:22 on Oct 29,2024
+# //  ModelSim DE 10.7c Aug 17 2018Linux 5.15.0-124-generic
+# //
+# //  Copyright 1991-2018 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  ModelSim DE and its associated documentation contain trade
+# //  secrets and commercial or financial information that are the property of
+# //  Mentor Graphics Corporation and are privileged, confidential,
+# //  and exempt from disclosure under the Freedom of Information Act,
+# //  5 U.S.C. Section 552. Furthermore, this information
+# //  is prohibited from disclosure under the Trade Secrets Act,
+# //  18 U.S.C. Section 1905.
+# //
+# Loading __work.proc_hier_pbench
+# Loading __work.proc_hier
+# Loading __work.clkrst
+# Loading __work.proc
+# Loading __work.fetch
+# Loading __work.register
+# Loading __work.cla_16b
+# Loading __work.cla_4b
+# Loading __work.fullAdder_1b
+# Loading __work.xor2
+# Loading __work.nand2
+# Loading __work.not1
+# Loading __work.nor2
+# Loading __work.carry_4b
+# Loading __work.carry_1b
+# Loading __work.memory2c
+# Loading __work.fetch_decode_latch
+# Loading __work.hdu
+# Loading __work.control
+# Loading __work.decode
+# Loading __work.regFile_bypass
+# Loading __work.regFile
+# Loading __work.extension
+# Loading __work.decode_execute_latch
+# Loading __work.alu_control
+# Loading __work.execute
+# Loading __work.alu
+# Loading __work.shifter
+# Loading __work.left_shift_rot
+# Loading __work.right_shift_rot_log
+# Loading __work.overflow
+# Loading __work.br_control
+# Loading __work.execute_memory_latch
+# Loading __work.memory
+# Loading __work.memory_wb_latch
+# Loading __work.wb
+# Loading __work.dff
+# ** Warning: (vsim-3008) [CNNODP] - Component name (Instruction_f) is not on a downward path.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: verilog/proc_hier_pbench.v Line: 132
+# ** Error: (vsim-3043) Unresolved reference to 'Instruction_f' in DUT.Instruction_f.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: verilog/proc_hier_pbench.v Line: 132
+# ** Warning: (vsim-3008) [CNNODP] - Component name (PC_Out) is not on a downward path.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: verilog/proc_hier_pbench.v Line: 131
+# ** Error: (vsim-3043) Unresolved reference to 'PC_Out' in DUT.PC_Out.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: verilog/proc_hier_pbench.v Line: 131
+# ** Warning: (vsim-3008) [CNNODP] - Component name (DstwithJmout) is not on a downward path.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: verilog/proc_hier_pbench.v Line: 137
+# ** Error: (vsim-3043) Unresolved reference to 'DstwithJmout' in DUT.p0.DstwithJmout.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: verilog/proc_hier_pbench.v Line: 137
+# ** Warning: (vsim-3008) [CNNODP] - Component name (data1out) is not on a downward path.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: verilog/proc_hier_pbench.v Line: 149
+# ** Error: (vsim-3043) Unresolved reference to 'data1out' in DUT.p0.data1out.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: verilog/proc_hier_pbench.v Line: 149
+# ** Warning: (vsim-3008) [CNNODP] - Component name (data2out) is not on a downward path.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: verilog/proc_hier_pbench.v Line: 152
+# ** Error: (vsim-3043) Unresolved reference to 'data2out' in DUT.p0.data2out.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: verilog/proc_hier_pbench.v Line: 152
+# ** Warning: (vsim-3008) [CNNODP] - Component name (haltxout) is not on a downward path.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: verilog/proc_hier_pbench.v Line: 175
+# ** Error: (vsim-3043) Unresolved reference to 'haltxout' in DUT.p0.haltxout.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: verilog/proc_hier_pbench.v Line: 175
+# ** Warning: (vsim-3008) [CNNODP] - Component name (memRxout) is not on a downward path.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: verilog/proc_hier_pbench.v Line: 143
+# ** Error: (vsim-3043) Unresolved reference to 'memRxout' in DUT.p0.memRxout.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: verilog/proc_hier_pbench.v Line: 143
+# ** Warning: (vsim-3008) [CNNODP] - Component name (memWxout) is not on a downward path.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: verilog/proc_hier_pbench.v Line: 146
+# ** Error: (vsim-3043) Unresolved reference to 'memWxout' in DUT.p0.memWxout.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: verilog/proc_hier_pbench.v Line: 146
+# ** Warning: (vsim-3008) [CNNODP] - Component name (notdonem) is not on a downward path.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: verilog/proc_hier_pbench.v Line: 143
+# ** Error: (vsim-3043) Unresolved reference to 'notdonem' in DUT.p0.notdonem.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: verilog/proc_hier_pbench.v Line: 143
+# ** Warning: (vsim-3008) [CNNODP] - Component name (readData) is not on a downward path.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: verilog/proc_hier_pbench.v Line: 155
+# ** Error: (vsim-3043) Unresolved reference to 'readData' in DUT.p0.readData.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: verilog/proc_hier_pbench.v Line: 155
+# ** Warning: (vsim-3008) [CNNODP] - Component name (wData) is not on a downward path.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: verilog/proc_hier_pbench.v Line: 140
+# ** Error: (vsim-3043) Unresolved reference to 'wData' in DUT.p0.wData.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench File: verilog/proc_hier_pbench.v Line: 140
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iFDLATCH0/iINSTRUCTION_LATCH_FD File: verilog/fetch_decode_latch.v Line: 10
+# ** Warning: (vsim-3015) [PCDPC] - Port size (4) does not match connection size (3) for port 'ifIdReadRegister1'. The port definition is at: verilog/hdu.v(1).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iHDU_0 File: verilog/proc.v Line: 72
+# ** Warning: (vsim-3015) [PCDPC] - Port size (4) does not match connection size (3) for port 'ifIdReadRegister2'. The port definition is at: verilog/hdu.v(1).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iHDU_0 File: verilog/proc.v Line: 72
+# ** Warning: (vsim-3015) [PCDPC] - Port size (4) does not match connection size (3) for port 'ifIdWriteRegister'. The port definition is at: verilog/hdu.v(1).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iHDU_0 File: verilog/proc.v Line: 72
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iHDU_0/IdExWriteReg File: verilog/hdu.v Line: 20
+# ** Warning: (vsim-3015) [PCDPC] - Port size (16) does not match connection size (4) for port 'writeData'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iHDU_0/IdExWriteReg File: verilog/hdu.v Line: 20
+# ** Warning: (vsim-3015) [PCDPC] - Port size (16) does not match connection size (4) for port 'readData'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iHDU_0/IdExWriteReg File: verilog/hdu.v Line: 20
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iHDU_0/ExMemWriteReg File: verilog/hdu.v Line: 21
+# ** Warning: (vsim-3015) [PCDPC] - Port size (16) does not match connection size (4) for port 'writeData'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iHDU_0/ExMemWriteReg File: verilog/hdu.v Line: 21
+# ** Warning: (vsim-3015) [PCDPC] - Port size (16) does not match connection size (4) for port 'readData'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iHDU_0/ExMemWriteReg File: verilog/hdu.v Line: 21
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iHDU_0/MemWbWriteReg File: verilog/hdu.v Line: 22
+# ** Warning: (vsim-3015) [PCDPC] - Port size (16) does not match connection size (4) for port 'writeData'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iHDU_0/MemWbWriteReg File: verilog/hdu.v Line: 22
+# ** Warning: (vsim-3015) [PCDPC] - Port size (16) does not match connection size (4) for port 'readData'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iHDU_0/MemWbWriteReg File: verilog/hdu.v Line: 22
+# ** Warning: (vsim-2685) [TFMPC] - Too few port connections for 'iCONTROL0'.  Expected 15, found 14.
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iCONTROL0 File: verilog/proc.v Line: 76
+# ** Warning: (vsim-3722) verilog/proc.v(76): [TFMPC] - Missing connection for port 'invB'.
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iDELATCH0/iINSTRUCTION_LATCH_DE File: verilog/decode_execute_latch.v Line: 16
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iDELATCH0/iREAD1DATA_LATCH_DE File: verilog/decode_execute_latch.v Line: 19
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iDELATCH0/iREAD2DATA_LATCH_DE File: verilog/decode_execute_latch.v Line: 20
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iDELATCH0/iIMMEXT_LATCH_DE File: verilog/decode_execute_latch.v Line: 21
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iDELATCH0/iHALT_LATCH_DE File: verilog/decode_execute_latch.v Line: 23
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iDELATCH0/iLINK_LATCH_DE File: verilog/decode_execute_latch.v Line: 24
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iDELATCH0/iMEMREAD_LATCH_DE File: verilog/decode_execute_latch.v Line: 25
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iDELATCH0/iMEMTOREG_LATCH_DE File: verilog/decode_execute_latch.v Line: 26
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iDELATCH0/iMEMWRITE_LATCH_DE File: verilog/decode_execute_latch.v Line: 27
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iDELATCH0/iALUSRC_LATCH_DE File: verilog/decode_execute_latch.v Line: 28
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iDELATCH0/iJUMPIMM_LATCH_DE File: verilog/decode_execute_latch.v Line: 29
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iDELATCH0/iJUMP_LATCH_DE File: verilog/decode_execute_latch.v Line: 30
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iDELATCH0/iBRANCH_LATCH_DE1 File: verilog/decode_execute_latch.v Line: 32
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iDELATCH0/iBRANCH_LATCH_DE2 File: verilog/decode_execute_latch.v Line: 33
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iEMLATCH0/iHALT_LATCH_DE1 File: verilog/execute_memory_latch.v Line: 14
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iEMLATCH0/iHALT_LATCH_DE2 File: verilog/execute_memory_latch.v Line: 15
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iEMLATCH0/iHALT_LATCH_DE3 File: verilog/execute_memory_latch.v Line: 16
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iEMLATCH0/iHALT_LATCH_DE4 File: verilog/execute_memory_latch.v Line: 17
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iEMLATCH0/iHALT_LATCH_DE5 File: verilog/execute_memory_latch.v Line: 18
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iEMLATCH0/iHALT_LATCH_DE6 File: verilog/execute_memory_latch.v Line: 19
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iEMLATCH0/iHALT_LATCH_DE7 File: verilog/execute_memory_latch.v Line: 20
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iEMLATCH0/iINSTRUCTION_LATCH_DE File: verilog/execute_memory_latch.v Line: 22
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iEMLATCH0/iREAD1DATA_LATCH_DE File: verilog/execute_memory_latch.v Line: 23
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iEMLATCH0/iREAD2DATA_LATCH_DE File: verilog/execute_memory_latch.v Line: 24
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iEMLATCH0/iIMMEXT_LATCH_DE File: verilog/execute_memory_latch.v Line: 25
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iEMLATCH0/iBRANCH_LATCH_DE File: verilog/execute_memory_latch.v Line: 27
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iMWLATCH0/iINSTRUCTION_LATCH_DE File: verilog/memory_wb_latch.v Line: 11
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iMWLATCH0/iREAD1DATA_LATCH_DE File: verilog/memory_wb_latch.v Line: 12
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iMWLATCH0/iHALT_LATCH_DE File: verilog/memory_wb_latch.v Line: 14
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iMWLATCH0/iHALT_LATCH_DE1 File: verilog/memory_wb_latch.v Line: 15
+# ** Warning: (vsim-3015) [PCDPC] - Port size (1) does not match connection size (32) for port 'writeEn'. The port definition is at: verilog/register.v(5).
+#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0/iMWLATCH0/iBRANCH_LATCH_DE File: verilog/memory_wb_latch.v Line: 17
+# Error loading design
+# End time: 19:34:23 on Oct 29,2024, Elapsed time: 0:00:01
+# Errors: 11, Warnings: 57
