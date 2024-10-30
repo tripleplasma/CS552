@@ -109,7 +109,7 @@ module proc (/*AUTOARG*/
 
    memory memory0(.aluResult(aluOut_m), .writeData(read2Data_m), .memWrite(memWrite_m), .memRead(memRead_m), .halt(halt_m), .clk(internal_clock), .rst(rst), .readData(readData_m));
 
-   memory_wb_latch iMWLATCH0(.clk(internal_clock), .rst(rst), .readData_m(readData_m), .readData_wb(readData_wb), .aluOut_m(aluOut_m), .aluOut_wb(aluOut_wb), .memToReg_m(memToReg_m), .memToReg_wb(memToReg_wb)
+   memory_wb_latch iMWLATCH0(.clk(internal_clock), .rst(rst), .readData_m(readData_m), .readData_wb(readData_wb), .aluOut_m(aluOut_m), .aluOut_wb(aluOut_wb), .memToReg_m(memToReg_m), .memToReg_wb(memToReg_wb),
                               .link_m(link_m), .link_wb(link_wb), .writeRegSel_m(writeRegSel_m), .writeRegSel_wb(writeRegSel_wb));
 
    wb iWRITEBACK0(.readData(readData_wb), .addr(aluOut_wb), .nextPC(PC), .memToReg(memToReg_wb), .link(link_wb), .writeData(writeData));
