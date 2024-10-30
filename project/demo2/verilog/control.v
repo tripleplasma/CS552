@@ -4,10 +4,10 @@
    Filename        : control.v
    Description     : This is a module that handles all of the control signals.
 */
-module control(opcode, halt, jumpImm, link, regDst, jump, branch, memRead, memToReg, memWrite, aluSrc, regWrite, immExtSel, invB, exception);
+module control(opcode, halt, jumpImm, link, regDst, jump, branch, memRead, memToReg, memWrite, aluSrc, regWrite, immExtSel, exception);
 
     input [4:0] opcode;
-    output halt, jumpImm, link, jump, memRead, memToReg, memWrite, aluSrc, regWrite, invB, exception;
+    output halt, jumpImm, link, jump, memRead, memToReg, memWrite, aluSrc, regWrite, exception;
     output [1:0] regDst;
     output [2:0] branch;
     output [2:0] immExtSel;
@@ -43,8 +43,6 @@ module control(opcode, halt, jumpImm, link, regDst, jump, branch, memRead, memTo
                         (opcode == 5'b1_0010) ? 3'b010 : 
                         (opcode[4:1] == 4'b0101) ? 3'b000 :
                         3'b001;
-                        
-    assign invB = (opcode == 5'b0_1011) ? 1'b1 : 1'b0;
     
     assign exception = (opcode[4:2] == 3'b000) ? 1'b1 : 1'b0; // not active until final demo - comment out?
 

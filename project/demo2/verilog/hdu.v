@@ -17,8 +17,8 @@ module hdu (clk, rst, ifIdReadRegister1, ifIdReadRegister2, ifIdWriteRegister, o
 
     assign control_hazard = (opcode[4:2] == 3'b001 | opcode[4:2] == 3'b011) ? 1'b1 : 1'b0;
 
-    register IdExWriteReg(.clk(clk), .rst(rst), .writeEn(1), .writeData(ifIdWriteRegister), .readData(idExWriteRegister));
-    register ExMemWriteReg(.clk(clk), .rst(rst), .writeEn(1), .writeData(idExWriteRegister), .readData(exMemWriteRegister));
-    register MemWbWriteReg(.clk(clk), .rst(rst), .writeEn(1), .writeData(exMemWriteRegister), .readData(memWbWriteRegister));
+    register #(.REGISTER_WIDTH(4)) IdExWriteReg(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(ifIdWriteRegister), .readData(idExWriteRegister));
+    register #(.REGISTER_WIDTH(4)) ExMemWriteReg(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(idExWriteRegister), .readData(exMemWriteRegister));
+    register #(.REGISTER_WIDTH(4)) MemWbWriteReg(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(exMemWriteRegister), .readData(memWbWriteRegister));
 
 endmodule
