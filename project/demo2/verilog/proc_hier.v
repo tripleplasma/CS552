@@ -10,10 +10,8 @@ module proc_hier();
    wire                 clk;                    // From c0 of clkrst.v
    wire                 err;                    // From p0 of proc.v
    wire                 rst;                    // From c0 of clkrst.v
-
-   // Placeholders
-   wire PC_Out;
-   wire Instruction_f;
+   wire [15:0]          PC_Out;
+   wire [15:0]          Instruction_f;
 
    // End of automatics
    clkrst c0(/*AUTOINST*/
@@ -26,6 +24,8 @@ module proc_hier();
    proc p0(/*AUTOINST*/
            // Outputs
            .err                         (err),
+           .PC                          (PC_Out),
+           .instruction_f               (Instruction_f),
            // Inputs
            .clk                         (clk),
            .rst                         (rst));   
