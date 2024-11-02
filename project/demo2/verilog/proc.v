@@ -61,19 +61,58 @@ module proc (/*AUTOARG*/
    wire [15:0] readData, readData_wb;
 
    //Fetch
-   fetch fetch0(.clk(clk), .rst(rst), .nop(control_hazard | data_hazard),                                                                    // still a little confused on control_hazard/data_hazard/nop
-               .halt_sig(haltxout), .jump_imm_sig(jumpImm_m), .jump_sig(jump_m), .except_sig(exception), .br_contr_sig(br_contr), 
-               .imm_jump_reg_val(read1Data_m), .extend_val(immExt_m),
-               .instr(instruction_f), .output_clk(internal_clock), .PC_2(PC));
+   fetch fetch0(// Inputs
+               .clk(clk), 
+               .rst(rst), 
+               .nop(control_hazard | data_hazard),             // still a little confused on control_hazard/data_hazard/nop
+               .halt_sig(haltxout), 
+               .jump_imm_sig(jumpImm_m), 
+               .jump_sig(jump_m), 
+               .except_sig(exception), 
+               .br_contr_sig(br_contr), 
+               .imm_jump_reg_val(read1Data_m), 
+               .extend_val(immExt_m),
+               // Outputs
+               .instr(instruction_f), 
+               .output_clk(internal_clock), 
+               .PC_2(PC));
    
-   fetch_decode_latch iFDLATCH0(.clk(internal_clock), .rst(rst), .nop(control_hazard), .instruction_f(instruction_f), .instruction_d(instruction_d));  // still a little confused on control_hazard/data_hazard/nop
+   fetch_decode_latch iFDLATCH0(// Inputs
+                                 .clk(internal_clock), 
+                                 .rst(rst), 
+                                 .nop(control_hazard), 
+                                 .instruction_f(instruction_f), 
+                                 // Outputs
+                                 .instruction_d(instruction_d));  // still a little confused on control_hazard/data_hazard/nop
    
-   hdu iHDU_0(.clk(clk), .rst(rst), .ifIdReadRegister1({1'b0, instruction_d[10:8]}), .ifIdReadRegister2({1'b0, instruction_d[7:5]}), .ifIdWriteRegister({1'b0, writeRegSel_d}), 
-               .opcode(instruction_f[15:11]), .data_hazard(data_hazard), .control_hazard(control_hazard));
+   hdu iHDU_0(// Inputs
+               .clk(clk), 
+               .rst(rst), 
+               .ifIdReadRegister1({1'b0, instruction_d[10:8]}), 
+               .ifIdReadRegister2({1'b0, instruction_d[7:5]}), 
+               .ifIdWriteRegister({1'b0, writeRegSel_d}), 
+               .opcode(instruction_f[15:11]), 
+               // Outputs
+               .data_hazard(data_hazard), 
+               .control_hazard(control_hazard));
 
    // determine control signals based on opcode
-   control iCONTROL0(.opcode(instruction_d[15:11]), .halt(halt_d), .jumpImm(jumpImm_d), .link(link_d), .regDst(regDst), .jump(jump_d), .branch(branch_d), .memRead(memRead_d), 
-                    .memToReg(memToReg_d), .memWrite(memWrite_d), .aluSrc(aluSrc_d), .regWrite(regWrite), .immExtSel(immExtSel), .exception(exception));
+   control iCONTROL0(// Inputs
+                     .opcode(instruction_d[15:11]),
+                     // Outputs 
+                     .halt(halt_d), 
+                     .jumpImm(jumpImm_d), 
+                     .link(link_d), 
+                     .regDst(regDst), 
+                     .jump(jump_d), 
+                     .branch(branch_d), 
+                     .memRead(memRead_d), 
+                     .memToReg(memToReg_d), 
+                     .memWrite(memWrite_d), 
+                     .aluSrc(aluSrc_d), 
+                     .regWrite(regWrite), 
+                     .immExtSel(immExtSel), 
+                     .exception(exception));
    
    //----Want inside decode----
    assign writeRegSel_d = (regDst == 2'b00) ? instruction_d[4:2] :
@@ -84,34 +123,149 @@ module proc (/*AUTOARG*/
    // assign writeData = (link) ? PC + 2 : wbData;
    //----END----
 
-   decode decode0(.clk(internal_clock), .rst(rst), .read1RegSel(instruction_d[10:8]), .read2RegSel(instruction_d[7:5]), .writeregsel(DstwithJmout), .writedata(wData), 
-                  .write(regWrite), .imm_5(instruction_d[4:0]), .imm_8(instruction_d[7:0]), .imm_11(instruction_d[10:0]), .immExtSel(immExtSel), .read1Data(read1Data_d), 
-                  .read2Data(read2Data_d), .err(err_decode), .immExt(immExt_d));
+   decode decode0(// Inputs
+                  .clk(internal_clock), 
+                  .rst(rst), 
+                  .read1RegSel(instruction_d[10:8]), 
+                  .read2RegSel(instruction_d[7:5]), 
+                  .writeregsel(DstwithJmout), 
+                  .writedata(wData), 
+                  .write(regWrite), 
+                  .imm_5(instruction_d[4:0]), 
+                  .imm_8(instruction_d[7:0]), 
+                  .imm_11(instruction_d[10:0]), 
+                  .immExtSel(immExtSel), 
+                  // Outputs
+                  .read1Data(read1Data_d), 
+                  .read2Data(read2Data_d), 
+                  .err(err_decode), 
+                  .immExt(immExt_d));
 
-   decode_execute_latch iDELATCH0(.clk(internal_clock), .rst(rst), .nop(data_hazard), .instruction_d(instruction_d), .instruction_e(instruction_e), .read1Data_d(read1Data_d), 
-                                 .read1Data_e(read1Data_e), .read2Data_d(read2Data_d), .read2Data_e(read2Data_e), .immExt_d(immExt_d), .immExt_e(immExt_e), .aluSrc_d(aluSrc_d),
-                                 .aluSrc_e(aluSrc_e), .branch_d(branch_d), .branch_e(branch_e), .memRead_d(memRead_d), .memRead_e(memRead_e), .memToReg_d(memToReg_d),
-                                 .memToReg_e(memToReg_e), .memWrite_d(memWrite_d), .memWrite_e(memWrite_e), .halt_d(halt_d), .halt_e(halt_e), .link_d(link_d), .link_e(link_e),
-                                 .jumpImm_d(jumpImm_d), .jumpImm_e(jumpImm_e), .jump_d(jump_d), .jump_e(jump_e), .writeRegSel_d(writeRegSel_d), .writeRegSel_e(writeRegSel_e));
+   decode_execute_latch iDELATCH0(// Inputs 
+                                 .clk(internal_clock), 
+                                 .rst(rst), 
+                                 .nop(data_hazard), 
+                                 // Input followed by latched output
+                                 .instruction_d(instruction_d), 
+                                 .instruction_e(instruction_e), 
+                                 .read1Data_d(read1Data_d), 
+                                 .read1Data_e(read1Data_e), 
+                                 .read2Data_d(read2Data_d), 
+                                 .read2Data_e(read2Data_e), 
+                                 .immExt_d(immExt_d), 
+                                 .immExt_e(immExt_e), 
+                                 .aluSrc_d(aluSrc_d),
+                                 .aluSrc_e(aluSrc_e), 
+                                 .branch_d(branch_d), 
+                                 .branch_e(branch_e), 
+                                 .memRead_d(memRead_d), 
+                                 .memRead_e(memRead_e), 
+                                 .memToReg_d(memToReg_d),
+                                 .memToReg_e(memToReg_e), 
+                                 .memWrite_d(memWrite_d), 
+                                 .memWrite_e(memWrite_e), 
+                                 .halt_d(halt_d), 
+                                 .halt_e(halt_e), 
+                                 .link_d(link_d), 
+                                 .link_e(link_e),
+                                 .jumpImm_d(jumpImm_d), 
+                                 .jumpImm_e(jumpImm_e), 
+                                 .jump_d(jump_d), 
+                                 .jump_e(jump_e), 
+                                 .writeRegSel_d(writeRegSel_d), 
+                                 .writeRegSel_e(writeRegSel_e));
 
-   alu_control iCONTROL_ALU0(.opcode(instruction_e[15:11]), .extension(instruction_e[1:0]), .aluOp(aluSel));
+   alu_control iCONTROL_ALU0(// Inputs
+                              .opcode(instruction_e[15:11]), 
+                              .extension(instruction_e[1:0]), 
+                              // Outputs
+                              .aluOp(aluSel));
 
-   execute iEXECUTE0(.read1Data(read1Data_e), .read2Data(read2Data_e), .aluOp(aluSel), .aluSrc(aluSrc_e), .immExt(immExt_e), .aluOut(aluOut_e), 
-                     .zf(zero_flag), .sf(signed_flag), .of(overflow_flag), .cf(carry_flag));
+   execute iEXECUTE0(// Inputs
+                     .read1Data(read1Data_e), 
+                     .read2Data(read2Data_e), 
+                     .aluOp(aluSel), 
+                     .aluSrc(aluSrc_e), 
+                     .immExt(immExt_e), 
+                     // Outputs
+                     .aluOut(aluOut_e), 
+                     .zf(zero_flag), 
+                     .sf(signed_flag), 
+                     .of(overflow_flag), 
+                     .cf(carry_flag));
 
-   br_control iBRANCH_CONTROL0(.zf(zero_flag), .sf(signed_flag), .of(overflow_flag), .cf(carry_flag), .br_sig(branch_e), .br_contr_sig(br_contr));
+   br_control iBRANCH_CONTROL0(// Inputs
+                              .zf(zero_flag), 
+                              .sf(signed_flag), 
+                              .of(overflow_flag), 
+                              .cf(carry_flag), 
+                              .br_sig(branch_e), 
+                              // Outputs
+                              .br_contr_sig(br_contr));
 
-   execute_memory_latch iEMLATCH0(.clk(internal_clock), .rst(rst), .aluOut_e(aluOut_e), .aluOut_m(data1out), .read2Data_e(read2Data_e), .read2Data_m(data2out), 
-                                 .memRead_e(memRead_e), .memRead_m(MemRead), .memToReg_e(memToReg_e), .memToReg_m(memToReg_m), .memWrite_e(memWrite_e), .memWrite_m(MemWrite), 
-                                 .halt_e(halt_e), .halt_m(haltxout), .link_e(link_e), .link_m(link_m), .jumpImm_e(jumpImm_e), .jumpImm_m(jumpImm_m), .jump_e(jump_e), .jump_m(jump_m), 
-                                 .read1Data_e(read1Data_e), .read1Data_m(read1Data_m), .immExt_e(immExt_e), .immExt_m(immExt_m), .writeRegSel_e(writeRegSel_e), .writeRegSel_m(writeRegSel_m));
+   execute_memory_latch iEMLATCH0(// Inputs
+                                 .clk(internal_clock), 
+                                 .rst(rst), 
+                                 // Input followed by latched output
+                                 .aluOut_e(aluOut_e), 
+                                 .aluOut_m(data1out), 
+                                 .read2Data_e(read2Data_e), 
+                                 .read2Data_m(data2out), 
+                                 .memRead_e(memRead_e), 
+                                 .memRead_m(MemRead), 
+                                 .memToReg_e(memToReg_e), 
+                                 .memToReg_m(memToReg_m), 
+                                 .memWrite_e(memWrite_e), 
+                                 .memWrite_m(MemWrite), 
+                                 .halt_e(halt_e), 
+                                 .halt_m(haltxout), 
+                                 .link_e(link_e), 
+                                 .link_m(link_m), 
+                                 .jumpImm_e(jumpImm_e), 
+                                 .jumpImm_m(jumpImm_m), 
+                                 .jump_e(jump_e), 
+                                 .jump_m(jump_m), 
+                                 .read1Data_e(read1Data_e), 
+                                 .read1Data_m(read1Data_m), 
+                                 .immExt_e(immExt_e), 
+                                 .immExt_m(immExt_m), 
+                                 .writeRegSel_e(writeRegSel_e), 
+                                 .writeRegSel_m(writeRegSel_m));
 
-   memory memory0(.aluResult(data1out), .writeData(data2out), .memWrite(MemWrite), .memRead(MemRead), .halt(haltxout), .clk(internal_clock), .rst(rst), .readData(readData));
+   memory memory0(// Inputs
+                  .clk(internal_clock), 
+                  .rst(rst), 
+                  .aluResult(data1out), 
+                  .writeData(data2out), 
+                  .memWrite(MemWrite), 
+                  .memRead(MemRead), 
+                  .halt(haltxout), 
+                  // Outputs
+                  .readData(readData));
 
-   memory_wb_latch iMWLATCH0(.clk(internal_clock), .rst(rst), .readData_m(readData), .readData_wb(readData_wb), .aluOut_m(data1out), .aluOut_wb(aluOut_wb), .memToReg_m(memToReg_m), .memToReg_wb(memToReg_wb),
-                              .link_m(link_m), .link_wb(link_wb), .writeRegSel_m(writeRegSel_m), .writeRegSel_wb(DstwithJmout));
+   memory_wb_latch iMWLATCH0(// Inputs
+                              .clk(internal_clock), 
+                              .rst(rst), 
+                              // Input followed by latched output
+                              .readData_m(readData), 
+                              .readData_wb(readData_wb), 
+                              .aluOut_m(data1out), 
+                              .aluOut_wb(aluOut_wb), 
+                              .memToReg_m(memToReg_m), 
+                              .memToReg_wb(memToReg_wb),
+                              .link_m(link_m), 
+                              .link_wb(link_wb), 
+                              .writeRegSel_m(writeRegSel_m), 
+                              .writeRegSel_wb(DstwithJmout));
 
-   wb iWRITEBACK0(.readData(readData_wb), .addr(aluOut_wb), .nextPC(PC), .memToReg(memToReg_wb), .link(link_wb), .writeData(wData));
+   wb iWRITEBACK0(// Inputs
+                  .readData(readData_wb), 
+                  .addr(aluOut_wb), 
+                  .nextPC(PC), 
+                  .memToReg(memToReg_wb), 
+                  .link(link_wb), 
+                  // Outputs
+                  .writeData(wData));
    
 endmodule // proc
 `default_nettype wire
