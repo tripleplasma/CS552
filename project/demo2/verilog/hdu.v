@@ -10,9 +10,9 @@ module hdu (clk, rst, ifIdReadRegister1, ifIdReadRegister2, ifIdWriteRegister, o
     assign data_hazard = (idExWriteRegister == ifIdReadRegister1    |
                         idExWriteRegister == ifIdReadRegister2      |
                         exMemWriteRegister == ifIdReadRegister1 	|
-                        exMemWriteRegister == ifIdReadRegister2 	|
-                        memWbWriteRegister == ifIdReadRegister1 	|
-                        memWbWriteRegister == ifIdReadRegister2
+                        exMemWriteRegister == ifIdReadRegister2 	
+//                      memWbWriteRegister == ifIdReadRegister1 	|
+//                      memWbWriteRegister == ifIdReadRegister2
                         ) ? 1'b1 : 1'b0;
 
     assign control_hazard = (opcode[4:2] == 3'b001 | opcode[4:2] == 3'b011) ? 1'b1 : 1'b0;
