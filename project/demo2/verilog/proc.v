@@ -22,9 +22,6 @@ module proc (/*AUTOARG*/
    
    // As desribed in the homeworks, use the err signal to trap corner
    // cases that you think are illegal in your statemachines
-   
-   // Placeholders
-   wire notdonem = 1'b0;
 
    /* your code here -- should include instantiations of fetch, decode, execute, mem and wb modules */
    wire [15:0] instruction_d, instruction_e;
@@ -44,9 +41,9 @@ module proc (/*AUTOARG*/
    wire jumpImm_d, jumpImm_e, jumpImm_m;
    wire link_d, link_e, link_m, link_wb;
    wire jump_d, jump_e, jump_m;
-   wire memRead_d, memRead_e, memRxout;
+   wire memRead_d, memRead_e, MemRead;
    wire memToReg_d, memToReg_e, memToReg_m, memToReg_wb;
-   wire memWrite_d, memWrite_e, memWxout;
+   wire memWrite_d, memWrite_e, MemWrite;
    wire aluSrc_d, aluSrc_e;
    wire regWrite;
    wire exception;
@@ -105,11 +102,11 @@ module proc (/*AUTOARG*/
    br_control iBRANCH_CONTROL0(.zf(zero_flag), .sf(signed_flag), .of(overflow_flag), .cf(carry_flag), .br_sig(branch_e), .br_contr_sig(br_contr));
 
    execute_memory_latch iEMLATCH0(.clk(internal_clock), .rst(rst), .aluOut_e(aluOut_e), .aluOut_m(data1out), .read2Data_e(read2Data_e), .read2Data_m(data2out), 
-                                 .memRead_e(memRead_e), .memRead_m(memRxout), .memToReg_e(memToReg_e), .memToReg_m(memToReg_m), .memWrite_e(memWrite_e), .memWrite_m(memWxout), 
+                                 .memRead_e(memRead_e), .memRead_m(MemRead), .memToReg_e(memToReg_e), .memToReg_m(memToReg_m), .memWrite_e(memWrite_e), .memWrite_m(MemWrite), 
                                  .halt_e(halt_e), .halt_m(haltxout), .link_e(link_e), .link_m(link_m), .jumpImm_e(jumpImm_e), .jumpImm_m(jumpImm_m), .jump_e(jump_e), .jump_m(jump_m), 
                                  .read1Data_e(read1Data_e), .read1Data_m(read1Data_m), .immExt_e(immExt_e), .immExt_m(immExt_m), .writeRegSel_e(writeRegSel_e), .writeRegSel_m(writeRegSel_m));
 
-   memory memory0(.aluResult(data1out), .writeData(data2out), .memWrite(memWxout), .memRead(memRxout), .halt(haltxout), .clk(internal_clock), .rst(rst), .readData(readData));
+   memory memory0(.aluResult(data1out), .writeData(data2out), .memWrite(MemWrite), .memRead(MemRead), .halt(haltxout), .clk(internal_clock), .rst(rst), .readData(readData));
 
    memory_wb_latch iMWLATCH0(.clk(internal_clock), .rst(rst), .readData_m(readData), .readData_wb(readData_wb), .aluOut_m(data1out), .aluOut_wb(aluOut_wb), .memToReg_m(memToReg_m), .memToReg_wb(memToReg_wb),
                               .link_m(link_m), .link_wb(link_wb), .writeRegSel_m(writeRegSel_m), .writeRegSel_wb(DstwithJmout));
