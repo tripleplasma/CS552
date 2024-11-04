@@ -45,7 +45,7 @@ module proc (/*AUTOARG*/
    wire memToReg_d, memToReg_e, memToReg_m, memToReg_wb;
    wire memWrite_d, memWrite_e, MemWrite;
    wire aluSrc_d, aluSrc_e;
-   wire regWrite;
+   wire regWrite_d, regWrite_e, regWrite_m, regWrite_wb;
    wire exception_d, exception_e, exception_m, exception_wb;
    wire br_contr;
    wire internal_clock;
@@ -118,7 +118,7 @@ module proc (/*AUTOARG*/
                      .memToReg(memToReg_d), 
                      .memWrite(memWrite_d), 
                      .aluSrc(aluSrc_d), 
-                     .regWrite(regWrite), 
+                     .regWrite(regWrite_d), 
                      .immExtSel(immExtSel), 
                      .exception(exception_d));
    
@@ -138,7 +138,7 @@ module proc (/*AUTOARG*/
                   .read2RegSel(instruction_d[7:5]), 
                   .writeregsel(DstwithJmout), 
                   .writedata(writeData), 
-                  .write(regWrite), 
+                  .write(regWrite_wb), 
                   .imm_5(instruction_d[4:0]), 
                   .imm_8(instruction_d[7:0]), 
                   .imm_11(instruction_d[10:0]), 
@@ -183,7 +183,9 @@ module proc (/*AUTOARG*/
                                  .writeRegSel_d(writeRegSel_d), 
                                  .writeRegSel_e(writeRegSel_e),
                                  .exception_d(exception_d),
-                                 .exception_e(exception_e));
+                                 .exception_e(exception_e),
+                                 .regWrite_d(regWrite_d),
+                                 .regWrite_e(regWrite_e));
 
    alu_control iCONTROL_ALU0( // inputs
                               .opcode(instruction_e[15:11]), 
@@ -248,7 +250,9 @@ module proc (/*AUTOARG*/
                                  .writeRegSel_e(writeRegSel_e), 
                                  .writeRegSel_m(writeRegSel_m),
                                  .exception_e(exception_e),
-                                 .exception_m(exception_m));
+                                 .exception_m(exception_m),
+                                 .regWrite_e(regWrite_e),
+                                 .regWrite_m(regWrite_m));
 
    memory memory0(// inputs
                   .clk(internal_clock), 
@@ -278,7 +282,9 @@ module proc (/*AUTOARG*/
                               .writeRegSel_m(writeRegSel_m), 
                               .writeRegSel_wb(DstwithJmout),
                               .exception_m(exception_m),
-                              .exception_wb(exception_wb));
+                              .exception_wb(exception_wb),
+                              .regWrite_m(regWrite_m),
+                              .regWrite_wb(regWrite_wb));
 
    wb iWRITEBACK0(// inputs
                   .readData(readData_wb), 
