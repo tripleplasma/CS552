@@ -19,7 +19,8 @@ module proc (/*AUTOARG*/
 
    // OR all the err ouputs for every sub-module and assign it as this
    // err output
-   
+   assign err = err_decode;
+
    // As desribed in the homeworks, use the err signal to trap corner
    // cases that you think are illegal in your statemachines
 
@@ -31,7 +32,8 @@ module proc (/*AUTOARG*/
    wire [15:0] read2Data_d, read2Data_e, data2out;
    wire err_decode;
    wire [15:0] immExt_d, immExt_e, immExt_m;
-   wire [3:0] aluSel;   // change bounds, probably made this too big
+   wire [3:0] aluSel;
+   wire [15:0] PC, PC_d, PC_e, PC_m, PC_wb;
    
    // hazard signals
    wire control_hazard, data_hazard;
@@ -47,7 +49,7 @@ module proc (/*AUTOARG*/
    wire aluSrc_d, aluSrc_e;
    wire regWrite_d, regWrite_e, regWrite_m, regWrite_wb;
    wire exception;
-   wire br_contr;
+   wire br_contr_e, br_contr_m;
    wire internal_clock;
    wire [2:0] branch_d, branch_e;
    wire [1:0] regDst;
@@ -69,7 +71,7 @@ module proc (/*AUTOARG*/
                .jump_imm_sig(jumpImm_m), 
                .jump_sig(jump_m), 
                .except_sig(exception), 
-               .br_contr_sig(br_contr), 
+               .br_contr_sig(br_contr_m), 
                .imm_jump_reg_val(read1Data_m), 
                .extend_val(immExt_m),
                // Outputs
@@ -77,15 +79,17 @@ module proc (/*AUTOARG*/
                .output_clk(internal_clock), 
                .PC_2(PC));
    
-   fetch_decode_latch iFDLATCH0(// Inputs
+   fetch_decode_latch iFDLATCH0( // Inputs
                                  .clk(internal_clock), 
                                  .rst(rst), 
                                  .nop(control_hazard), 
+                                 // input followed by latched output
+                                 .PC_f(PC),
+                                 .PC_d(PC_d),
                                  .instruction_f(instruction_f), 
-                                 // Outputs
                                  .instruction_d(instruction_d));  // still a little confused on control_hazard/data_hazard/nop
    
-   hdu iHDU_0(// Inputs
+   hdu iHDU_0( // Inputs
                .clk(clk), 
                .rst(rst), 
                .ifIdReadRegister1({1'b0, instruction_d[10:8]}), 
@@ -146,6 +150,8 @@ module proc (/*AUTOARG*/
                                  .rst(rst), 
                                  .nop(data_hazard), 
                                  // Input followed by latched output
+                                 .PC_d(PC_d),
+                                 .PC_e(PC_e),
                                  .instruction_d(instruction_d), 
                                  .instruction_e(instruction_e), 
                                  .read1Data_d(read1Data_d), 
@@ -203,12 +209,14 @@ module proc (/*AUTOARG*/
                               .cf(carry_flag), 
                               .br_sig(branch_e), 
                               // Outputs
-                              .br_contr_sig(br_contr));
+                              .br_contr_sig(br_contr_e));
 
    execute_memory_latch iEMLATCH0(// Inputs
                                  .clk(internal_clock), 
                                  .rst(rst), 
                                  // Input followed by latched output
+                                 .PC_e(PC_e),
+                                 .PC_m(PC_m),
                                  .aluOut_e(aluOut_e), 
                                  .aluOut_m(data1out), 
                                  .read2Data_e(read2Data_e), 
@@ -234,7 +242,9 @@ module proc (/*AUTOARG*/
                                  .writeRegSel_e(writeRegSel_e), 
                                  .writeRegSel_m(writeRegSel_m),
                                  .regWrite_e(regWrite_e),
-                                 .regWrite_m(regWrite_m));
+                                 .regWrite_m(regWrite_m),
+                                 .br_contr_e(br_contr_e),
+                                 .br_contr_m(br_contr_m));
 
    memory memory0(// Inputs
                   .clk(internal_clock), 
@@ -251,6 +261,8 @@ module proc (/*AUTOARG*/
                               .clk(internal_clock), 
                               .rst(rst), 
                               // Input followed by latched output
+                              .PC_m(PC_m),
+                              .PC_wb(PC_wb),
                               .readData_m(readData), 
                               .readData_wb(readData_wb), 
                               .aluOut_m(data1out), 
@@ -267,7 +279,7 @@ module proc (/*AUTOARG*/
    wb iWRITEBACK0(// Inputs
                   .readData(readData_wb), 
                   .addr(aluOut_wb), 
-                  .nextPC(PC), 
+                  .nextPC(PC_wb), 
                   .memToReg(memToReg_wb), 
                   .link(link_wb), 
                   // Outputs
