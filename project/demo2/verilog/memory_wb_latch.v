@@ -1,13 +1,14 @@
-module memory_wb_latch(clk, rst, readData_m, readData_wb, aluOut_m, aluOut_wb, memToReg_m, memToReg_wb, link_m, link_wb, writeRegSel_m, writeRegSel_wb, exception_m, exception_wb, regWrite_m, regWrite_wb);
+module memory_wb_latch(clk, rst, PC_m, PC_wb, readData_m, readData_wb, aluOut_m, aluOut_wb, memToReg_m, memToReg_wb, link_m, link_wb, writeRegSel_m, writeRegSel_wb, exception_m, exception_wb, regWrite_m, regWrite_wb);
 
     input wire clk, rst;
-    input wire [15:0] readData_m, aluOut_m;
+    input wire [15:0] PC_m, readData_m, aluOut_m;
     input wire memToReg_m, link_m, exception_m, regWrite_m;
     input wire [2:0] writeRegSel_m;
-    output wire [15:0] readData_wb, aluOut_wb;
+    output wire [15:0] PC_wb, readData_wb, aluOut_wb;
     output wire memToReg_wb, link_wb, exception_wb, regWrite_wb;
     output wire [2:0] writeRegSel_wb;
 
+    register iPC_LATCH_MW(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(PC_m), .readData(PC_wb));
     register iREADDATA_LATCH_MW(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(readData_m), .readData(readData_wb));  // use ~nop for writeEn?
     register iALUOUT_LATCH_MW(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(aluOut_m), .readData(aluOut_wb));
     
