@@ -18,7 +18,7 @@ module control(opcode, halt, jumpImm, link, regDst, jump, branch, memRead, memTo
    
     assign link = (opcode[4:1] == 4'b0011) ? 1'b1 : 1'b0;
    
-    assign regDst = (opcode[4:1] == 4'b0011) ? 2'b11 : 
+    assign regDst = (opcode[4:1] == 4'b0011 | opcode[4:2] == 3'b000) ? 2'b11 : 
                     (opcode[4:1] == 4'b1001 | opcode == 5'b1_1000) ? 2'b10 : 
                     (opcode[4:2] == 3'b010 | opcode[4:2] == 3'b101 | opcode == 5'b1_0001) ? 2'b01 :
                     2'b00;
@@ -44,6 +44,6 @@ module control(opcode, halt, jumpImm, link, regDst, jump, branch, memRead, memTo
                         (opcode[4:1] == 4'b0101) ? 3'b000 :
                         3'b001;
     
-    assign exception = (opcode[4:2] == 3'b000) ? 1'b1 : 1'b0; // not active until final demo - comment out?
+    assign exception = (opcode[4:1] == 4'b0001) ? 1'b1 : 1'b0; // not active until final demo - comment out?
 
 endmodule

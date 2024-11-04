@@ -26,7 +26,7 @@ module proc (/*AUTOARG*/
    /* your code here -- should include instantiations of fetch, decode, execute, mem and wb modules */
    wire [15:0] instruction_d, instruction_e;
    wire [2:0] writeRegSel_d, writeRegSel_e, writeRegSel_m, DstwithJmout;
-   wire [15:0] wData;
+   wire [15:0] wData, writeData;
    wire [15:0] read1Data_d, read1Data_e, read1Data_m;
    wire [15:0] read2Data_d, read2Data_e, data2out;
    wire err_decode;
@@ -46,7 +46,7 @@ module proc (/*AUTOARG*/
    wire memWrite_d, memWrite_e, MemWrite;
    wire aluSrc_d, aluSrc_e;
    wire regWrite;
-   wire exception;
+   wire exception_d, exception_e, exception_m, exception_wb;
    wire br_contr;
    wire internal_clock;
    wire [2:0] branch_d, branch_e;
@@ -68,7 +68,7 @@ module proc (/*AUTOARG*/
                .halt_sig(haltxout), 
                .jump_imm_sig(jumpImm_m), 
                .jump_sig(jump_m), 
-               .except_sig(exception), 
+               .except_sig(exception_wb), 
                .br_contr_sig(br_contr), 
                .imm_jump_reg_val(read1Data_m), 
                .extend_val(immExt_m),
@@ -120,7 +120,7 @@ module proc (/*AUTOARG*/
                      .aluSrc(aluSrc_d), 
                      .regWrite(regWrite), 
                      .immExtSel(immExtSel), 
-                     .exception(exception));
+                     .exception(exception_d));
    
    //----Want inside decode----
    assign writeRegSel_d = (regDst == 2'b00) ? instruction_d[4:2] :
@@ -137,7 +137,7 @@ module proc (/*AUTOARG*/
                   .read1RegSel(instruction_d[10:8]), 
                   .read2RegSel(instruction_d[7:5]), 
                   .writeregsel(DstwithJmout), 
-                  .writedata(wData), 
+                  .writedata(writeData), 
                   .write(regWrite), 
                   .imm_5(instruction_d[4:0]), 
                   .imm_8(instruction_d[7:0]), 
@@ -181,9 +181,15 @@ module proc (/*AUTOARG*/
                                  .jump_d(jump_d), 
                                  .jump_e(jump_e), 
                                  .writeRegSel_d(writeRegSel_d), 
-                                 .writeRegSel_e(writeRegSel_e));
+                                 .writeRegSel_e(writeRegSel_e),
+                                 .exception_d(exception_d),
+                                 .exception_e(exception_e));
 
-   alu_control iCONTROL_ALU0(.opcode(instruction_e[15:11]), .extension(instruction_e[1:0]), .aluOp(aluSel));
+   alu_control iCONTROL_ALU0( // inputs
+                              .opcode(instruction_e[15:11]), 
+                              .extension(instruction_e[1:0]), 
+                              // outputs
+                              .aluOp(aluSel));
 
    execute iEXECUTE0(// inputs
                      .read1Data(read1Data_e), 
@@ -240,7 +246,9 @@ module proc (/*AUTOARG*/
                                  .immExt_e(immExt_e), 
                                  .immExt_m(immExt_m), 
                                  .writeRegSel_e(writeRegSel_e), 
-                                 .writeRegSel_m(writeRegSel_m));
+                                 .writeRegSel_m(writeRegSel_m),
+                                 .exception_e(exception_e),
+                                 .exception_m(exception_m));
 
    memory memory0(// inputs
                   .clk(internal_clock), 
@@ -255,20 +263,22 @@ module proc (/*AUTOARG*/
                   // outputs
                   .readData(readData));
 
-   memory_wb_latch iMWLATCH0(// inputs
-                           .clk(internal_clock), 
-                           .rst(rst), 
-                           // input followed by latched output
-                           .readData_m(readData), 
-                           .readData_wb(readData_wb), 
-                           .aluOut_m(data1out), 
-                           .aluOut_wb(aluOut_wb), 
-                           .memToReg_m(memToReg_m), 
-                           .memToReg_wb(memToReg_wb), 
-                           .link_m(link_m), 
-                           .link_wb(link_wb), 
-                           .writeRegSel_m(writeRegSel_m), 
-                           .writeRegSel_wb(DstwithJmout));
+   memory_wb_latch iMWLATCH0( // inputs
+                              .clk(internal_clock), 
+                              .rst(rst), 
+                              // input followed by latched output
+                              .readData_m(readData), 
+                              .readData_wb(readData_wb), 
+                              .aluOut_m(data1out), 
+                              .aluOut_wb(aluOut_wb), 
+                              .memToReg_m(memToReg_m), 
+                              .memToReg_wb(memToReg_wb), 
+                              .link_m(link_m), 
+                              .link_wb(link_wb), 
+                              .writeRegSel_m(writeRegSel_m), 
+                              .writeRegSel_wb(DstwithJmout),
+                              .exception_m(exception_m),
+                              .exception_wb(exception_wb));
 
    wb iWRITEBACK0(// inputs
                   .readData(readData_wb), 
@@ -276,6 +286,7 @@ module proc (/*AUTOARG*/
                   .nextPC(PC), 
                   .memToReg(memToReg_wb), 
                   .link(link_wb), 
+                  .exception(exception_wb),
                   // outputs
                   .writeData(wData));
    

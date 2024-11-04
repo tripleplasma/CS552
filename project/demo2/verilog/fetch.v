@@ -53,8 +53,11 @@ module fetch ( clk, rst, nop,
    //output_clk is for managing the Halt instruction
    assign output_clk = halt_sig ? 1'b0 : clk;
    // assign nextPC = rst ? 16'b0 : (except_sig ? 16'h02 : addr_pre_exception);
-   assign nextPC = (rst) ? 16'b0 : (nop) ? pcCurrent : addr_pre_exception;
-   // assign EPC = except_sig ? PC_2 : EPC;
+   assign nextPC =   (rst) ? 16'b0 : 
+                     (except_sig) ? 16'h02 : 
+                     (nop) ? pcCurrent : 
+                     addr_pre_exception;
+   assign EPC = except_sig ? PC_2 : EPC;
 
    memory2c instr_mem(.data_out(instr_int), .data_in(16'b0), .addr(pcCurrent), .enable(1'b1), .wr(1'b0), .createdump(1'b0), .clk(output_clk), .rst(rst));
    // assign instr = (nop) ? 16'b0000_1000_0000_0000 : instr_int;
