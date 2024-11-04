@@ -12,14 +12,11 @@ module proc (/*AUTOARG*/
    input wire clk;
    input wire rst;
 
-   output reg err;
+   // Can't use assign with reg - output reg err;
+   output wire err;
    output wire [15:0] PC, instruction_f;
 
    // None of the above lines can be modified
-
-   // OR all the err ouputs for every sub-module and assign it as this
-   // err output
-   assign err = err_decode;
 
    // As desribed in the homeworks, use the err signal to trap corner
    // cases that you think are illegal in your statemachines
@@ -33,7 +30,11 @@ module proc (/*AUTOARG*/
    wire err_decode;
    wire [15:0] immExt_d, immExt_e, immExt_m;
    wire [3:0] aluSel;
-   wire [15:0] PC, PC_d, PC_e, PC_m, PC_wb;
+   wire [15:0] PC_d, PC_e, PC_m, PC_wb;
+
+   // OR all the err ouputs for every sub-module and assign it as this
+   // err output
+   assign err = err_decode;
    
    // hazard signals
    wire control_hazard, data_hazard;
@@ -47,7 +48,7 @@ module proc (/*AUTOARG*/
    wire memToReg_d, memToReg_e, memToReg_m, memToReg_wb;
    wire memWrite_d, memWrite_e, MemWrite;
    wire aluSrc_d, aluSrc_e;
-   wire regWrite_d, regWrite_e, regWrite_m, regWrite_wb;
+   wire regWrite, regWrite_e, regWrite_m, regWrite_wb;
    wire exception;
    wire br_contr_e, br_contr_m;
    wire internal_clock;
@@ -114,7 +115,7 @@ module proc (/*AUTOARG*/
                      .memToReg(memToReg_d), 
                      .memWrite(memWrite_d), 
                      .aluSrc(aluSrc_d), 
-                     .regWrite(regWrite_d), 
+                     .regWrite(regWrite), 
                      .immExtSel(immExtSel), 
                      .exception(exception));
    
@@ -180,7 +181,7 @@ module proc (/*AUTOARG*/
                                  .jump_e(jump_e), 
                                  .writeRegSel_d(writeRegSel_d), 
                                  .writeRegSel_e(writeRegSel_e),
-                                 .regWrite_d(regWrite_d),
+                                 .regWrite_d(regWrite),
                                  .regWrite_e(regWrite_e));
 
    alu_control iCONTROL_ALU0(// Inputs
