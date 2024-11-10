@@ -9,6 +9,6 @@ module fetch_decode_latch(clk, rst, nop, PC_f, PC_d, instruction_f, instruction_
 
     register iPC_LATCH_FD(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(PC_f), .readData(PC_d));
     register iINSTRUCTION_LATCH_FD(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(instruction_f), .readData(instruction_fd_int));
-    assign instruction_f = (nop) ? 16'b0000_1000_0000_0000 : instruction_fd_int;
+    assign instruction_d = (nop) ? 16'b0000_1000_0000_0000 : instruction_fd_int;
 
 endmodule

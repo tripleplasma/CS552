@@ -7,13 +7,11 @@ module hdu (clk, rst, ifIdReadRegister1, ifIdReadRegister2, ifIdWriteRegister, o
 
     wire [3:0] idExWriteRegister, exMemWriteRegister, memWbWriteRegister;
 
-    assign data_hazard = (idExWriteRegister == ifIdReadRegister1    |
-                        idExWriteRegister == ifIdReadRegister2      |
-                        exMemWriteRegister == ifIdReadRegister1 	|
-                        exMemWriteRegister == ifIdReadRegister2 	|
-                        memWbWriteRegister == ifIdReadRegister1 	|
-                        memWbWriteRegister == ifIdReadRegister2
-                        ) ? 1'b1 : 1'b0;
+    // assign data_hazard = (rst != 1 & 
+    //                     ((^idExWriteRegister !== 1'bx & idExWriteRegister !== 16'h0000) & (idExWriteRegister == ifIdReadRegister1 | idExWriteRegister == ifIdReadRegister2))   |
+    //                     ((^exMemWriteRegister !== 1'bx & exMemWriteRegister !== 16'h0000) & (exMemWriteRegister == ifIdReadRegister1 | exMemWriteRegister == ifIdReadRegister2)) 	|
+    //                     ((^memWbWriteRegister !== 1'bx & memWbWriteRegister !== 16'h0000) & (memWbWriteRegister == ifIdReadRegister1 | memWbWriteRegister == ifIdReadRegister2))) ? 1'b1 : 1'b0;
+    assign data_hazard = 1'b0;
 
     assign control_hazard = (opcode[4:2] == 3'b001 | opcode[4:2] == 3'b011) ? 1'b1 : 1'b0;
 

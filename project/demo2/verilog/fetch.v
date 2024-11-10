@@ -56,7 +56,7 @@ module fetch ( clk, rst, nop,
    assign nextPC = (rst) ? 16'b0 : (nop) ? pcCurrent : addr_pre_exception;
    // assign EPC = except_sig ? PC_2 : EPC;
 
-   memory2c instr_mem(.data_out(instr_int), .data_in(16'b0), .addr(pcCurrent), .enable(1'b1), .wr(1'b0), .createdump(1'b0), .clk(output_clk), .rst(rst));
+   memory2c instr_mem(.data_out(instr), .data_in(16'b0), .addr(pcCurrent), .enable(1'b1), .wr(1'b0), .createdump(1'b0), .clk(output_clk), .rst(rst));
    // assign instr = (nop) ? 16'b0000_1000_0000_0000 : instr_int;
 
 endmodule

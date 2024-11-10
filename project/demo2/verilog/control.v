@@ -4,15 +4,16 @@
    Filename        : control.v
    Description     : This is a module that handles all of the control signals.
 */
-module control(opcode, halt, jumpImm, link, regDst, jump, branch, memRead, memToReg, memWrite, aluSrc, regWrite, immExtSel, exception);
+module control(instruction_d, opcode, halt, jumpImm, link, regDst, jump, branch, memRead, memToReg, memWrite, aluSrc, regWrite, immExtSel, exception);
 
+    input [15:0] instruction_d;
     input [4:0] opcode;
     output halt, jumpImm, link, jump, memRead, memToReg, memWrite, aluSrc, regWrite, exception;
     output [1:0] regDst;
     output [2:0] branch;
     output [2:0] immExtSel;
    
-    assign halt = (opcode == 5'b0_0000) ? 1'b1 : 1'b0;
+    assign halt = (instruction_d != 16'h0000 & opcode == 5'b0_0000) ? 1'b1 : 1'b0; // need to fix, don't think instruction_d != 16'h0000 is going to work
    
     assign jumpImm = (opcode[4:2] == 3'b001 & opcode[0] == 1'b1) ? 1'b1 : 1'b0;
    

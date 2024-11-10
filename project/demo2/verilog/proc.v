@@ -103,6 +103,7 @@ module proc (/*AUTOARG*/
 
    // determine control signals based on opcode
    control iCONTROL0(// Inputs
+                     .instruction_d(instruction_d),
                      .opcode(instruction_d[15:11]),
                      // Outputs 
                      .halt(halt_d), 

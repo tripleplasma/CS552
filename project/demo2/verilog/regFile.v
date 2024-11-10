@@ -56,6 +56,6 @@ module regFile (
     assign read2Data = reg_out[read2RegSel];
 
     // set err if any of the inputs are unknown
-    assign err = (^read1RegSel === 1'bx) | (^read2RegSel === 1'bx) | (^writeRegSel === 1'bx) | (^writeData === 1'bx) | (writeEn === 1'bx);
+    assign err = (rst != 1'b1) & ((^read1RegSel === 1'bx) | (^read2RegSel === 1'bx) | (^writeRegSel === 1'bx) | (^writeData === 1'bx) | (writeEn === 1'bx));
 
 endmodule
