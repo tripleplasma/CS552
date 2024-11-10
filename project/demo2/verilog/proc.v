@@ -22,6 +22,7 @@ module proc (/*AUTOARG*/
    // cases that you think are illegal in your statemachines
 
    /* your code here -- should include instantiations of fetch, decode, execute, mem and wb modules */
+   wire rst_d;
    wire [15:0] instruction_d, instruction_e;
    wire [2:0] writeRegSel_d, writeRegSel_e, writeRegSel_m, DstwithJmout;
    wire [15:0] wData;
@@ -40,7 +41,7 @@ module proc (/*AUTOARG*/
    wire control_hazard, data_hazard;
 
    // control signals
-   wire halt_d, halt_e, haltxout;
+   wire halt_d, halt_e, halt_m, haltxout;
    wire jumpImm_d, jumpImm_e, jumpImm_m;
    wire link_d, link_e, link_m, link_wb;
    wire jump_d, jump_e, jump_m;
@@ -85,13 +86,14 @@ module proc (/*AUTOARG*/
                                  .rst(rst), 
                                  .nop(control_hazard), 
                                  // input followed by latched output
+                                 .rst_d(rst_d),
                                  .PC_f(PC),
                                  .PC_d(PC_d),
                                  .instruction_f(instruction_f), 
                                  .instruction_d(instruction_d));  // still a little confused on control_hazard/data_hazard/nop
    
    hdu iHDU_0( // Inputs
-               .clk(clk), 
+               .clk(internal_clock), 
                .rst(rst), 
                .ifIdReadRegister1({1'b0, instruction_d[10:8]}), 
                .ifIdReadRegister2({1'b0, instruction_d[7:5]}), 
@@ -103,7 +105,7 @@ module proc (/*AUTOARG*/
 
    // determine control signals based on opcode
    control iCONTROL0(// Inputs
-                     .instruction_d(instruction_d),
+                     .rst_d(rst_d),
                      .opcode(instruction_d[15:11]),
                      // Outputs 
                      .halt(halt_d), 
@@ -230,7 +232,7 @@ module proc (/*AUTOARG*/
                                  .memWrite_e(memWrite_e), 
                                  .memWrite_m(MemWrite), 
                                  .halt_e(halt_e), 
-                                 .halt_m(haltxout), 
+                                 .halt_m(halt_m), 
                                  .link_e(link_e), 
                                  .link_m(link_m), 
                                  .jumpImm_e(jumpImm_e), 
@@ -255,7 +257,7 @@ module proc (/*AUTOARG*/
                   .writeData(data2out), 
                   .memWrite(MemWrite), 
                   .memRead(MemRead), 
-                  .halt(haltxout), 
+                  .halt(halt_m), 
                   // Outputs
                   .readData(readData));
 
@@ -276,7 +278,9 @@ module proc (/*AUTOARG*/
                               .writeRegSel_m(writeRegSel_m), 
                               .writeRegSel_wb(DstwithJmout),
                               .regWrite_m(regWrite_m),
-                              .regWrite_wb(regWrite_wb));
+                              .regWrite_wb(regWrite_wb),
+                              .halt_m(halt_m),
+                              .halt_wb(haltxout));
 
    wb iWRITEBACK0(// Inputs
                   .readData(readData_wb), 

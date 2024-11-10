@@ -1,4 +1,4 @@
-/* Filename: register.sv
+/* Filename: register.v
  * Description: A variable-width register used by the register file and created using D-Flip Flops.
  * Author: Khiem Vu
  */
