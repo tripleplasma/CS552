@@ -49,5 +49,5 @@ module decode_execute_latch(clk, rst, nop, PC_d, PC_e, instruction_d, instructio
     assign branch_e = (nop) ? 3'b000 : branch_de_int;
     register #(.REGISTER_WIDTH(3)) iWRITEREGSEL_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(writeRegSel_d), .readData(writeRegSel_de_int));
     assign writeRegSel_e = (nop) ? 3'b000 : writeRegSel_de_int;
-
+    
 endmodule
