@@ -25,7 +25,7 @@ module proc_hier();
            // Outputs
            .err                         (err),
            .PC                          (PC_Out),
-           .instruction_f               (Instruction_f),
+           .instruction_d               (Instruction_f),
            // Inputs
            .clk                         (clk),
            .rst                         (rst));   

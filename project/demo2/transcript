@@ -13,4 +13,4 @@
 # //
 # dump.wlf opened as dataset "dataset"
 add wave -position insertpoint dataset:/proc_hier_pbench/DUT/p0/*
-add wave -position insertpoint dataset:/proc_hier_pbench/DUT/p0/iFDLATCH0/*
+quit

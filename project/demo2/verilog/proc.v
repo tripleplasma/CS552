@@ -4,7 +4,7 @@
 `default_nettype none
 module proc (/*AUTOARG*/
    // Outputs
-   err, PC, instruction_f,
+   err, PC, instruction_d,
    // Inputs
    clk, rst
    );
@@ -14,7 +14,7 @@ module proc (/*AUTOARG*/
 
    // Can't use assign with reg - output reg err;
    output wire err;
-   output wire [15:0] PC, instruction_f;
+   output wire [15:0] PC, instruction_d;
 
    // None of the above lines can be modified
 
@@ -23,7 +23,7 @@ module proc (/*AUTOARG*/
 
    /* your code here -- should include instantiations of fetch, decode, execute, mem and wb modules */
    wire rst_d;
-   wire [15:0] instruction_d, instruction_e;
+   wire [15:0] instruction_f, instruction_e;
    wire [2:0] writeRegSel_d, writeRegSel_e, writeRegSel_m, DstwithJmout;
    wire [15:0] wData;
    wire [15:0] read1Data_d, read1Data_e, read1Data_m;
@@ -38,7 +38,7 @@ module proc (/*AUTOARG*/
    assign err = err_decode;
    
    // hazard signals
-   wire control_hazard, data_hazard, data_hazard_d;
+   wire control_hazard, data_hazard, data_hazard_d, structural_hazard;
 
    // control signals
    wire halt_d, halt_e, halt_m, haltxout;
@@ -85,7 +85,7 @@ module proc (/*AUTOARG*/
    fetch_decode_latch iFDLATCH0( // Inputs
                                  .clk(internal_clock), 
                                  .rst(rst), 
-                                 .nop(control_hazard | data_hazard), 
+                                 .nop(control_hazard | structural_hazard | data_hazard), 
                                  // input followed by latched output
                                  .rst_d(rst_d),
                                  .PC_f(PC_f),
@@ -102,7 +102,8 @@ module proc (/*AUTOARG*/
                .opcode(instruction_f[15:11]), 
                // Outputs
                .data_hazard(data_hazard), 
-               .control_hazard(control_hazard));
+               .control_hazard(control_hazard),
+               .structural_hazard(structural_hazard));
 
    register #(.REGISTER_WIDTH(1)) HAZARDLATCH(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(data_hazard), .readData(data_hazard_d));
 

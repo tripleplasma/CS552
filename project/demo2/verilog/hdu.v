@@ -1,9 +1,9 @@
-module hdu (clk, rst, ifIdReadRegister1, ifIdReadRegister2, ifIdWriteRegister, opcode, data_hazard, control_hazard);
+module hdu (clk, rst, ifIdReadRegister1, ifIdReadRegister2, ifIdWriteRegister, opcode, data_hazard, control_hazard, structural_hazard);
 
     input wire clk, rst;
     input wire [3:0] ifIdReadRegister1, ifIdReadRegister2, ifIdWriteRegister;
     input wire [4:0] opcode;
-    output wire data_hazard, control_hazard;
+    output wire data_hazard, control_hazard, structural_hazard;
 
     wire [3:0] idExWriteRegister, exMemWriteRegister, memWbWriteRegister;
 
@@ -15,6 +15,8 @@ module hdu (clk, rst, ifIdReadRegister1, ifIdReadRegister2, ifIdWriteRegister, o
     // assign data_hazard = 1'b0;
 
     assign control_hazard = (opcode[4:2] == 3'b001 | opcode[4:2] == 3'b011) ? 1'b1 : 1'b0;
+
+    register #(.REGISTER_WIDTH(1)) StructHaz(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(data_hazard), .readData(structural_hazard));
 
     register #(.REGISTER_WIDTH(4)) IdExWriteReg(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(ifIdWriteRegister), .readData(idExWriteRegister));
     register #(.REGISTER_WIDTH(4)) ExMemWriteReg(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(idExWriteRegister), .readData(exMemWriteRegister));
