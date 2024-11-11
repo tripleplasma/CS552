@@ -1,0 +1,9 @@
+INST:    0011 0000 0000 0001 jal 1
+ARCH:    REG: 7 VALUE: 0x0002 ***DIFF***
+VERILOG: 
+Warning: Arch trace has a PC not defined in binary image. Assuming it is a halt. Bad binary "/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/unaligned/jal_18.asm". Panic.
+0003 INUM:        1 PC: 0x0003
+INST:                        
+ARCH:      
+VERILOG: 
+FAIL: 1 differences

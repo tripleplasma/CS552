@@ -1,0 +1,13 @@
+
+WISCalculator v1.0
+Author Derek Hower (drh5@cs.wisc.edu)
+Type "help" for more information
+
+Loading program...
+Executing...
+jal 1
+INUM:        0 PC: 0x0000 REG: 7 VALUE: 0x0002
+halt
+program halted
+INUM:        1 PC: 0x0003
+Program Finished

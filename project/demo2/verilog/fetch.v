@@ -8,7 +8,7 @@
 module fetch ( clk, rst, nop,
                halt_sig, jump_imm_sig, jump_sig, except_sig, br_contr_sig, 
                imm_jump_reg_val, extend_val,
-               PC_2, instr, output_clk);
+               PC_2, pcCurrent, instr, output_clk);
    input wire clk;
    input wire rst;
 
@@ -26,9 +26,9 @@ module fetch ( clk, rst, nop,
    output wire output_clk;
 
    output wire [15:0] PC_2;
+   output wire [15:0] pcCurrent;
    // wire[15:0] EPC = 16'b0;
    wire[15:0] nextPC;
-   wire[15:0] pcCurrent;
    wire [15:0] instr_int;
 
    register PC(.clk(output_clk), .rst(rst), .writeEn(1'b1), .writeData(nextPC), .readData(pcCurrent));

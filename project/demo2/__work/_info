@@ -7,15 +7,15 @@ z2
 !i10e 25
 !i10f 100
 cModel Technology
-Z0 d/home/khiem/private/cs552/project/CS552/project/demo2
+Z0 d/home/bacholl/private/ECE552/CS552/project/demo2
 valu
-Z1 !s110 1731270300
+Z1 !s110 1731304707
 !i10b 1
 !s100 =IF4kD@;HZdVl;LkT<mkU0
 I<;jMdfQMP6Vh?5V5RlFYF2
 Z2 VDg1SIo80bB@j0V0VzS_@n1
 R0
-Z3 w1730576095
+Z3 w1730246105
 8verilog/alu.v
 Fverilog/alu.v
 L0 7
@@ -23,15 +23,15 @@ Z4 OP;L;10.7c;67
 r1
 !s85 0
 31
-Z5 !s108 1731270299.000000
-!s107 verilog/xor2.v|verilog/wb.v|verilog/shifter.v|verilog/right_shift_rot_log.v|verilog/register.v|verilog/register_rst_x.v|verilog/regFile.v|verilog/regFile_bypass.v|verilog/regFile_bypass_hier.v|verilog/proc.v|verilog/proc_hier.v|verilog/proc_hier_pbench.v|verilog/overflow.v|verilog/not1.v|verilog/nor2.v|verilog/nand2.v|verilog/memory_wb_latch.v|verilog/memory.v|verilog/memory2c.v|verilog/left_shift_rot.v|verilog/hdu.v|verilog/fullAdder_1b.v|verilog/fetch.v|verilog/fetch_decode_latch.v|verilog/extension.v|verilog/execute.v|verilog/execute_memory_latch.v|verilog/dff.v|verilog/decode.v|verilog/decode_execute_latch.v|verilog/control.v|verilog/clkrst.v|verilog/cla_4b.v|verilog/cla_16b.v|verilog/carry_4b.v|verilog/carry_1b.v|verilog/br_control.v|verilog/alu.v|verilog/alu_control.v|
-Z6 !s90 +define+RANDSEED=3|-work|__work|verilog/alu_control.v|verilog/alu.v|verilog/br_control.v|verilog/carry_1b.v|verilog/carry_4b.v|verilog/cla_16b.v|verilog/cla_4b.v|verilog/clkrst.v|verilog/control.v|verilog/decode_execute_latch.v|verilog/decode.v|verilog/dff.v|verilog/execute_memory_latch.v|verilog/execute.v|verilog/extension.v|verilog/fetch_decode_latch.v|verilog/fetch.v|verilog/fullAdder_1b.v|verilog/hdu.v|verilog/left_shift_rot.v|verilog/memory2c.v|verilog/memory.v|verilog/memory_wb_latch.v|verilog/nand2.v|verilog/nor2.v|verilog/not1.v|verilog/overflow.v|verilog/proc_hier_pbench.v|verilog/proc_hier.v|verilog/proc.v|verilog/regFile_bypass_hier.v|verilog/regFile_bypass.v|verilog/regFile.v|verilog/register_rst_x.v|verilog/register.v|verilog/right_shift_rot_log.v|verilog/shifter.v|verilog/wb.v|verilog/xor2.v|
+Z5 !s108 1731304706.000000
+!s107 verilog/xor2.v|verilog/wb.v|verilog/shifter.v|verilog/right_shift_rot_log.v|verilog/register.v|verilog/regFile.v|verilog/regFile_bypass.v|verilog/regFile_bypass_hier.v|verilog/proc.v|verilog/proc_hier.v|verilog/proc_hier_pbench.v|verilog/overflow.v|verilog/not1.v|verilog/nor2.v|verilog/nand2.v|verilog/memory_wb_latch.v|verilog/memory.v|verilog/memory2c.v|verilog/left_shift_rot.v|verilog/hdu.v|verilog/fullAdder_1b.v|verilog/fetch.v|verilog/fetch_decode_latch.v|verilog/extension.v|verilog/execute.v|verilog/execute_memory_latch.v|verilog/dff.v|verilog/decode.v|verilog/decode_execute_latch.v|verilog/control.v|verilog/clkrst.v|verilog/cla_4b.v|verilog/cla_16b.v|verilog/carry_4b.v|verilog/carry_1b.v|verilog/br_control.v|verilog/alu.v|verilog/alu_control.v|
+Z6 !s90 +define+RANDSEED=3|-work|__work|verilog/alu_control.v|verilog/alu.v|verilog/br_control.v|verilog/carry_1b.v|verilog/carry_4b.v|verilog/cla_16b.v|verilog/cla_4b.v|verilog/clkrst.v|verilog/control.v|verilog/decode_execute_latch.v|verilog/decode.v|verilog/dff.v|verilog/execute_memory_latch.v|verilog/execute.v|verilog/extension.v|verilog/fetch_decode_latch.v|verilog/fetch.v|verilog/fullAdder_1b.v|verilog/hdu.v|verilog/left_shift_rot.v|verilog/memory2c.v|verilog/memory.v|verilog/memory_wb_latch.v|verilog/nand2.v|verilog/nor2.v|verilog/not1.v|verilog/overflow.v|verilog/proc_hier_pbench.v|verilog/proc_hier.v|verilog/proc.v|verilog/regFile_bypass_hier.v|verilog/regFile_bypass.v|verilog/regFile.v|verilog/register.v|verilog/right_shift_rot_log.v|verilog/shifter.v|verilog/wb.v|verilog/xor2.v|
 !i113 1
 Z7 o-work __work
 Z8 !s92 +define+RANDSEED=3 -work __work
 Z9 tCvgOpt 0
 valu_control
-!s110 1731270299
+R1
 !i10b 1
 !s100 gibfFZ4>YU1T^CfKJZMeH2
 IiYChl0hhm]VE[Y?ZTgEI`0
@@ -46,7 +46,7 @@ r1
 !s85 0
 31
 R5
-Z10 !s107 verilog/xor2.v|verilog/wb.v|verilog/shifter.v|verilog/right_shift_rot_log.v|verilog/register.v|verilog/register_rst_x.v|verilog/regFile.v|verilog/regFile_bypass.v|verilog/regFile_bypass_hier.v|verilog/proc.v|verilog/proc_hier.v|verilog/proc_hier_pbench.v|verilog/overflow.v|verilog/not1.v|verilog/nor2.v|verilog/nand2.v|verilog/memory_wb_latch.v|verilog/memory.v|verilog/memory2c.v|verilog/left_shift_rot.v|verilog/hdu.v|verilog/fullAdder_1b.v|verilog/fetch.v|verilog/fetch_decode_latch.v|verilog/extension.v|verilog/execute.v|verilog/execute_memory_latch.v|verilog/dff.v|verilog/decode.v|verilog/decode_execute_latch.v|verilog/control.v|verilog/clkrst.v|verilog/cla_4b.v|verilog/cla_16b.v|verilog/carry_4b.v|verilog/carry_1b.v|verilog/br_control.v|verilog/alu.v|verilog/alu_control.v|
+Z10 !s107 verilog/xor2.v|verilog/wb.v|verilog/shifter.v|verilog/right_shift_rot_log.v|verilog/register.v|verilog/regFile.v|verilog/regFile_bypass.v|verilog/regFile_bypass_hier.v|verilog/proc.v|verilog/proc_hier.v|verilog/proc_hier_pbench.v|verilog/overflow.v|verilog/not1.v|verilog/nor2.v|verilog/nand2.v|verilog/memory_wb_latch.v|verilog/memory.v|verilog/memory2c.v|verilog/left_shift_rot.v|verilog/hdu.v|verilog/fullAdder_1b.v|verilog/fetch.v|verilog/fetch_decode_latch.v|verilog/extension.v|verilog/execute.v|verilog/execute_memory_latch.v|verilog/dff.v|verilog/decode.v|verilog/decode_execute_latch.v|verilog/control.v|verilog/clkrst.v|verilog/cla_4b.v|verilog/cla_16b.v|verilog/carry_4b.v|verilog/carry_1b.v|verilog/br_control.v|verilog/alu.v|verilog/alu_control.v|
 R6
 !i113 1
 R7
@@ -169,7 +169,7 @@ R1
 I7L8<?YoEYAH0iW80m9KeA3
 R2
 R0
-R3
+Z11 w1729635483
 8verilog/clkrst.v
 Fverilog/clkrst.v
 L0 13
@@ -191,7 +191,7 @@ R1
 I^9eTMYVibalWS^Qh9NZ<:0
 R2
 R0
-w1731262439
+Z12 w1731270983
 8verilog/control.v
 Fverilog/control.v
 L0 7
@@ -213,7 +213,7 @@ R1
 IU0?3_Ae`cne8bDT1h;N7G2
 R2
 R0
-w1731219722
+R3
 8verilog/decode.v
 Fverilog/decode.v
 L0 8
@@ -235,7 +235,7 @@ R1
 II_8dDf@=W=AlD7LF>>cO=3
 R2
 R0
-w1731270260
+w1731304096
 8verilog/decode_execute_latch.v
 Fverilog/decode_execute_latch.v
 L0 1
@@ -257,7 +257,7 @@ R1
 IF0OQ3GFaGXieVS5KIikLH1
 R2
 R0
-w1731258717
+R11
 8verilog/dff.v
 Fverilog/dff.v
 L0 6
@@ -301,7 +301,7 @@ R1
 I_UfikYeKd_I^Vo3dWo<Tc0
 R2
 R0
-w1731219700
+Z13 w1731304097
 8verilog/execute_memory_latch.v
 Fverilog/execute_memory_latch.v
 L0 1
@@ -317,7 +317,7 @@ R7
 R8
 R9
 vextension
-Z11 !s110 1731270301
+R1
 !i10b 1
 !s100 AdbHNZ9QPT?DgQe`<ZYX?2
 I<=dW4dF8zY_z28Eo0l35Q0
@@ -339,13 +339,13 @@ R7
 R8
 R9
 vfetch
-R11
+R1
 !i10b 1
-!s100 HEAZfn>D>^=bVCH4RO_Y=0
-IibJiWDMXehGc:E1W@<0?]1
+!s100 `nN37PZ27I>z9mNn`>=j30
+IW7^X7;NYdcj3W4mJUBJVG2
 R2
 R0
-w1731262072
+w1731304701
 8verilog/fetch.v
 Fverilog/fetch.v
 L0 8
@@ -361,13 +361,13 @@ R7
 R8
 R9
 vfetch_decode_latch
-R11
+R1
 !i10b 1
 !s100 Bh2nh]NMi7ojdCV:]4c8F1
 IUld52PAHMZND7C;mC>;Q92
 R2
 R0
-w1731267430
+R12
 8verilog/fetch_decode_latch.v
 Fverilog/fetch_decode_latch.v
 L0 1
@@ -383,7 +383,7 @@ R7
 R8
 R9
 vfullAdder_1b
-R11
+R1
 !i10b 1
 !s100 zT>PHZGBT9nZhEh[oX1Ej0
 IhlNHOLL;XM?_M1^0B6N3E3
@@ -406,13 +406,13 @@ R8
 R9
 nfull@adder_1b
 vhdu
-R11
+R1
 !i10b 1
-!s100 8RdZ8YB:Rl?^P>UabI4Rm0
-I]fgGlYEZkPV[4>:Qz2^f;0
+!s100 bRaXz`J3f?RaDk0ajzo2`2
+I7YW1dgAC>D82IY73:aOme3
 R2
 R0
-w1731258214
+R12
 8verilog/hdu.v
 Fverilog/hdu.v
 L0 1
@@ -428,7 +428,7 @@ R7
 R8
 R9
 vleft_shift_rot
-R11
+R1
 !i10b 1
 !s100 M61nEkf;gUOo[olM0f7Fh1
 IELbXHenkNY<L1gEi]6LJk0
@@ -450,13 +450,13 @@ R7
 R8
 R9
 vmemory
-R11
+R1
 !i10b 1
 !s100 QhHdYG_z07dL9mhmN@]UE0
 IT`^jXij?X<H_<dVR]U>VH2
 R2
 R0
-w1731022258
+w1730744145
 8verilog/memory.v
 Fverilog/memory.v
 L0 9
@@ -472,13 +472,13 @@ R7
 R8
 R9
 vmemory2c
-R11
+R1
 !i10b 1
 !s100 1ITXY4ZWd3SeI8Nl4zmz13
 I2LSQFX]zW@M>W6Fi6Cg@K2
 R2
 R0
-R3
+R11
 8verilog/memory2c.v
 Fverilog/memory2c.v
 L0 35
@@ -494,13 +494,13 @@ R7
 R8
 R9
 vmemory_wb_latch
-R11
+R1
 !i10b 1
 !s100 >@CXjhnV5eIlCaE9?b7g<2
 I^3ZQg;<ESSBiJQ6AR?ZLL3
 R2
 R0
-w1731263590
+R13
 8verilog/memory_wb_latch.v
 Fverilog/memory_wb_latch.v
 L0 1
@@ -516,7 +516,7 @@ R7
 R8
 R9
 vnand2
-R11
+R1
 !i10b 1
 !s100 Ndlj6LYD^2lLe`Q=NBLmF3
 I36Ml??0<kMi<]3<0C:zEk0
@@ -538,7 +538,7 @@ R7
 R8
 R9
 vnor2
-R11
+R1
 !i10b 1
 !s100 VIMDj^Q4mJY^elKoZm8cF0
 IA^8Eal_^L^ZS9LF6`UL7;2
@@ -560,7 +560,7 @@ R7
 R8
 R9
 vnot1
-R11
+R1
 !i10b 1
 !s100 ;VahZFm1SBjhWBk_[nfTm0
 IQf<439RW?>:hD2WnB9NF_3
@@ -582,7 +582,7 @@ R7
 R8
 R9
 voverflow
-R11
+R1
 !i10b 1
 !s100 3HVn=CLiVh97XXijihmZ[3
 ICJLiiSV=Lm5[E6BO[XXl>0
@@ -604,13 +604,13 @@ R7
 R8
 R9
 vproc
-R11
+R1
 !i10b 1
-!s100 kFz<eQ_W06zZ2ClL<d0Om0
-I8@H<67U@L2O^QOGJ[WaE_3
+!s100 lnlCIY`jQJDchT2cWlf6o1
+IjM^0L<amWcCMmT?SIW8hA0
 R2
 R0
-w1731268867
+w1731304704
 8verilog/proc.v
 Fverilog/proc.v
 L0 5
@@ -626,13 +626,13 @@ R7
 R8
 R9
 vproc_hier
-R11
+R1
 !i10b 1
 !s100 24?IPQ8C5n]J8[K@MU1V^2
 IMe;JVYQ74Y2?1GJL=@Z142
 R2
 R0
-R3
+R13
 8verilog/proc_hier.v
 Fverilog/proc_hier.v
 L0 6
@@ -648,13 +648,13 @@ R7
 R8
 R9
 vproc_hier_pbench
-R11
+R1
 !i10b 1
 !s100 fBgjQ9bTnQi]Y0HRl=Q3l0
 IMaMg>FY8lXg5T457WR@Ag3
 R2
 R0
-R3
+w1731301603
 8verilog/proc_hier_pbench.v
 Fverilog/proc_hier_pbench.v
 L0 5
@@ -670,16 +670,16 @@ R7
 R8
 R9
 vregFile
-R11
+R1
 !i10b 1
 !s100 MzZS3@UFY7QJbNPQZcQ]V0
 I86B37[mC112m2MKfz2Sn`1
 R2
 R0
-w1731258198
+R12
 8verilog/regFile.v
 Fverilog/regFile.v
-Z12 L0 10
+Z14 L0 10
 R4
 r1
 !s85 0
@@ -693,13 +693,13 @@ R8
 R9
 nreg@file
 vregFile_bypass
-R11
+R1
 !i10b 1
 !s100 jk18IhUeWJ8BcmF@MeX@@2
 IR[FAL`MY_fk]HW3=fPFP02
 R2
 R0
-w1731219490
+w1730571472
 8verilog/regFile_bypass.v
 Fverilog/regFile_bypass.v
 L0 8
@@ -716,16 +716,16 @@ R8
 R9
 nreg@file_bypass
 vregFile_bypass_hier
-R11
+R1
 !i10b 1
 !s100 zP7zm@5a<I@]G>8LR0:BC2
 INN1Ze?c[Z_WGhd[dST@PG1
 R2
 R0
-Z13 w1730576096
+R3
 8verilog/regFile_bypass_hier.v
 Fverilog/regFile_bypass_hier.v
-R12
+R14
 R4
 r1
 !s85 0
@@ -739,13 +739,13 @@ R8
 R9
 nreg@file_bypass_hier
 vregister
-R11
+R1
 !i10b 1
 !s100 7DbIK<F2MLi<f9BFnKZYC0
 IAZXhFK3IMICEOCI=MA1Wb3
 R2
 R0
-w1731263619
+R12
 8verilog/register.v
 Fverilog/register.v
 L0 5
@@ -760,36 +760,14 @@ R6
 R7
 R8
 R9
-vregister_rst_x
-R11
-!i10b 1
-!s100 CVWnlXXEU06QX;P6AEgKL0
-IV[YO3gd]L^fT]^SbhT_B11
-R2
-R0
-w1731261586
-8verilog/register_rst_x.v
-Fverilog/register_rst_x.v
-L0 5
-R4
-r1
-!s85 0
-31
-R5
-R10
-R6
-!i113 1
-R7
-R8
-R9
 vright_shift_rot_log
-R11
+R1
 !i10b 1
 !s100 leDE>N]SaJ_h8lPKBNUo12
 I=Ih75:4TFZ2H2::f3PzHe1
 R2
 R0
-R13
+R3
 8verilog/right_shift_rot_log.v
 Fverilog/right_shift_rot_log.v
 L0 5
@@ -805,16 +783,16 @@ R7
 R8
 R9
 vshifter
-R11
+R1
 !i10b 1
 !s100 CB9XY;@6kd4k8M[C7Fmnm0
 I5@V5zPU`j0h>0DhV6O6001
 R2
 R0
-R13
+R3
 8verilog/shifter.v
 Fverilog/shifter.v
-R12
+R14
 R4
 r1
 !s85 0
@@ -827,13 +805,13 @@ R7
 R8
 R9
 vwb
-R11
+R1
 !i10b 1
 !s100 Zb2GNY_l7VlzTJfW`RgGD0
 I7G^WZER46^[<=@`_=caB03
 R2
 R0
-R13
+R3
 8verilog/wb.v
 Fverilog/wb.v
 L0 8
@@ -849,13 +827,13 @@ R7
 R8
 R9
 vxor2
-R11
+R1
 !i10b 1
 !s100 6JlUGTVXV:FRQY7`ZJ8<n0
 I6iDCV=NPNk13]mHgFKM5=0
 R2
 R0
-R13
+R3
 8verilog/xor2.v
 Fverilog/xor2.v
 L0 7

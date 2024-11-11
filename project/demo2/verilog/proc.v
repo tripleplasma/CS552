@@ -31,7 +31,7 @@ module proc (/*AUTOARG*/
    wire err_decode;
    wire [15:0] immExt_d, immExt_e, immExt_m;
    wire [3:0] aluSel;
-   wire [15:0] PC_d, PC_e, PC_m, PC_wb;
+   wire [15:0] PC_f, PC_d, PC_e, PC_m, PC_wb;
 
    // OR all the err ouputs for every sub-module and assign it as this
    // err output
@@ -79,7 +79,8 @@ module proc (/*AUTOARG*/
                // Outputs
                .instr(instruction_f), 
                .output_clk(internal_clock), 
-               .PC_2(PC));
+               .PC_2(PC_f),
+               .pcCurrent(PC));
    
    fetch_decode_latch iFDLATCH0( // Inputs
                                  .clk(internal_clock), 
@@ -87,7 +88,7 @@ module proc (/*AUTOARG*/
                                  .nop(control_hazard), 
                                  // input followed by latched output
                                  .rst_d(rst_d),
-                                 .PC_f(PC),
+                                 .PC_f(PC_f),
                                  .PC_d(PC_d),
                                  .instruction_f(instruction_f), 
                                  .instruction_d(instruction_d));  // still a little confused on control_hazard/data_hazard/nop
