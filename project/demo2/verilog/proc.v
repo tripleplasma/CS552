@@ -38,7 +38,7 @@ module proc (/*AUTOARG*/
    assign err = err_decode;
    
    // hazard signals
-   wire control_hazard, data_hazard;
+   wire control_hazard, data_hazard, data_hazard_d;
 
    // control signals
    wire halt_d, halt_e, halt_m, haltxout;
@@ -85,7 +85,7 @@ module proc (/*AUTOARG*/
    fetch_decode_latch iFDLATCH0( // Inputs
                                  .clk(internal_clock), 
                                  .rst(rst), 
-                                 .nop(control_hazard), 
+                                 .nop(control_hazard | data_hazard), 
                                  // input followed by latched output
                                  .rst_d(rst_d),
                                  .PC_f(PC_f),
@@ -103,6 +103,8 @@ module proc (/*AUTOARG*/
                // Outputs
                .data_hazard(data_hazard), 
                .control_hazard(control_hazard));
+
+   register #(.REGISTER_WIDTH(1)) HAZARDLATCH(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(data_hazard), .readData(data_hazard_d));
 
    // determine control signals based on opcode
    control iCONTROL0(// Inputs
@@ -153,7 +155,7 @@ module proc (/*AUTOARG*/
    decode_execute_latch iDELATCH0(// Inputs 
                                  .clk(internal_clock), 
                                  .rst(rst), 
-                                 .nop(data_hazard), 
+                                 .nop(data_hazard_d), 
                                  // Input followed by latched output
                                  .PC_d(PC_d),
                                  .PC_e(PC_e),
