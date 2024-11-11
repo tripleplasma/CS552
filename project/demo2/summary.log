@@ -1,1 +1,1 @@
-tests/simple_test/add_0.asm SUCCESS CPI:3.3 CYCLES:30 ICOUNT:9 IHITRATE: 0 DHITRATE: 0
+tests/simple_test/slli_0.asm FAILED

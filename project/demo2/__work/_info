@@ -9,7 +9,7 @@ z2
 cModel Technology
 Z0 d/home/khiem/private/cs552/project/CS552/project/demo2
 valu
-Z1 !s110 1731363504
+Z1 !s110 1731365645
 !i10b 1
 !s100 =IF4kD@;HZdVl;LkT<mkU0
 I<;jMdfQMP6Vh?5V5RlFYF2
@@ -23,7 +23,7 @@ Z4 OP;L;10.7c;67
 r1
 !s85 0
 31
-Z5 !s108 1731363504.000000
+Z5 !s108 1731365644.000000
 !s107 verilog/xor2.v|verilog/wb.v|verilog/shifter.v|verilog/right_shift_rot_log.v|verilog/register.v|verilog/regFile.v|verilog/regFile_bypass.v|verilog/regFile_bypass_hier.v|verilog/proc.v|verilog/proc_hier.v|verilog/proc_hier_pbench.v|verilog/overflow.v|verilog/not1.v|verilog/nor2.v|verilog/nand2.v|verilog/memory_wb_latch.v|verilog/memory.v|verilog/memory2c.v|verilog/left_shift_rot.v|verilog/hdu.v|verilog/fullAdder_1b.v|verilog/fetch.v|verilog/fetch_decode_latch.v|verilog/extension.v|verilog/execute.v|verilog/execute_memory_latch.v|verilog/dff.v|verilog/decode.v|verilog/decode_execute_latch.v|verilog/control.v|verilog/clkrst.v|verilog/cla_4b.v|verilog/cla_16b.v|verilog/carry_4b.v|verilog/carry_1b.v|verilog/br_control.v|verilog/alu.v|verilog/alu_control.v|
 Z6 !s90 +define+RANDSEED=3|-work|__work|verilog/alu_control.v|verilog/alu.v|verilog/br_control.v|verilog/carry_1b.v|verilog/carry_4b.v|verilog/cla_16b.v|verilog/cla_4b.v|verilog/clkrst.v|verilog/control.v|verilog/decode_execute_latch.v|verilog/decode.v|verilog/dff.v|verilog/execute_memory_latch.v|verilog/execute.v|verilog/extension.v|verilog/fetch_decode_latch.v|verilog/fetch.v|verilog/fullAdder_1b.v|verilog/hdu.v|verilog/left_shift_rot.v|verilog/memory2c.v|verilog/memory.v|verilog/memory_wb_latch.v|verilog/nand2.v|verilog/nor2.v|verilog/not1.v|verilog/overflow.v|verilog/proc_hier_pbench.v|verilog/proc_hier.v|verilog/proc.v|verilog/regFile_bypass_hier.v|verilog/regFile_bypass.v|verilog/regFile.v|verilog/register.v|verilog/right_shift_rot_log.v|verilog/shifter.v|verilog/wb.v|verilog/xor2.v|
 !i113 1
@@ -408,11 +408,11 @@ nfull@adder_1b
 vhdu
 R1
 !i10b 1
-!s100 ieI^5=?kc1`gcfoO39@c30
-I3Xmbz;@ZPl<d9O_=:DJ1?2
+!s100 GDdghA^]i2F86jb1CYl9?3
+IK_Q5A9o[:=;a5jh;_T1VM1
 R2
 R0
-R11
+w1731365034
 8verilog/hdu.v
 Fverilog/hdu.v
 L0 1
