@@ -97,7 +97,7 @@ module proc (/*AUTOARG*/
                .PC_m(PC_m),
                .PC_f(PC_f),
                .instruction_m(instruction_m),
-               .instruction_d(instruction_d),
+               .instruction_e(instruction_e),
                .writeRegSel_e(writeRegSel_e),
                .writeRegSel_m(writeRegSel_m),
                .writeRegSel_wb(writeRegSel_wb),
