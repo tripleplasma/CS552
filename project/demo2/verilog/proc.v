@@ -67,7 +67,7 @@ module proc (/*AUTOARG*/
    fetch fetch0(// Inputs
                .clk(clk), 
                .rst(rst), 
-               .nop(control_hazard | structural_hazard),             // still a little confused on control_hazard/data_hazard/nop
+               .nop(structural_hazard),             // still a little confused on control_hazard/data_hazard/nop
                .halt_sig(haltxout), 
                .jump_imm_sig(jumpImm_m), 
                .jump_sig(jump_m), 
@@ -83,7 +83,7 @@ module proc (/*AUTOARG*/
    fetch_decode_latch iFDLATCH0( // Inputs
                                  .clk(internal_clock), 
                                  .rst(rst), 
-                                 .nop(control_hazard | data_hazard), 
+                                 .nop(data_hazard | (structural_hazard & ~control_hazard)), 
                                  // input followed by latched output
                                  .rst_d(rst_d),
                                  .PC_f(PC_f),
@@ -94,6 +94,8 @@ module proc (/*AUTOARG*/
    hdu iHDU_0( // Inputs
                .clk(internal_clock), 
                .rst(rst), 
+               .PC_m(PC_m),
+               .PC_f(PC_f),
                .ifIdReadRegister1({1'b0, instruction_d[10:8]}), 
                .ifIdReadRegister2({1'b0, instruction_d[7:5]}), 
                .ifIdWriteRegister({1'b0, writeRegSel_d}), 
