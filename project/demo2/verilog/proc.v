@@ -22,7 +22,7 @@ module proc (/*AUTOARG*/
 
    /* your code here -- should include instantiations of fetch, decode, execute, mem and wb modules */
    wire rst_d;
-   wire [15:0] instruction_f, instruction_d, instruction_e;
+   wire [15:0] instruction_f, instruction_d, instruction_e, instruction_m;
    wire [2:0] writeRegSel_d, writeRegSel_e, writeRegSel_m, writeRegSel_wb;
    wire [15:0] writeData;
    wire [15:0] read1Data_d, read1Data_e, read1Data_m;
@@ -84,11 +84,7 @@ module proc (/*AUTOARG*/
                                  .clk(internal_clock), 
                                  .rst(rst), 
                                  .nop(data_hazard | (structural_hazard & ~control_hazard)), 
-<<<<<<< HEAD
                                  .nop_ctrl(control_hazard),
-=======
-                                 // input followed by latched output
->>>>>>> c53aaa87bbb5874a37eb9ad38b80642d808801ef
                                  .rst_d(rst_d),
                                  .PC_f(PC_f),
                                  .PC_d(PC_d),
@@ -98,16 +94,15 @@ module proc (/*AUTOARG*/
    hdu iHDU_0( // Inputs
                .clk(internal_clock), 
                .rst(rst), 
-<<<<<<< HEAD
-               .PC_f(PC_f),
-               .PC_m(PC_m),
-=======
                .PC_m(PC_m),
                .PC_f(PC_f),
->>>>>>> c53aaa87bbb5874a37eb9ad38b80642d808801ef
-               .ifIdReadRegister1({1'b0, instruction_d[10:8]}), 
-               .ifIdReadRegister2({1'b0, instruction_d[7:5]}), 
-               .ifIdWriteRegister({1'b0, writeRegSel_d}), 
+               .instruction_m(instruction_m),
+               .instruction_d(instruction_d),
+               .writeRegSel_e(writeRegSel_e),
+               .writeRegSel_m(writeRegSel_m),
+               .writeRegSel_wb(writeRegSel_wb),
+               .ifIdReadRegister1(instruction_d[10:8]), 
+               .ifIdReadRegister2(instruction_d[7:5]), 
                .opcode(instruction_f[15:11]), 
                // Outputs
                .data_hazard(data_hazard), 
@@ -232,6 +227,8 @@ module proc (/*AUTOARG*/
                                  // Input followed by latched output
                                  .PC_e(PC_e),
                                  .PC_m(PC_m),
+                                 .instruction_e(instruction_e),
+                                 .instruction_m(instruction_m),
                                  .aluOut_e(aluOut_e), 
                                  .aluOut_m(aluOut_m), 
                                  .read2Data_e(read2Data_e), 
