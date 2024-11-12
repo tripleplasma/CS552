@@ -19,12 +19,12 @@ module decode_execute_latch(clk, rst, nop, PC_d, PC_e, instruction_d, instructio
     register iINSTRUCTION_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(instruction_d), .readData(instruction_de_int));              // rchanged writeEn from ~nop to 1, unsure about it here due to other signals
     assign instruction_e = (nop) ? 16'b0000_1000_0000_0000 : instruction_de_int;
 
-    register iREAD1DATA_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(read1Data_d), .readData(read1Data_de_int));
-    assign read1Data_e = (nop) ? 16'h0000 : read1Data_de_int;
-    register iREAD2DATA_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(read2Data_d), .readData(read2Data_de_int));
-    assign read2Data_e = (nop) ? 16'h0000 : read2Data_de_int;
-    register iIMMEXT_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(immExt_d), .readData(immExt_de_int));
-    assign immExt_e = (nop) ? 16'h0000 : immExt_de_int;
+    register iREAD1DATA_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(read1Data_d), .readData(read1Data_e));
+    //assign read1Data_e = (nop) ? 16'h0000 : read1Data_de_int;
+    register iREAD2DATA_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(read2Data_d), .readData(read2Data_e));
+    //assign read2Data_e = (nop) ? 16'h0000 : read2Data_de_int;
+    register iIMMEXT_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(immExt_d), .readData(immExt_e));
+    //assign immExt_e = (nop) ? 16'h0000 : immExt_de_int;
 
     register #(.REGISTER_WIDTH(1)) iHALT_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(halt_d), .readData(halt_de_int));
     assign halt_e = (nop) ? 1'b0 : halt_de_int;
@@ -47,7 +47,7 @@ module decode_execute_latch(clk, rst, nop, PC_d, PC_e, instruction_d, instructio
 
     register #(.REGISTER_WIDTH(3)) iBRANCH_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(branch_d), .readData(branch_de_int));
     assign branch_e = (nop) ? 3'b000 : branch_de_int;
-    register #(.REGISTER_WIDTH(3)) iWRITEREGSEL_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(writeRegSel_d), .readData(writeRegSel_de_int));
-    assign writeRegSel_e = (nop) ? 3'b000 : writeRegSel_de_int;
+    register #(.REGISTER_WIDTH(3)) iWRITEREGSEL_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(writeRegSel_d), .readData(writeRegSel_e));
+    //assign writeRegSel_e = (nop) ? 3'b000 : writeRegSel_de_int;
     
 endmodule
