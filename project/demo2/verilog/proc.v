@@ -93,7 +93,7 @@ module proc (/*AUTOARG*/
    
    hdu iHDU_0( // Inputs
                .clk(internal_clock), 
-               .rst(rst), 
+               .rst(rst_d), 
                .ifIdReadRegister1({1'b0, instruction_d[10:8]}), 
                .ifIdReadRegister2({1'b0, instruction_d[7:5]}), 
                .ifIdWriteRegister({1'b0, writeRegSel_d}), 

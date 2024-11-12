@@ -11,9 +11,9 @@ module hdu (clk, rst, ifIdReadRegister1, ifIdReadRegister2, ifIdWriteRegister, o
     //TODO: check for correctness, particularly the !== 3'b000 (there becuase of reset at beginning sets everything to 0, stopgap solution that needs to be changed)
     // maybe use a valid bit [3]?
     assign structural_hazard = (rst != 1'b1 & 
-                        ((^idExWriteRegister !== 1'bx & idExWriteRegister !== 4'h0) & (idExWriteRegister == ifIdReadRegister1 | idExWriteRegister == ifIdReadRegister2))   |
-                        ((^exMemWriteRegister !== 1'bx & exMemWriteRegister !== 4'h0) & (exMemWriteRegister == ifIdReadRegister1 | exMemWriteRegister == ifIdReadRegister2)) 	|
-                        ((^memWbWriteRegister !== 1'bx & memWbWriteRegister !== 4'h0) & (memWbWriteRegister == ifIdReadRegister1 | memWbWriteRegister == ifIdReadRegister2))) ? 1'b1 : 1'b0;
+                        (((^idExWriteRegister !== 1'bx) & (idExWriteRegister == ifIdReadRegister1 | idExWriteRegister == ifIdReadRegister2))   |
+                        ((^exMemWriteRegister !== 1'bx) & (exMemWriteRegister == ifIdReadRegister1 | exMemWriteRegister == ifIdReadRegister2)) 	|
+                        ((^memWbWriteRegister !== 1'bx) & (memWbWriteRegister == ifIdReadRegister1 | memWbWriteRegister == ifIdReadRegister2)))) ? 1'b1 : 1'b0;
     // assign data_hazard = 1'b0;
 
     register #(.REGISTER_WIDTH(1)) HazardLatch(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(structural_hazard), .readData(data_hazard));
