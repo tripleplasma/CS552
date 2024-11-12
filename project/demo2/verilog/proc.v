@@ -84,7 +84,11 @@ module proc (/*AUTOARG*/
                                  .clk(internal_clock), 
                                  .rst(rst), 
                                  .nop(data_hazard | (structural_hazard & ~control_hazard)), 
+<<<<<<< HEAD
                                  .nop_ctrl(control_hazard),
+=======
+                                 // input followed by latched output
+>>>>>>> c53aaa87bbb5874a37eb9ad38b80642d808801ef
                                  .rst_d(rst_d),
                                  .PC_f(PC_f),
                                  .PC_d(PC_d),
@@ -94,8 +98,13 @@ module proc (/*AUTOARG*/
    hdu iHDU_0( // Inputs
                .clk(internal_clock), 
                .rst(rst), 
+<<<<<<< HEAD
                .PC_f(PC_f),
                .PC_m(PC_m),
+=======
+               .PC_m(PC_m),
+               .PC_f(PC_f),
+>>>>>>> c53aaa87bbb5874a37eb9ad38b80642d808801ef
                .ifIdReadRegister1({1'b0, instruction_d[10:8]}), 
                .ifIdReadRegister2({1'b0, instruction_d[7:5]}), 
                .ifIdWriteRegister({1'b0, writeRegSel_d}), 
