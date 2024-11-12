@@ -15,7 +15,9 @@ module decode_execute_latch(clk, rst, nop, PC_d, PC_e, instruction_d, instructio
     wire halt_de_int, link_de_int, memRead_de_int, memToReg_de_int, memWrite_de_int, aluSrc_de_int, jumpImm_de_int, jump_de_int, regWrite_de_int;
     wire [2:0] branch_de_int, writeRegSel_de_int;
 
-    register iPC_LATCH_DE(.clk(clk), .rst(rst), .writeEn(~nop), .writeData(PC_d), .readData(PC_e));
+    wire [15:0] PC_int;
+    register iPC_LATCH_DE(.clk(clk), .rst(rst), .writeEn(~nop), .writeData(PC_d), .readData(PC_int));
+    assign PC_e = (nop) ? PC_e : PC_int;
     register iINSTRUCTION_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(instruction_d), .readData(instruction_de_int));              // rchanged writeEn from ~nop to 1, unsure about it here due to other signals
     assign instruction_e = (nop) ? 16'b0000_1000_0000_0000 : instruction_de_int;
 

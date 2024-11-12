@@ -27,10 +27,10 @@ module regFile_bypass (
    
    regFile iRF0(
                 // Outputs
-                // .read1Data                    (reg_out[0]),
-                // .read2Data                    (reg_out[1]),
-                .read1Data                    (read1Data),
-                .read2Data                    (read2Data),
+                .read1Data                    (reg_out[0]),
+                .read2Data                    (reg_out[1]),
+                // .read1Data                    (read1Data),
+                // .read2Data                    (read2Data),
                 .err                          (err),
                 // Inputs
                 .clk                          (clk),
@@ -42,7 +42,7 @@ module regFile_bypass (
                 .writeEn                      (write));
    
    // Remove bypassing for now
-   // assign read1Data = (write & (read1RegSel == writeregsel)) ? writedata : reg_out[0];
-   // assign read2Data = (write & (read2RegSel == writeregsel)) ? writedata : reg_out[1];
+   assign read1Data = (write & (read1RegSel == writeregsel)) ? writedata : reg_out[0];
+   assign read2Data = (write & (read2RegSel == writeregsel)) ? writedata : reg_out[1];
 
 endmodule
