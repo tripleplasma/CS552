@@ -1,0 +1,6 @@
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo1/branchTest.asm RELAX-PASS
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo1/easyTest.asm FAILED
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo1/finalTest2.asm FAILED
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo1/firstTest.asm SUCCESS CPI:2.3 CYCLES:96 ICOUNT:41 IHITRATE: 0 DHITRATE: 0
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo1/loadStoreTest.asm SUCCESS CPI:2.1 CYCLES:77 ICOUNT:36 IHITRATE: 100.0 DHITRATE: 100.0
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo1/shiftTest.asm FAILED

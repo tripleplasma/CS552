@@ -1,6 +1,6 @@
 # vsim -c proc_hier_pbench -lib __work -voptargs="+acc" -wlf dump.wlf -do "log -howmany -rec /* ; run -all" 
-# Start time: 19:26:50 on Oct 29,2024
-# //  ModelSim DE 10.7c Aug 17 2018Linux 5.15.0-124-generic
+# Start time: 17:19:20 on Nov 12,2024
+# //  ModelSim DE 10.7c Aug 17 2018Linux 5.15.0-125-generic
 # //
 # //  Copyright 1991-2018 Mentor Graphics Corporation
 # //  All Rights Reserved.
@@ -47,11 +47,15 @@
 # Loading __work.br_control
 # Loading __work.execute_memory_latch
 # Loading __work.memory
-# ** Error: (vsim-3033) Instantiation of 'memory_wb_latch' failed. The design unit was not found.
-#    Time: 0 ns  Iteration: 0  Instance: /proc_hier_pbench/DUT/p0 File: proc.v Line: 112
-#         Searched libraries:
-#             /home/kung/CS552/CS552/project/demo2/verilog/__work
+# Loading __work.memory_wb_latch
 # Loading __work.wb
-# Error loading design
-# End time: 19:26:50 on Oct 29,2024, Elapsed time: 0:00:00
-# Errors: 1, Warnings: 0
+# Loading __work.dff
+# log -howmany -rec /* 
+# 6295
+#  run -all
+# Hello world...simulation starting
+# See verilogsim.log and verilogsim.ptrace for output
+# ** Note: $finish    : proc_hier_pbench.v(116)
+#    Time: 2905 ns  Iteration: 0  Instance: /proc_hier_pbench
+# End time: 17:19:20 on Nov 12,2024, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0

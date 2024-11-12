@@ -7,15 +7,15 @@ z2
 !i10e 25
 !i10f 100
 cModel Technology
-Z0 d/home/kung/CS552/CS552/project/demo2/verilog
+Z0 d/home/bacholl/private/ECE552/CS552/project/demo2/verilog
 valu
-Z1 !s110 1730248009
+Z1 !s110 1731453546
 !i10b 1
 !s100 =IF4kD@;HZdVl;LkT<mkU0
 IY>TV80;o^6bSVdSOG<A^K3
 Z2 VDg1SIo80bB@j0V0VzS_@n1
 R0
-Z3 w1730246571
+Z3 w1730246105
 8alu.v
 Falu.v
 L0 7
@@ -23,7 +23,7 @@ Z4 OP;L;10.7c;67
 r1
 !s85 0
 31
-Z5 !s108 1730248009.000000
+Z5 !s108 1731453546.000000
 !s107 xor2.v|wb.v|shifter.v|right_shift_rot_log.v|register.v|regFile.v|regFile_bypass.v|regFile_bypass_hier.v|proc.v|proc_hier.v|proc_hier_pbench.v|overflow.v|not1.v|nor2.v|nand2.v|memory_wb_latch.v|memory.v|memory2c.v|left_shift_rot.v|hdu.v|fullAdder_1b.v|fetch.v|fetch_decode_latch.v|extension.v|execute.v|execute_memory_latch.v|dff.v|decode.v|decode_execute_latch.v|control.v|clkrst.v|cla_4b.v|cla_16b.v|carry_4b.v|carry_1b.v|br_control.v|alu.v|alu_control.v|
 Z6 !s90 +define+RANDSEED=3|-work|__work|alu_control.v|alu.v|br_control.v|carry_1b.v|carry_4b.v|cla_16b.v|cla_4b.v|clkrst.v|control.v|decode_execute_latch.v|decode.v|dff.v|execute_memory_latch.v|execute.v|extension.v|fetch_decode_latch.v|fetch.v|fullAdder_1b.v|hdu.v|left_shift_rot.v|memory2c.v|memory.v|memory_wb_latch.v|nand2.v|nor2.v|not1.v|overflow.v|proc_hier_pbench.v|proc_hier.v|proc.v|regFile_bypass_hier.v|regFile_bypass.v|regFile.v|register.v|right_shift_rot_log.v|shifter.v|wb.v|xor2.v|
 !i113 1
@@ -169,7 +169,7 @@ R1
 IcU3NbIBf6S_9FV@GH4;Og1
 R2
 R0
-w1646504964
+Z11 w1729635483
 8clkrst.v
 Fclkrst.v
 L0 13
@@ -187,11 +187,11 @@ R9
 vcontrol
 R1
 !i10b 1
-!s100 hBY9CO7ka[cSiUA?o?^M71
-IPd?S_Z9^Xnz;bI^WDF_jH3
+!s100 H1V]]e^3Rj;86G3aBSO821
+IFOK3;=2RNJC3Ka;@NZkeB0
 R2
 R0
-R3
+Z12 w1731270983
 8control.v
 Fcontrol.v
 L0 7
@@ -231,11 +231,11 @@ R9
 vdecode_execute_latch
 R1
 !i10b 1
-!s100 `BBhKM7K>g`lW`nMb8K8h1
-IS1N3=[ebg1Li5hX]e_>@:2
+!s100 zNz6VJoAc4^O=FEU0z=Q83
+I]FG:N2oKl_W[cfh7BSn[c1
 R2
 R0
-w1730247909
+w1731446500
 8decode_execute_latch.v
 Fdecode_execute_latch.v
 L0 1
@@ -257,7 +257,7 @@ R1
 I`<l<ahfib5LObb;M<UG9I1
 R2
 R0
-w1646504993
+R11
 8dff.v
 Fdff.v
 L0 6
@@ -297,11 +297,11 @@ R9
 vexecute_memory_latch
 R1
 !i10b 1
-!s100 zaQN3J`]2MV<>Ooz>D2L_0
-I3^g_5IBDA<m8?MAmWPikU1
+!s100 hV7ZWK:4E1E]:YNQQ77kV3
+IA[oYS4]=;Y_gzf:3_Q`LY2
 R2
 R0
-w1730247891
+w1731428660
 8execute_memory_latch.v
 Fexecute_memory_latch.v
 L0 1
@@ -341,11 +341,11 @@ R9
 vfetch
 R1
 !i10b 1
-!s100 ?5P@^61=L]U1Z0f1j9OD70
-Ic5D2J4Kg>z;N75gUbR=<10
+!s100 <W2>]4N73U`[I?EKjiKb`3
+IhggYWo_OZCFC39`BI<2M80
 R2
 R0
-R3
+w1731446910
 8fetch.v
 Ffetch.v
 L0 8
@@ -363,11 +363,11 @@ R9
 vfetch_decode_latch
 R1
 !i10b 1
-!s100 in?B6o]5B_mBcPgil@^@X3
-I==;OUaVW@1l7QW[=JTR5:3
+!s100 B:dMZk];zbZb[7>YTCX;^0
+I]@fg1Gm;jV6Of?CZ=5n:j3
 R2
 R0
-R3
+w1731446264
 8fetch_decode_latch.v
 Ffetch_decode_latch.v
 L0 1
@@ -408,11 +408,11 @@ nfull@adder_1b
 vhdu
 R1
 !i10b 1
-!s100 6QE9OibEjzdM8R_ck;G2A2
-IFA64PIVSnXH9;3S;mmABA0
+!s100 AjT6FL]Wa4>NOTL0@zFkW3
+I>3=;EnTCRabdIB26Kz6WA0
 R2
 R0
-w1730247960
+w1731451604
 8hdu.v
 Fhdu.v
 L0 1
@@ -452,11 +452,11 @@ R9
 vmemory
 R1
 !i10b 1
-!s100 anLTF4mh8d8mH]eaGCU6`3
-I7Kg2hGkc>P7R2>55K^G?50
+!s100 QhHdYG_z07dL9mhmN@]UE0
+IU:H3Zm41QiOYDIjhMS78G2
 R2
 R0
-R3
+w1730744145
 8memory.v
 Fmemory.v
 L0 9
@@ -478,10 +478,32 @@ R1
 I5:0bhPSZGSbBD:5kcoEH=2
 R2
 R0
-w1646511227
+R11
 8memory2c.v
 Fmemory2c.v
 L0 35
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vmemory_wb_latch
+R1
+!i10b 1
+!s100 >@CXjhnV5eIlCaE9?b7g<2
+I0aIg93:DEWe@hWQfPZAFF1
+R2
+R0
+w1731304097
+8memory_wb_latch.v
+Fmemory_wb_latch.v
+L0 1
 R4
 r1
 !s85 0
@@ -584,11 +606,11 @@ R9
 vproc
 R1
 !i10b 1
-!s100 O4VmhTk]E0VkC6GRWX7Z23
-IBaD`MZYDT>[z2H1TbRXz70
+!s100 G0B]A42jibzGi0S`zAFD03
+Iz:Jn5@m<ogGUSWiOPYnZU2
 R2
 R0
-w1730247742
+w1731449329
 8proc.v
 Fproc.v
 L0 5
@@ -606,11 +628,11 @@ R9
 vproc_hier
 R1
 !i10b 1
-!s100 jGH_<J>T7TGh^mfl9i`Fo2
-I?@=;1a89@`0h;0V<;D4kj0
+!s100 V8UM3S8XS1XPNED^P<Mi:0
+IWBFMLNgKnK8=z8^a_d86=2
 R2
 R0
-w1646505245
+Z13 w1731368186
 8proc_hier.v
 Fproc_hier.v
 L0 6
@@ -628,11 +650,11 @@ R9
 vproc_hier_pbench
 R1
 !i10b 1
-!s100 EO4FHZ34[<S5`kZ_nmN9O1
-IR7FGHW5^aNlY>deXa@iJh1
+!s100 8D4S7RD[9bHK_bo;19];62
+I<4K?jTG<3OLVC^6DcJLIX0
 R2
 R0
-w1648694351
+R13
 8proc_hier_pbench.v
 Fproc_hier_pbench.v
 L0 5
@@ -650,14 +672,14 @@ R9
 vregFile
 R1
 !i10b 1
-!s100 5U6K;2>eDOPk5NhgBDZBS1
-I?]fzD[3:k0m`F=9`G[diO3
+!s100 MzZS3@UFY7QJbNPQZcQ]V0
+I@LRU]FHP2z?SW^I>Ugm^f1
 R2
 R0
-R3
+R12
 8regFile.v
 FregFile.v
-Z11 L0 10
+Z14 L0 10
 R4
 r1
 !s85 0
@@ -673,11 +695,11 @@ nreg@file
 vregFile_bypass
 R1
 !i10b 1
-!s100 jk18IhUeWJ8BcmF@MeX@@2
-ICIXDYGTna;9n[^@F8[9Ol1
+!s100 MjZD5ZlEFEgo343@>IERb2
+I>SVdJ7?8QdbhH7XL5Q=0O0
 R2
 R0
-R3
+w1731452111
 8regFile_bypass.v
 FregFile_bypass.v
 L0 8
@@ -703,7 +725,7 @@ R0
 R3
 8regFile_bypass_hier.v
 FregFile_bypass_hier.v
-R11
+R14
 R4
 r1
 !s85 0
@@ -723,7 +745,7 @@ R1
 I74VRNWL0`I@hkmTGLM55=0
 R2
 R0
-R3
+R12
 8register.v
 Fregister.v
 L0 5
@@ -770,7 +792,7 @@ R0
 R3
 8shifter.v
 Fshifter.v
-R11
+R14
 R4
 r1
 !s85 0
