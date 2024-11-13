@@ -22,10 +22,10 @@ module hdu (clk, rst, opcode,
 
     // register #(.REGISTER_WIDTH(1)) HazardLatch(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(structural_hazard), .readData(data_hazard));
     //This opcode is the opcode from the most latest fetched instruction
-    wire control_hazard = (opcode[4:2] == 3'b001 | opcode[4:2] == 3'b011) ? 1'b1 : 1'b0;
+    wire control_hazard = (opcode[4:2] == 3'b001 | opcode[4:2] == 3'b011);
 
     assign disablePCWrite = data_hazard | control_hazard | insertNOP;
-    assign disableIFIDWrite = data_hazard | control_hazard | insertNOP;
+    assign disableIFIDWrite = data_hazard | insertNOP;
 
     // wire insertNOP_int;
     // assign insertNOP = data_hazard & insertNOP_int;

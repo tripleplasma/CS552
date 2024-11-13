@@ -23,7 +23,7 @@ module proc (/*AUTOARG*/
    /* your code here -- should include instantiations of fetch, decode, execute, mem and wb modules */
    wire rst_d;
    wire [15:0] instruction_f, instruction_d, instruction_e;
-   wire [2:0] writeRegSel_d, writeRegSel_e, writeRegSel_m, writeRegSel_wb;
+   wire [3:0] writeRegSel_d, writeRegSel_e, writeRegSel_m, writeRegSel_wb;
    wire [15:0] writeData;
    wire [15:0] read1Data_d, read1Data_e, read1Data_m;
    wire [15:0] read2Data_d, read2Data_e, read2Data_m;
@@ -100,9 +100,9 @@ module proc (/*AUTOARG*/
                .opcode(instruction_f[15:11]),
                .ifIdReadRegister1({1'b0, instruction_d[10:8]}), 
                .ifIdReadRegister2({1'b0, instruction_d[7:5]}),
-               .idExWriteRegister({1'b0, writeRegSel_e}), 
-               .exMemWriteRegister({1'b0, writeRegSel_m}),
-               .memWbWriteRegister({1'b0, writeRegSel_wb}),
+               .idExWriteRegister(writeRegSel_e), 
+               .exMemWriteRegister(writeRegSel_m),
+               .memWbWriteRegister(writeRegSel_wb),
                // Outputs
                .disablePCWrite(disablePCWrite),
                .disableIFIDWrite(disableIFIDWrite),
@@ -128,10 +128,10 @@ module proc (/*AUTOARG*/
                      .exception(exception));
    
    //----Want inside decode----
-   assign writeRegSel_d = (regDst == 2'b00) ? instruction_d[4:2] :
-                           (regDst == 2'b01) ? instruction_d[7:5] :
-                           (regDst == 2'b10) ? instruction_d[10:8] :
-                           3'b111;
+   assign writeRegSel_d = (regDst == 2'b00) ? {1'b0, instruction_d[4:2]} :
+                           (regDst == 2'b01) ? {1'b0, instruction_d[7:5]} :
+                           (regDst == 2'b10) ? {1'b0, instruction_d[10:8]} :
+                           3'b0111;
                         
    // assign writeData = (link) ? PC + 2 : wbData;
    //----END----
@@ -141,7 +141,7 @@ module proc (/*AUTOARG*/
                   .rst(rst), 
                   .read1RegSel(instruction_d[10:8]), 
                   .read2RegSel(instruction_d[7:5]), 
-                  .writeregsel(writeRegSel_wb), 
+                  .writeregsel(writeRegSel_wb[2:0]), 
                   .writedata(writeData), 
                   .write(regWrite_wb),
                   .imm_5(instruction_d[4:0]), 
