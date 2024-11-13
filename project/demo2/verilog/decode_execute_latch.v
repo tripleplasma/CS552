@@ -15,16 +15,18 @@ module decode_execute_latch(clk, rst, nop, PC_d, PC_e, instruction_d, instructio
     wire halt_de_int, link_de_int, memRead_de_int, memToReg_de_int, memWrite_de_int, aluSrc_de_int, jumpImm_de_int, jump_de_int, regWrite_de_int;
     wire [2:0] branch_de_int, writeRegSel_de_int;
 
+    //NOTE: With a Hazard you either overiding a value that shoul persist or you're holding a value too long and thinks its constantly hazarding. You should make sure the bubble is being adding in the right place
+
     register iPC_LATCH_DE(.clk(clk), .rst(rst), .writeEn(~nop), .writeData(PC_d), .readData(PC_e));
     register iINSTRUCTION_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(instruction_d), .readData(instruction_de_int));              // rchanged writeEn from ~nop to 1, unsure about it here due to other signals
     assign instruction_e = (nop) ? 16'b0000_1000_0000_0000 : instruction_de_int;
 
     register iREAD1DATA_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(read1Data_d), .readData(read1Data_de_int));
-    assign read1Data_e = (nop) ? 16'h0000 : read1Data_de_int;
+    assign read1Data_e = (nop) ? 16'h1111 : read1Data_de_int;
     register iREAD2DATA_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(read2Data_d), .readData(read2Data_de_int));
-    assign read2Data_e = (nop) ? 16'h0000 : read2Data_de_int;
+    assign read2Data_e = (nop) ? 16'h1111 : read2Data_de_int;
     register iIMMEXT_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(immExt_d), .readData(immExt_de_int));
-    assign immExt_e = (nop) ? 16'h0000 : immExt_de_int;
+    assign immExt_e = (nop) ? 16'h1111 : immExt_de_int;
 
     register #(.REGISTER_WIDTH(1)) iHALT_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(halt_d), .readData(halt_de_int));
     assign halt_e = (nop) ? 1'b0 : halt_de_int;
@@ -47,7 +49,7 @@ module decode_execute_latch(clk, rst, nop, PC_d, PC_e, instruction_d, instructio
 
     register #(.REGISTER_WIDTH(3)) iBRANCH_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(branch_d), .readData(branch_de_int));
     assign branch_e = (nop) ? 3'b000 : branch_de_int;
-    register #(.REGISTER_WIDTH(3)) iWRITEREGSEL_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(writeRegSel_d), .readData(writeRegSel_de_int));
-    assign writeRegSel_e = (nop) ? 3'b000 : writeRegSel_de_int;
+    register #(.REGISTER_WIDTH(3)) iWRITEREGSEL_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(writeRegSel_d), .readData(writeRegSel_e));
+    // assign writeRegSel_e = (nop) ? 3'b000 : writeRegSel_de_int;
     
 endmodule

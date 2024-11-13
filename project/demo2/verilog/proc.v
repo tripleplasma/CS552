@@ -37,7 +37,7 @@ module proc (/*AUTOARG*/
    assign err = err_decode;
    
    // hazard signals
-   wire control_hazard, data_hazard, structural_hazard;
+   wire disablePCWrite, disableIFIDWrite, setControlZero;
 
    // control signals
    wire halt_d, halt_e, halt_m, haltxout;
@@ -67,7 +67,7 @@ module proc (/*AUTOARG*/
    fetch fetch0(// Inputs
                .clk(clk), 
                .rst(rst), 
-               .nop(control_hazard | structural_hazard),             // still a little confused on control_hazard/data_hazard/nop
+               .hazard(disablePCWrite),             // still a little confused on control_hazard/data_hazard/nop
                .halt_sig(haltxout), 
                .jump_imm_sig(jumpImm_m), 
                .jump_sig(jump_m), 
@@ -83,7 +83,7 @@ module proc (/*AUTOARG*/
    fetch_decode_latch iFDLATCH0( // Inputs
                                  .clk(internal_clock), 
                                  .rst(rst), 
-                                 .nop(control_hazard | data_hazard), 
+                                 .nop(disableIFIDWrite), 
                                  // input followed by latched output
                                  .rst_d(rst_d),
                                  .PC_f(PC_f),
@@ -93,15 +93,20 @@ module proc (/*AUTOARG*/
    
    hdu iHDU_0( // Inputs
                .clk(internal_clock), 
-               .rst(rst_d), 
+               .rst(rst_d),
+               .PC_e(PC_e),
+               .PC_m(PC_m),
+               .PC_wb(PC_wb),
+               .opcode(instruction_f[15:11]),
                .ifIdReadRegister1({1'b0, instruction_d[10:8]}), 
-               .ifIdReadRegister2({1'b0, instruction_d[7:5]}), 
-               .ifIdWriteRegister({1'b0, writeRegSel_d}), 
-               .opcode(instruction_f[15:11]), 
+               .ifIdReadRegister2({1'b0, instruction_d[7:5]}),
+               .idExWriteRegister({1'b0, writeRegSel_e}), 
+               .exMemWriteRegister({1'b0, writeRegSel_m}),
+               .memWbWriteRegister({1'b0, writeRegSel_wb}),
                // Outputs
-               .data_hazard(data_hazard), 
-               .control_hazard(control_hazard),
-               .structural_hazard(structural_hazard));
+               .disablePCWrite(disablePCWrite),
+               .disableIFIDWrite(disableIFIDWrite),
+               .setControlZero(setControlZero));
 
    // determine control signals based on opcode
    control iCONTROL0(// Inputs
@@ -152,7 +157,7 @@ module proc (/*AUTOARG*/
    decode_execute_latch iDELATCH0(// Inputs 
                                  .clk(internal_clock), 
                                  .rst(rst), 
-                                 .nop(data_hazard), 
+                                 .nop(setControlZero), 
                                  // Input followed by latched output
                                  .PC_d(PC_d),
                                  .PC_e(PC_e),

@@ -5,14 +5,14 @@
    Description     : This is the module for the overall fetch stage of the processor.
 */
 `default_nettype none
-module fetch ( clk, rst, nop,
+module fetch ( clk, rst, hazard,
                halt_sig, jump_imm_sig, jump_sig, except_sig, br_contr_sig, 
                imm_jump_reg_val, extend_val,
                PC_2, instr, output_clk);
    input wire clk;
    input wire rst;
 
-   input wire nop;
+   input wire hazard;
    input wire halt_sig;
    input wire jump_imm_sig;
    input wire jump_sig;
@@ -53,7 +53,7 @@ module fetch ( clk, rst, nop,
    //output_clk is for managing the Halt instruction
    assign output_clk = halt_sig ? 1'b0 : clk;
    // assign nextPC = rst ? 16'b0 : (except_sig ? 16'h02 : addr_pre_exception);
-   assign nextPC = (rst) ? 16'b0 : (nop) ? pcCurrent : addr_pre_exception;
+   assign nextPC = (rst) ? 16'b0 : (hazard) ? pcCurrent : addr_pre_exception;
    // assign EPC = except_sig ? PC_2 : EPC;
 
    memory2c instr_mem(.data_out(instr), .data_in(16'b0), .addr(pcCurrent), .enable(1'b1), .wr(1'b0), .createdump(1'b0), .clk(output_clk), .rst(rst));

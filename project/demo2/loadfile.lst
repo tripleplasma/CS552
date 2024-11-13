@@ -1,16 +1,11 @@
-          // Original test: ./bolanows/hw4/problem6/slli_0.asm
-          // Author: bolanows
+          // Original test: ./ziliang/hw4/problem6/add_1.asm
+          // Author: Khiem Vu
           // Test source code follows
           
           
-          //tests to make sure it shifts data the way it is expected
+          //This tests the output value in the ALU
           
-0000 c055 LBI r0 0x55
-0002 a821 SLLI r1, r0, 1
-0004 a842 SLLI r2, r0, 2
-0006 a863 SLLI r3, r0, 3
-0008 a884 SLLI r4, r0, 4
-000a a8a6 SLLI r5, r0, 6
-000c a8c9 SLLI r6, r0, 9
-000e a8ec SLLI r7, r0, 12
-0010 0000 halt
+0000 c101 lbi r1, 1
+0002 c202 lbi r2, 2
+0004 d94c add r3, r1, r2
+0006 0000 halt
