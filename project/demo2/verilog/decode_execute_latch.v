@@ -16,8 +16,9 @@ module decode_execute_latch(clk, rst, nop, PC_d, PC_e, instruction_d, instructio
     wire [2:0] branch_de_int, writeRegSel_de_int;
 
     //NOTE: With a Hazard you either overiding a value that shoul persist or you're holding a value too long and thinks its constantly hazarding. You should make sure the bubble is being adding in the right place
-
-    register iPC_LATCH_DE(.clk(clk), .rst(rst), .writeEn(~nop), .writeData(PC_d), .readData(PC_e));
+    wire [15:0] PC_de_int;
+    register iPC_LATCH_DE(.clk(clk), .rst(rst), .writeEn(~nop), .writeData(PC_d), .readData(PC_de_int));
+    assign PC_e = (nop) ? 16'hffff : PC_de_int;
     register iINSTRUCTION_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(instruction_d), .readData(instruction_de_int));              // rchanged writeEn from ~nop to 1, unsure about it here due to other signals
     assign instruction_e = (nop) ? 16'b0000_1000_0000_0000 : instruction_de_int;
 
@@ -49,7 +50,7 @@ module decode_execute_latch(clk, rst, nop, PC_d, PC_e, instruction_d, instructio
 
     register #(.REGISTER_WIDTH(3)) iBRANCH_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(branch_d), .readData(branch_de_int));
     assign branch_e = (nop) ? 3'b000 : branch_de_int;
-    register #(.REGISTER_WIDTH(3)) iWRITEREGSEL_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(writeRegSel_d), .readData(writeRegSel_e));
+    register #(.REGISTER_WIDTH(3)) iWRITEREGSEL_LATCH_DE(.clk(clk), .rst(rst), .writeEn(~nop), .writeData(writeRegSel_d), .readData(writeRegSel_e));
     // assign writeRegSel_e = (nop) ? 3'b000 : writeRegSel_de_int;
     
 endmodule

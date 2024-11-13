@@ -37,7 +37,7 @@ module proc (/*AUTOARG*/
    assign err = err_decode;
    
    // hazard signals
-   wire disablePCWrite, disableIFIDWrite, setControlZero;
+   wire disablePCWrite, disableIFIDWrite, insertNOP;
 
    // control signals
    wire halt_d, halt_e, halt_m, haltxout;
@@ -106,7 +106,7 @@ module proc (/*AUTOARG*/
                // Outputs
                .disablePCWrite(disablePCWrite),
                .disableIFIDWrite(disableIFIDWrite),
-               .setControlZero(setControlZero));
+               .insertNOP(insertNOP));
 
    // determine control signals based on opcode
    control iCONTROL0(// Inputs
@@ -157,7 +157,7 @@ module proc (/*AUTOARG*/
    decode_execute_latch iDELATCH0(// Inputs 
                                  .clk(internal_clock), 
                                  .rst(rst), 
-                                 .nop(setControlZero), 
+                                 .nop(insertNOP), 
                                  // Input followed by latched output
                                  .PC_d(PC_d),
                                  .PC_e(PC_e),
