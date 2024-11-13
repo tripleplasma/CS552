@@ -9,7 +9,7 @@ z2
 cModel Technology
 Z0 d/home/bacholl/private/ECE552/CS552/project/demo2/verilog
 valu
-Z1 !s110 1731453546
+Z1 !s110 1731459749
 !i10b 1
 !s100 =IF4kD@;HZdVl;LkT<mkU0
 IY>TV80;o^6bSVdSOG<A^K3
@@ -23,7 +23,7 @@ Z4 OP;L;10.7c;67
 r1
 !s85 0
 31
-Z5 !s108 1731453546.000000
+Z5 !s108 1731459749.000000
 !s107 xor2.v|wb.v|shifter.v|right_shift_rot_log.v|register.v|regFile.v|regFile_bypass.v|regFile_bypass_hier.v|proc.v|proc_hier.v|proc_hier_pbench.v|overflow.v|not1.v|nor2.v|nand2.v|memory_wb_latch.v|memory.v|memory2c.v|left_shift_rot.v|hdu.v|fullAdder_1b.v|fetch.v|fetch_decode_latch.v|extension.v|execute.v|execute_memory_latch.v|dff.v|decode.v|decode_execute_latch.v|control.v|clkrst.v|cla_4b.v|cla_16b.v|carry_4b.v|carry_1b.v|br_control.v|alu.v|alu_control.v|
 Z6 !s90 +define+RANDSEED=3|-work|__work|alu_control.v|alu.v|br_control.v|carry_1b.v|carry_4b.v|cla_16b.v|cla_4b.v|clkrst.v|control.v|decode_execute_latch.v|decode.v|dff.v|execute_memory_latch.v|execute.v|extension.v|fetch_decode_latch.v|fetch.v|fullAdder_1b.v|hdu.v|left_shift_rot.v|memory2c.v|memory.v|memory_wb_latch.v|nand2.v|nor2.v|not1.v|overflow.v|proc_hier_pbench.v|proc_hier.v|proc.v|regFile_bypass_hier.v|regFile_bypass.v|regFile.v|register.v|right_shift_rot_log.v|shifter.v|wb.v|xor2.v|
 !i113 1
@@ -408,11 +408,11 @@ nfull@adder_1b
 vhdu
 R1
 !i10b 1
-!s100 AjT6FL]Wa4>NOTL0@zFkW3
-I>3=;EnTCRabdIB26Kz6WA0
+!s100 _L7QPgU1Z4j<zCl_R6_U[3
+IZiNNn2`LO0Nde:QKUW10=1
 R2
 R0
-w1731451604
+w1731459589
 8hdu.v
 Fhdu.v
 L0 1
@@ -606,11 +606,11 @@ R9
 vproc
 R1
 !i10b 1
-!s100 G0B]A42jibzGi0S`zAFD03
-Iz:Jn5@m<ogGUSWiOPYnZU2
+!s100 N10;Jjm96<]0mD18oABn>3
+IF_NONeKbdZT:1?==eF<gm2
 R2
 R0
-w1731449329
+w1731459622
 8proc.v
 Fproc.v
 L0 5

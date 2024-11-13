@@ -93,9 +93,10 @@ module proc (/*AUTOARG*/
    
    hdu iHDU_0( // Inputs
                .clk(internal_clock), 
-               .rst(rst), 
+               .rst(rst),
+               .PC_wb(PC_wb), 
                .PC_m(PC_m),
-               .PC_f(PC_f),
+               .PC_e(PC_e),
                .instruction_m(instruction_m),
                .instruction_e(instruction_e),
                .instruction_d(instruction_d),

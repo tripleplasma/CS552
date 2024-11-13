@@ -1,21 +1,24 @@
-          // Test provided by Karu, comments updated by Matt S.
-          // beqz test.
+          // Author: Matt Sinclair
+          // CS/ECE 552 Spring '08
+          // Homework #4, Problem #7
+          //
+          // Filename: bgez_1.asm
+          // BGEZ assembly test
+          //
+          // This is a test of the bgez instruction.  This test demonstrates both
+          // branching backwards and not branching (when the condition is not true).
           
-0000 c101 lbi r1, 1            //set r1 to a constant 1
-0002 c202 lbi r2, 2	         //set r2 to a constant 2
-0004 c401 lbi r4, 1            //set r4 to a constant 1, r4 will be used to indicate our program can be execate currectly or not
-0006 e94c slt r3, r1, r2       //set the r3 if r1 is less than r2, it will be set here
-0008 6302 beqz r3, .label1     //if r3 is zero, program will branch to label1, but since r3 == 1 from the previous line, the branch should not be taken
-000a 4481 addi r4, r4, 1       //if the beqz above didn't branch, r4 will be added 1
-          
-000c      .label1:
-000c c102 lbi r1, 2            //set r1 to a constant 2
-000e c201 lbi r2, 1	         //set r2 to a constant 1
-0010 e94c slt r3, r1,r2        //set the r3 if r1 is less than r2, it won't be set here
-0012 6304 beqz r3, .label2     //if r3 is zero, program will branch to label2 -- since r3 == 0 from the previous line, the branch will be taken
-0014 4484 addi r4, r4, 4	     //if the beqz above didn't branch, r4 will be added 4
-0016 0000 halt
-          
-0018      .label2:
-0018 4482 addi r4, r4, 2       //if the beqz above brance, r4 will be added 2
-001a 0000 halt
+                                          // Note: This test also has some dependencies which
+                                          // makes it nice when testing pipelining
+0000 c100 LBI     r1, 0                   // loads all 0's into r1 to clear it
+0002 412b ADDI    r1, r1, 11              // move 11 (base 10) into r1 (b base 16)
+0004      .goHere:
+0004 c200 LBI     r2, 0
+0006 413f ADDI    r1, r1, -1
+0008 79fa BGEZ    r1, .goHere             // initially r1 = 10 when this is tested, so it
+                                          // loops for a while
+                                          // r1 = -1 now
+000a c200 LBI     r2, 0
+000c 412a ADDI    r1, r1, 10
+000e 0000 HALT                            // end bgez_1.asm
+                                          // r1 = 9 (base 10) now
