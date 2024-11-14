@@ -1,0 +1,850 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 d/home/khiem/private/cs552/project/CS552/project/demo2
+valu
+Z1 !s110 1731546488
+!i10b 1
+!s100 =IF4kD@;HZdVl;LkT<mkU0
+I<;jMdfQMP6Vh?5V5RlFYF2
+Z2 VDg1SIo80bB@j0V0VzS_@n1
+R0
+Z3 w1730576095
+8verilog/alu.v
+Fverilog/alu.v
+L0 7
+Z4 OP;L;10.7c;67
+r1
+!s85 0
+31
+Z5 !s108 1731546488.000000
+!s107 verilog/xor2.v|verilog/wb.v|verilog/shifter.v|verilog/right_shift_rot_log.v|verilog/register.v|verilog/regFile.v|verilog/regFile_bypass.v|verilog/regFile_bypass_hier.v|verilog/proc.v|verilog/proc_hier.v|verilog/proc_hier_pbench.v|verilog/overflow.v|verilog/not1.v|verilog/nor2.v|verilog/nand2.v|verilog/memory_wb_latch.v|verilog/memory.v|verilog/memory2c.v|verilog/left_shift_rot.v|verilog/hdu.v|verilog/fullAdder_1b.v|verilog/fetch.v|verilog/fetch_decode_latch.v|verilog/extension.v|verilog/execute.v|verilog/execute_memory_latch.v|verilog/dff.v|verilog/decode.v|verilog/decode_execute_latch.v|verilog/control.v|verilog/clkrst.v|verilog/cla_4b.v|verilog/cla_16b.v|verilog/carry_4b.v|verilog/carry_1b.v|verilog/br_control.v|verilog/alu.v|verilog/alu_control.v|
+Z6 !s90 +define+RANDSEED=3|-work|__work|verilog/alu_control.v|verilog/alu.v|verilog/br_control.v|verilog/carry_1b.v|verilog/carry_4b.v|verilog/cla_16b.v|verilog/cla_4b.v|verilog/clkrst.v|verilog/control.v|verilog/decode_execute_latch.v|verilog/decode.v|verilog/dff.v|verilog/execute_memory_latch.v|verilog/execute.v|verilog/extension.v|verilog/fetch_decode_latch.v|verilog/fetch.v|verilog/fullAdder_1b.v|verilog/hdu.v|verilog/left_shift_rot.v|verilog/memory2c.v|verilog/memory.v|verilog/memory_wb_latch.v|verilog/nand2.v|verilog/nor2.v|verilog/not1.v|verilog/overflow.v|verilog/proc_hier_pbench.v|verilog/proc_hier.v|verilog/proc.v|verilog/regFile_bypass_hier.v|verilog/regFile_bypass.v|verilog/regFile.v|verilog/register.v|verilog/right_shift_rot_log.v|verilog/shifter.v|verilog/wb.v|verilog/xor2.v|
+!i113 1
+Z7 o-work __work
+Z8 !s92 +define+RANDSEED=3 -work __work
+Z9 tCvgOpt 0
+valu_control
+R1
+!i10b 1
+!s100 gibfFZ4>YU1T^CfKJZMeH2
+IiYChl0hhm]VE[Y?ZTgEI`0
+R2
+R0
+R3
+8verilog/alu_control.v
+Fverilog/alu_control.v
+L0 8
+R4
+r1
+!s85 0
+31
+R5
+Z10 !s107 verilog/xor2.v|verilog/wb.v|verilog/shifter.v|verilog/right_shift_rot_log.v|verilog/register.v|verilog/regFile.v|verilog/regFile_bypass.v|verilog/regFile_bypass_hier.v|verilog/proc.v|verilog/proc_hier.v|verilog/proc_hier_pbench.v|verilog/overflow.v|verilog/not1.v|verilog/nor2.v|verilog/nand2.v|verilog/memory_wb_latch.v|verilog/memory.v|verilog/memory2c.v|verilog/left_shift_rot.v|verilog/hdu.v|verilog/fullAdder_1b.v|verilog/fetch.v|verilog/fetch_decode_latch.v|verilog/extension.v|verilog/execute.v|verilog/execute_memory_latch.v|verilog/dff.v|verilog/decode.v|verilog/decode_execute_latch.v|verilog/control.v|verilog/clkrst.v|verilog/cla_4b.v|verilog/cla_16b.v|verilog/carry_4b.v|verilog/carry_1b.v|verilog/br_control.v|verilog/alu.v|verilog/alu_control.v|
+R6
+!i113 1
+R7
+R8
+R9
+vbr_control
+R1
+!i10b 1
+!s100 jV9L>6BVO?agUae9QhHFA2
+I2Ye4BPRW6KcXh@BXL^OfT2
+R2
+R0
+R3
+8verilog/br_control.v
+Fverilog/br_control.v
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vcarry_1b
+R1
+!i10b 1
+!s100 TQE37L]XXNI83T7eN74n40
+IAGn[DHU?3bEiF4;TD0dL`3
+R2
+R0
+R3
+8verilog/carry_1b.v
+Fverilog/carry_1b.v
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vcarry_4b
+R1
+!i10b 1
+!s100 `1DWZEHJn25NN[ToBiR?N3
+I4^i8<PeHPONNQj>HbJf@92
+R2
+R0
+R3
+8verilog/carry_4b.v
+Fverilog/carry_4b.v
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vcla_16b
+R1
+!i10b 1
+!s100 W7fai@VQohYf7LS8_;9;b3
+IQz^8AcJ_aW[`:JXTB1AIz0
+R2
+R0
+R3
+8verilog/cla_16b.v
+Fverilog/cla_16b.v
+L0 7
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vcla_4b
+R1
+!i10b 1
+!s100 E0hHz@zj]0Rh:Q^z?@ha=2
+If;WAYO4Ak9`oUJg2O_lfg2
+R2
+R0
+R3
+8verilog/cla_4b.v
+Fverilog/cla_4b.v
+L0 7
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vclkrst
+R1
+!i10b 1
+!s100 17R8;?7`BJD8F]2OJne>o0
+I7L8<?YoEYAH0iW80m9KeA3
+R2
+R0
+R3
+8verilog/clkrst.v
+Fverilog/clkrst.v
+L0 13
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vcontrol
+R1
+!i10b 1
+!s100 H1V]]e^3Rj;86G3aBSO821
+I^9eTMYVibalWS^Qh9NZ<:0
+R2
+R0
+w1731262439
+8verilog/control.v
+Fverilog/control.v
+L0 7
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vdecode
+R1
+!i10b 1
+!s100 UzLM;`B^BnTjKRh<cBglG1
+IU0?3_Ae`cne8bDT1h;N7G2
+R2
+R0
+w1731219722
+8verilog/decode.v
+Fverilog/decode.v
+L0 8
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vdecode_execute_latch
+R1
+!i10b 1
+!s100 zNz6VJoAc4^O=FEU0z=Q83
+IIBLRnQKT847imPEAgeM4Q1
+R2
+R0
+w1731455393
+8verilog/decode_execute_latch.v
+Fverilog/decode_execute_latch.v
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vdff
+R1
+!i10b 1
+!s100 F^G8EIaUgKJ6DQB2zBzd^2
+IF0OQ3GFaGXieVS5KIikLH1
+R2
+R0
+w1731258717
+8verilog/dff.v
+Fverilog/dff.v
+L0 6
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vexecute
+R1
+!i10b 1
+!s100 <1MPLjAaO4[]EeI7A<;7?0
+I3]>LC^PLI:6mKCDbn0oMR3
+R2
+R0
+R3
+8verilog/execute.v
+Fverilog/execute.v
+L0 8
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vexecute_memory_latch
+R1
+!i10b 1
+!s100 hV7ZWK:4E1E]:YNQQ77kV3
+ImL[G4EQ^W2[SYdbaZj<N<1
+R2
+R0
+Z11 w1731455394
+8verilog/execute_memory_latch.v
+Fverilog/execute_memory_latch.v
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vextension
+R1
+!i10b 1
+!s100 AdbHNZ9QPT?DgQe`<ZYX?2
+I<=dW4dF8zY_z28Eo0l35Q0
+R2
+R0
+R3
+8verilog/extension.v
+Fverilog/extension.v
+L0 9
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vfetch
+R1
+!i10b 1
+!s100 <W2>]4N73U`[I?EKjiKb`3
+IDWc49:cnBY4c_okkWoAH=2
+R2
+R0
+w1731359721
+8verilog/fetch.v
+Fverilog/fetch.v
+L0 8
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vfetch_decode_latch
+R1
+!i10b 1
+!s100 B:dMZk];zbZb[7>YTCX;^0
+IYfTY@znk:68K?bi9MVUYc3
+R2
+R0
+R11
+8verilog/fetch_decode_latch.v
+Fverilog/fetch_decode_latch.v
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vfullAdder_1b
+R1
+!i10b 1
+!s100 zT>PHZGBT9nZhEh[oX1Ej0
+IhlNHOLL;XM?_M1^0B6N3E3
+R2
+R0
+R3
+8verilog/fullAdder_1b.v
+Fverilog/fullAdder_1b.v
+L0 7
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+nfull@adder_1b
+vhdu
+R1
+!i10b 1
+!s100 kdhQKK0:75AG4oRlfXGGN0
+ITUc8glk=kHZd8aUQW]nYj3
+R2
+R0
+w1731546471
+8verilog/hdu.v
+Fverilog/hdu.v
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vleft_shift_rot
+R1
+!i10b 1
+!s100 M61nEkf;gUOo[olM0f7Fh1
+IELbXHenkNY<L1gEi]6LJk0
+R2
+R0
+R3
+8verilog/left_shift_rot.v
+Fverilog/left_shift_rot.v
+L0 5
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vmemory
+R1
+!i10b 1
+!s100 QhHdYG_z07dL9mhmN@]UE0
+IT`^jXij?X<H_<dVR]U>VH2
+R2
+R0
+w1731022258
+8verilog/memory.v
+Fverilog/memory.v
+L0 9
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vmemory2c
+R1
+!i10b 1
+!s100 1ITXY4ZWd3SeI8Nl4zmz13
+I2LSQFX]zW@M>W6Fi6Cg@K2
+R2
+R0
+R3
+8verilog/memory2c.v
+Fverilog/memory2c.v
+L0 35
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vmemory_wb_latch
+R1
+!i10b 1
+!s100 >@CXjhnV5eIlCaE9?b7g<2
+I^3ZQg;<ESSBiJQ6AR?ZLL3
+R2
+R0
+w1731263590
+8verilog/memory_wb_latch.v
+Fverilog/memory_wb_latch.v
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vnand2
+R1
+!i10b 1
+!s100 Ndlj6LYD^2lLe`Q=NBLmF3
+I36Ml??0<kMi<]3<0C:zEk0
+R2
+R0
+R3
+8verilog/nand2.v
+Fverilog/nand2.v
+L0 7
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vnor2
+R1
+!i10b 1
+!s100 VIMDj^Q4mJY^elKoZm8cF0
+IA^8Eal_^L^ZS9LF6`UL7;2
+R2
+R0
+R3
+8verilog/nor2.v
+Fverilog/nor2.v
+L0 7
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vnot1
+R1
+!i10b 1
+!s100 ;VahZFm1SBjhWBk_[nfTm0
+IQf<439RW?>:hD2WnB9NF_3
+R2
+R0
+R3
+8verilog/not1.v
+Fverilog/not1.v
+L0 7
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+voverflow
+R1
+!i10b 1
+!s100 3HVn=CLiVh97XXijihmZ[3
+ICJLiiSV=Lm5[E6BO[XXl>0
+R2
+R0
+R3
+8verilog/overflow.v
+Fverilog/overflow.v
+L0 5
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vproc
+R1
+!i10b 1
+!s100 N10;Jjm96<]0mD18oABn>3
+IzCS81WkBMXF8PJENmn7ZI1
+R2
+R0
+w1731546410
+8verilog/proc.v
+Fverilog/proc.v
+L0 5
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vproc_hier
+R1
+!i10b 1
+!s100 V8UM3S8XS1XPNED^P<Mi:0
+I56PRH0n?YE?7E=m_Y>@4F3
+R2
+R0
+w1731359284
+8verilog/proc_hier.v
+Fverilog/proc_hier.v
+L0 6
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vproc_hier_pbench
+R1
+!i10b 1
+!s100 8D4S7RD[9bHK_bo;19];62
+IAH6;ndRFDo;8g8?OF5gI32
+R2
+R0
+w1731361172
+8verilog/proc_hier_pbench.v
+Fverilog/proc_hier_pbench.v
+L0 5
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vregFile
+R1
+!i10b 1
+!s100 MzZS3@UFY7QJbNPQZcQ]V0
+I86B37[mC112m2MKfz2Sn`1
+R2
+R0
+w1731258198
+8verilog/regFile.v
+Fverilog/regFile.v
+Z12 L0 10
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+nreg@file
+vregFile_bypass
+R1
+!i10b 1
+!s100 MjZD5ZlEFEgo343@>IERb2
+I=JQo_NGXQGKM[oF?HUXZc3
+R2
+R0
+R11
+8verilog/regFile_bypass.v
+Fverilog/regFile_bypass.v
+L0 8
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+nreg@file_bypass
+vregFile_bypass_hier
+R1
+!i10b 1
+!s100 zP7zm@5a<I@]G>8LR0:BC2
+INN1Ze?c[Z_WGhd[dST@PG1
+R2
+R0
+Z13 w1730576096
+8verilog/regFile_bypass_hier.v
+Fverilog/regFile_bypass_hier.v
+R12
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+nreg@file_bypass_hier
+vregister
+R1
+!i10b 1
+!s100 7DbIK<F2MLi<f9BFnKZYC0
+IAZXhFK3IMICEOCI=MA1Wb3
+R2
+R0
+w1731263619
+8verilog/register.v
+Fverilog/register.v
+L0 5
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vright_shift_rot_log
+R1
+!i10b 1
+!s100 leDE>N]SaJ_h8lPKBNUo12
+I=Ih75:4TFZ2H2::f3PzHe1
+R2
+R0
+R13
+8verilog/right_shift_rot_log.v
+Fverilog/right_shift_rot_log.v
+L0 5
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vshifter
+R1
+!i10b 1
+!s100 CB9XY;@6kd4k8M[C7Fmnm0
+I5@V5zPU`j0h>0DhV6O6001
+R2
+R0
+R13
+8verilog/shifter.v
+Fverilog/shifter.v
+R12
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vwb
+R1
+!i10b 1
+!s100 Zb2GNY_l7VlzTJfW`RgGD0
+I7G^WZER46^[<=@`_=caB03
+R2
+R0
+R13
+8verilog/wb.v
+Fverilog/wb.v
+L0 8
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
+vxor2
+R1
+!i10b 1
+!s100 6JlUGTVXV:FRQY7`ZJ8<n0
+I6iDCV=NPNk13]mHgFKM5=0
+R2
+R0
+R13
+8verilog/xor2.v
+Fverilog/xor2.v
+L0 7
+R4
+r1
+!s85 0
+31
+R5
+R10
+R6
+!i113 1
+R7
+R8
+R9
