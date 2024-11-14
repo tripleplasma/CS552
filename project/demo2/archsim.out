@@ -5,11 +5,12 @@ Type "help" for more information
 
 Loading program...
 Executing...
-jal 2
-INUM:        0 PC: 0x0000 REG: 7 VALUE: 0x0002
-nop
-INUM:        1 PC: 0x0004
+lbi r1, 2
+INUM:        0 PC: 0x0000 REG: 1 VALUE: 0x0002
+lbi r3, 4
+INUM:        1 PC: 0x0002 REG: 3 VALUE: 0x0004
+jr r1, 8INUM:        2 PC: 0x0004
 halt
 program halted
-INUM:        2 PC: 0x0006
+INUM:        3 PC: 0x000a
 Program Finished

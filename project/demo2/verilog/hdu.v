@@ -39,9 +39,9 @@ module hdu (clk, rst, PC_e, PC_m, PC_wb, ifIdReadRegister1, ifIdReadRegister2,
     //assign data_hazard = pre_data_hazard;
     register #(.REGISTER_WIDTH(1)) DataHazardLatch(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(pre_data_hazard), .readData(data_hazard));
 
-    assign pre_control_hazard = ((opcode[4:2] == 3'b001 | opcode[4:2] == 3'b011) & ~pre_data_hazard & ~((instruction_m == instruction_f) & (instruction_d == 16'b0000_1000_0000_0000) & (instruction_e == 16'b0000_1000_0000_0000))) ? 1'b1 : 1'b0;
+    assign pre_control_hazard = ((~ifIdNop) & (opcode[4:2] == 3'b001 | opcode[4:2] == 3'b011) & ~pre_data_hazard & ~((instruction_m == instruction_f) & (instruction_d == 16'b0000_1000_0000_0000) & (instruction_e == 16'b0000_1000_0000_0000))) ? 1'b1 : 1'b0;
     //  & (instruction_m != instruction_f)
-    assign jal_hazard = ((opcode[4:1] == 4'b0011) & ~pre_data_hazard & ~((instruction_wb == instruction_f) & (instruction_d == 16'b0000_1000_0000_0000) & (instruction_e == 16'b0000_1000_0000_0000) & (instruction_m == 16'b0000_1000_0000_0000))) ? 1'b1 : 1'b0;
+    assign jal_hazard = ((~idExNop) & (opcode[4:1] == 4'b0011) & ~pre_data_hazard & ~((instruction_m == instruction_f) & (instruction_d == 16'b0000_1000_0000_0000) & (instruction_e == 16'b0000_1000_0000_0000) & (instruction_m == 16'b0000_1000_0000_0000))) ? 1'b1 : 1'b0;
 
     assign control_hazard_int = (opcode[4:1] == 4'b0011) ? jal_hazard : pre_control_hazard;
     register #(.REGISTER_WIDTH(1)) CtrlHazardLatch(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData((control_hazard_int) & ((instruction_d == instruction_f) | instruction_d == 16'b0000_1000_0000_0000)), .readData(control_hazard));
