@@ -5,14 +5,14 @@
    Description     : This is the module for the overall fetch stage of the processor.
 */
 `default_nettype none
-module fetch ( clk, rst, hazard,
+module fetch ( clk, rst, hazard, setFetchNOP,
                halt_sig, jump_imm_sig, jump_sig, except_sig, br_contr_sig, 
                imm_jump_reg_val, extend_val,
                PC_2, instr, output_clk);
    input wire clk;
    input wire rst;
 
-   input wire hazard;
+   input wire hazard, setFetchNOP;
    input wire halt_sig;
    input wire jump_imm_sig;
    input wire jump_sig;
@@ -28,7 +28,7 @@ module fetch ( clk, rst, hazard,
    output wire [15:0] PC_2;
    wire [15:0] pcCurrent;
    // wire[15:0] EPC = 16'b0;
-   wire[15:0] nextPC;
+   wire [15:0] nextPC;
    wire [15:0] instr_int;
 
    register PC(.clk(output_clk), .rst(rst), .writeEn(1'b1), .writeData(nextPC), .readData(pcCurrent));
@@ -56,7 +56,8 @@ module fetch ( clk, rst, hazard,
    assign nextPC = (rst) ? 16'b0 : (hazard) ? pcCurrent : addr_pre_exception;
    // assign EPC = except_sig ? PC_2 : EPC;
 
-   memory2c instr_mem(.data_out(instr), .data_in(16'b0), .addr(pcCurrent), .enable(1'b1), .wr(1'b0), .createdump(1'b0), .clk(output_clk), .rst(rst));
+   assign instr = (setFetchNOP) ? 16'b0000_1000_0000_0000 : instr_int;
+   memory2c instr_mem(.data_out(instr_int), .data_in(16'b0), .addr(pcCurrent), .enable(1'b1), .wr(1'b0), .createdump(1'b0), .clk(output_clk), .rst(rst));
 
 endmodule
 `default_nettype wire

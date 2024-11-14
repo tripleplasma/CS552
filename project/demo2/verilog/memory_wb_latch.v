@@ -1,12 +1,21 @@
-module memory_wb_latch(clk, rst, PC_m, PC_wb, readData_m, readData_wb, aluOut_m, aluOut_wb, memToReg_m, memToReg_wb, link_m, link_wb, writeRegSel_m, writeRegSel_wb, regWrite_m, regWrite_wb, halt_m, halt_wb);
+module memory_wb_latch(clk, rst, 
+                        PC_m, PC_wb, 
+                        readData_m, readData_wb, aluOut_m, aluOut_wb, memToReg_m, memToReg_wb, 
+                        link_m, link_wb, writeRegSel_m, writeRegSel_wb, regWrite_m, regWrite_wb, halt_m, halt_wb,
+                        instruction_m, instruction_wb);
 
     input wire clk, rst;
     input wire [15:0] PC_m, readData_m, aluOut_m;
     input wire memToReg_m, link_m, regWrite_m, halt_m;
     input wire [3:0] writeRegSel_m;
+    input wire [15:0] instruction_m;
     output wire [15:0] PC_wb, readData_wb, aluOut_wb;
     output wire memToReg_wb, link_wb, regWrite_wb, halt_wb;
     output wire [3:0] writeRegSel_wb;
+    output wire [15:0] instruction_wb;
+
+
+    register iINSTRUCTION_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(instruction_m), .readData(instruction_wb));
 
     register iPC_LATCH_MW(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(PC_m), .readData(PC_wb));
     register iREADDATA_LATCH_MW(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(readData_m), .readData(readData_wb));  // use ~nop for writeEn?

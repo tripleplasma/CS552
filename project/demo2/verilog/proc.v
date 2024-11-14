@@ -22,7 +22,7 @@ module proc (/*AUTOARG*/
 
    /* your code here -- should include instantiations of fetch, decode, execute, mem and wb modules */
    wire rst_d;
-   wire [15:0] instruction_f, instruction_d, instruction_e;
+   wire [15:0] instruction_f, instruction_d, instruction_e, instruction_m, instruction_wb;
    wire [3:0] writeRegSel_d, writeRegSel_e, writeRegSel_m, writeRegSel_wb;
    wire [15:0] writeData;
    wire [15:0] read1Data_d, read1Data_e, read1Data_m;
@@ -37,7 +37,7 @@ module proc (/*AUTOARG*/
    assign err = err_decode;
    
    // hazard signals
-   wire disablePCWrite, disableIFIDWrite, insertNOP;
+   wire disablePCWrite, disableIFIDWrite, setExNOP, setFetchNOP;
 
    // control signals
    wire halt_d, halt_e, halt_m, haltxout;
@@ -68,6 +68,7 @@ module proc (/*AUTOARG*/
                .clk(clk), 
                .rst(rst), 
                .hazard(disablePCWrite),             // still a little confused on control_hazard/data_hazard/nop
+               .setFetchNOP(setFetchNOP),
                .halt_sig(haltxout), 
                .jump_imm_sig(jumpImm_m), 
                .jump_sig(jump_m), 
@@ -84,7 +85,7 @@ module proc (/*AUTOARG*/
                                  .clk(internal_clock), 
                                  .rst(rst), 
                                  .nop(disableIFIDWrite), 
-                                 // input followed by latched output
+                                 // Output
                                  .rst_d(rst_d),
                                  .PC_f(PC_f),
                                  .PC_d(PC_d),
@@ -97,7 +98,11 @@ module proc (/*AUTOARG*/
                .PC_e(PC_e),
                .PC_m(PC_m),
                .PC_wb(PC_wb),
-               .opcode(instruction_f[15:11]),
+               .opcode_f(instruction_f[15:11]),
+               .opcode_d(instruction_d[15:11]),
+               .opcode_e(instruction_e[15:11]),
+               .opcode_m(instruction_m[15:11]),
+               // .opcode_wb(instruction_wb[15:11]),
                .ifIdReadRegister1({1'b0, instruction_d[10:8]}), 
                .ifIdReadRegister2({1'b0, instruction_d[7:5]}),
                .idExWriteRegister(writeRegSel_e), 
@@ -106,7 +111,8 @@ module proc (/*AUTOARG*/
                // Outputs
                .disablePCWrite(disablePCWrite),
                .disableIFIDWrite(disableIFIDWrite),
-               .insertNOP(insertNOP));
+               .setExNOP(setExNOP),
+               .setFetchNOP(setFetchNOP));
 
    // determine control signals based on opcode
    control iCONTROL0(// Inputs
@@ -157,7 +163,7 @@ module proc (/*AUTOARG*/
    decode_execute_latch iDELATCH0(// Inputs 
                                  .clk(internal_clock), 
                                  .rst(rst), 
-                                 .nop(insertNOP), 
+                                 .nop(setExNOP), 
                                  // Input followed by latched output
                                  .PC_d(PC_d),
                                  .PC_e(PC_e),
@@ -226,6 +232,8 @@ module proc (/*AUTOARG*/
                                  // Input followed by latched output
                                  .PC_e(PC_e),
                                  .PC_m(PC_m),
+                                 .instruction_e(instruction_e), 
+                                 .instruction_m(instruction_m), 
                                  .aluOut_e(aluOut_e), 
                                  .aluOut_m(aluOut_m), 
                                  .read2Data_e(read2Data_e), 
@@ -271,7 +279,9 @@ module proc (/*AUTOARG*/
                               .rst(rst), 
                               // Input followed by latched output
                               .PC_m(PC_m),
-                              .PC_wb(PC_wb),
+                              .PC_wb(PC_wb), 
+                              .instruction_m(instruction_m), 
+                              .instruction_wb(instruction_wb),
                               .readData_m(readData_m), 
                               .readData_wb(readData_wb), 
                               .aluOut_m(aluOut_m), 

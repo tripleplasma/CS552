@@ -26,11 +26,11 @@ module decode_execute_latch(clk, rst, nop, PC_d, PC_e, instruction_d, instructio
     assign instruction_e = (nop) ? 16'b0000_1000_0000_0000 : instruction_de_int;
 
     register iREAD1DATA_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(read1Data_d), .readData(read1Data_de_int));
-    assign read1Data_e = (nop) ? 16'hffff : read1Data_de_int;
+    assign read1Data_e = (nop | (instruction_d == 16'b0000_1000_0000_0000)) ? 16'hffff : read1Data_de_int;
     register iREAD2DATA_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(read2Data_d), .readData(read2Data_de_int));
-    assign read2Data_e = (nop) ? 16'hffff : read2Data_de_int;
+    assign read2Data_e = (nop | (instruction_d == 16'b0000_1000_0000_0000)) ? 16'hffff : read2Data_de_int;
     register iIMMEXT_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(immExt_d), .readData(immExt_de_int));
-    assign immExt_e = (nop) ? 16'hffff : immExt_de_int;
+    assign immExt_e = (nop | (instruction_d == 16'b0000_1000_0000_0000)) ? 16'hffff : immExt_de_int;
 
     register #(.REGISTER_WIDTH(1)) iHALT_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(halt_d), .readData(halt_de_int));
     assign halt_e = (nop) ? 1'b0 : halt_de_int;
@@ -55,6 +55,6 @@ module decode_execute_latch(clk, rst, nop, PC_d, PC_e, instruction_d, instructio
     assign branch_e = (nop) ? 3'b000 : branch_de_int;
     register #(.REGISTER_WIDTH(4)) iWRITEREGSEL_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(writeRegSel_d), .readData(writeRegSel_de_int));
     //Even though we need 3 bits for registers, we need a fourth bit to indicate invalid because we don't wanna set writeRegSel_e to 3'b000 because our system will think that R0 is being used and thus give false positive data hazards
-    assign writeRegSel_e = (nop) ? 4'b1111 : writeRegSel_de_int; 
+    assign writeRegSel_e = (nop | (instruction_d == 16'b0000_1000_0000_0000)) ? 4'b1111 : writeRegSel_de_int; 
     
 endmodule

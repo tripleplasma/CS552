@@ -1,1 +1,1 @@
-./tests/ourTests/add_3.asm SUCCESS CPI:3.5 CYCLES:14 ICOUNT:4 IHITRATE: 0 DHITRATE: 0
+./tests/ourTests/hazard.asm RELAX-PASS
