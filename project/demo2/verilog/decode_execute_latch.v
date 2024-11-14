@@ -20,41 +20,59 @@ module decode_execute_latch(clk, rst, nop, PC_d, PC_e, instruction_d, instructio
 
     //NOTE: With a Hazard you either overiding a value that shoul persist or you're holding a value too long and thinks its constantly hazarding. You should make sure the bubble is being adding in the right place
     wire [15:0] PC_de_int;
-    register iPC_LATCH_DE(.clk(clk), .rst(rst), .writeEn(~nop), .writeData(PC_d), .readData(PC_de_int));
-    assign PC_e = (nop) ? 16'hffff : PC_de_int; //This is set to fffff simply for debugging purposes like seeing the bubble propagate through the pipeline
-    register iINSTRUCTION_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(instruction_d), .readData(instruction_de_int));              // rchanged writeEn from ~nop to 1, unsure about it here due to other signals
-    assign instruction_e = (nop) ? 16'b0000_1000_0000_0000 : instruction_de_int;
 
-    register iREAD1DATA_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(read1Data_d), .readData(read1Data_de_int));
-    assign read1Data_e = (nop) ? 16'hffff : read1Data_de_int;
-    register iREAD2DATA_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(read2Data_d), .readData(read2Data_de_int));
-    assign read2Data_e = (nop | (instruction_d == 16'b0000_1000_0000_0000)) ? 16'hffff : read2Data_de_int;
-    register iIMMEXT_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(immExt_d), .readData(immExt_de_int));
-    assign immExt_e = (nop) ? 16'hffff : immExt_de_int;
+    //NOTE: We move the combinational logic to before we set the value to the latch because it doesn't make sense to latch a bad value then on NOP, we force it to be the right value
 
-    register #(.REGISTER_WIDTH(1)) iHALT_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(halt_d), .readData(halt_de_int));
-    assign halt_e = (nop) ? 1'b0 : halt_de_int;
-    register #(.REGISTER_WIDTH(1)) iLINK_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(link_d), .readData(link_de_int));
-    assign link_e = (nop) ? 1'b0 : link_de_int;
-    register #(.REGISTER_WIDTH(1)) iMEMREAD_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(memRead_d), .readData(memRead_de_int));
-    assign memRead_e = (nop) ? 1'b0 : memRead_de_int;
-    register #(.REGISTER_WIDTH(1)) iMEMTOREG_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(memToReg_d), .readData(memToReg_de_int));
-    assign memToReg_e = (nop) ? 1'b0 : memToReg_de_int;
-    register #(.REGISTER_WIDTH(1)) iMEMWRITE_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(memWrite_d), .readData(memWrite_de_int));
-    assign memWrite_e = (nop) ? 1'b0 : memWrite_de_int;
-    register #(.REGISTER_WIDTH(1)) iALUSRC_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(aluSrc_d), .readData(aluSrc_de_int));
-    assign aluSrc_e = (nop) ? 1'b0 : aluSrc_de_int;
-    register #(.REGISTER_WIDTH(1)) iJUMPIMM_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(jumpImm_d), .readData(jumpImm_de_int));
-    assign jumpImm_e = (nop) ? 1'b0 : jumpImm_de_int;
-    register #(.REGISTER_WIDTH(1)) iJUMP_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(jump_d), .readData(jump_de_int));
-    assign jump_e = (nop) ? 1'b0 : jump_de_int;
-    register #(.REGISTER_WIDTH(1)) iREGWRITE_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(regWrite_d), .readData(regWrite_de_int));
-    assign regWrite_e = (nop) ? 1'b0 : regWrite_de_int;
+    //NOTE: Assumes PC at decode isn't overwritten/ doesnt disappear
+    assign PC_de_int = (nop) ? 16'hffff : PC_d; //This is set to fffff simply for debugging purposes like seeing the bubble propagate through the pipeline
+    register iPC_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(PC_de_int), .readData(PC_e));
 
-    register #(.REGISTER_WIDTH(3)) iBRANCH_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(branch_d), .readData(branch_de_int));
-    assign branch_e = (nop) ? 3'b000 : branch_de_int;
-    register #(.REGISTER_WIDTH(4)) iWRITEREGSEL_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(writeRegSel_d), .readData(writeRegSel_de_int));
+    
+    assign instruction_de_int = (nop) ? 16'b0000_1000_0000_0000 : instruction_d;
+    register iINSTRUCTION_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(instruction_de_int), .readData(instruction_e));
+
+    assign read1Data_de_int = (nop) ? 16'hffff : read1Data_d;
+    register iREAD1DATA_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(read1Data_de_int), .readData(read1Data_e));
+
+    //NOTE: We're doing a check if instruction_d is a NOP because of setFetchNOP propagating through the pipeline
+    assign read2Data_de_int = (nop | (instruction_d == 16'b0000_1000_0000_0000)) ? 16'hffff : read2Data_d;
+    register iREAD2DATA_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(read2Data_de_int), .readData(read2Data_e));
+
+    assign immExt_de_int = (nop) ? 16'hffff : immExt_d;
+    register iIMMEXT_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(immExt_de_int), .readData(immExt_e));
+    
+    assign halt_de_int = (nop) ? 1'b0 : halt_d;
+    register #(.REGISTER_WIDTH(1)) iHALT_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(halt_de_int), .readData(halt_e));
+
+    assign link_de_int = (nop) ? 1'b0 : link_d;
+    register #(.REGISTER_WIDTH(1)) iLINK_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(link_de_int), .readData(link_e));
+
+    assign memRead_de_int = (nop) ? 1'b0 : memRead_d;
+    register #(.REGISTER_WIDTH(1)) iMEMREAD_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(memRead_de_int), .readData(memRead_e));
+
+    assign memToReg_de_int = (nop) ? 1'b0 : memToReg_d;
+    register #(.REGISTER_WIDTH(1)) iMEMTOREG_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(memToReg_de_int), .readData(memToReg_e));
+
+    assign memWrite_de_int = (nop) ? 1'b0 : memWrite_d;
+    register #(.REGISTER_WIDTH(1)) iMEMWRITE_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(memWrite_de_int), .readData(memWrite_e));
+    
+    assign aluSrc_de_int = (nop) ? 1'b0 : aluSrc_d;
+    register #(.REGISTER_WIDTH(1)) iALUSRC_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(aluSrc_de_int), .readData(aluSrc_e));
+
+    assign jumpImm_de_int = (nop) ? 1'b0 : jumpImm_d;
+    register #(.REGISTER_WIDTH(1)) iJUMPIMM_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(jumpImm_de_int), .readData(jumpImm_e));
+    
+    assign jump_de_int = (nop) ? 1'b0 : jump_d;
+    register #(.REGISTER_WIDTH(1)) iJUMP_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(jump_de_int), .readData(jump_e));
+    
+    assign regWrite_de_int = (nop) ? 1'b0 : regWrite_d;
+    register #(.REGISTER_WIDTH(1)) iREGWRITE_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(regWrite_de_int), .readData(regWrite_e));
+
+    register #(.REGISTER_WIDTH(3)) iBRANCH_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(branch_de_int), .readData(branch_e));
+    assign branch_de_int = (nop) ? 3'b000 : branch_d;
+
     //Even though we need 3 bits for registers, we need a fourth bit to indicate invalid because we don't wanna set writeRegSel_e to 3'b000 because our system will think that R0 is being used and thus give false positive data hazards
-    assign writeRegSel_e = (nop | (instruction_d == 16'b0000_1000_0000_0000)) ? 4'b1111 : writeRegSel_de_int; 
+    assign writeRegSel_de_int = (nop | (instruction_d == 16'b0000_1000_0000_0000)) ? 4'b1111 : writeRegSel_d; 
+    register #(.REGISTER_WIDTH(4)) iWRITEREGSEL_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(writeRegSel_de_int), .readData(writeRegSel_e));
     
 endmodule

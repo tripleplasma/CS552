@@ -25,13 +25,16 @@ module hdu (clk, rst,
                             (opcode_e[4:2] == 3'b001 | opcode_e[4:2] == 3'b011) | 
                             (opcode_m[4:2] == 3'b001 | opcode_m[4:2] == 3'b011) ;
 
-    assign disablePCWrite = data_hazard | control_hazard | setExNOP;
-    assign disableIFIDWrite = (data_hazard | setExNOP);
+    assign disablePCWrite = data_hazard | control_hazard | (opcode_f == 5'b00000);
+
+    //NOTE: If we setExNOP, we need to keep the decode instruction at the IFID latch so that when the hazard is gone, the instruction is still there
+    //NOTE: We don't disableIFID write during a control hazard becuse we want the BR/JMP to propagate through the pipeline
+    assign disableIFIDWrite = data_hazard;   
+
+    assign setExNOP = data_hazard;
 
     //These signals require a register because they need to be delayed a cycle to properly tell the pipeline to input a NOP during the E or F phase
     // wire l = data_hazard & opcode_f == 5'b00001;
     wire setFetchNOP_int = (control_hazard & ~data_hazard) | (control_hazard & data_hazard & opcode_f == 5'b00001) ;
     register #(.REGISTER_WIDTH(1)) setFetchNOPReg(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(setFetchNOP_int), .readData(setFetchNOP));
-
-    register #(.REGISTER_WIDTH(1)) setExNOPReg(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(data_hazard), .readData(setExNOP));
 endmodule

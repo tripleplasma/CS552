@@ -36,7 +36,7 @@ module fetch ( clk, rst, hazard, setFetchNOP,
    // increment PC
    cla_16b iPC_ADDER(.sum(PC_2), .c_out(), .a(pcCurrent), .b(16'd2), .c_in(1'b0));
    
-   wire[15:0] disp_jump;
+   // wire[15:0] disp_jump;
    // Don't think we use since different from MIPS, we do relative jumping
    // wire[15:0] PC_jump_Imm = {PC_2[15:9], (instr[7:0]<<1)};
 
