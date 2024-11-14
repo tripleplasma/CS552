@@ -9,7 +9,7 @@ z2
 cModel Technology
 Z0 d/home/kung/CS552/CS552/project/demo2
 valu
-Z1 !s110 1731555756
+Z1 !s110 1731556088
 !i10b 1
 !s100 =IF4kD@;HZdVl;LkT<mkU0
 I<;jMdfQMP6Vh?5V5RlFYF2
@@ -23,7 +23,7 @@ Z4 OP;L;10.7c;67
 r1
 !s85 0
 31
-Z5 !s108 1731555756.000000
+Z5 !s108 1731556088.000000
 !s107 verilog/xor2.v|verilog/wb.v|verilog/shifter.v|verilog/right_shift_rot_log.v|verilog/register.v|verilog/regFile.v|verilog/regFile_bypass.v|verilog/regFile_bypass_hier.v|verilog/proc.v|verilog/proc_hier.v|verilog/proc_hier_pbench.v|verilog/overflow.v|verilog/not1.v|verilog/nor2.v|verilog/nand2.v|verilog/memory_wb_latch.v|verilog/memory.v|verilog/memory2c.v|verilog/left_shift_rot.v|verilog/hdu.v|verilog/fullAdder_1b.v|verilog/fetch.v|verilog/fetch_decode_latch.v|verilog/extension.v|verilog/execute.v|verilog/execute_memory_latch.v|verilog/dff.v|verilog/decode.v|verilog/decode_execute_latch.v|verilog/control.v|verilog/clkrst.v|verilog/cla_4b.v|verilog/cla_16b.v|verilog/carry_4b.v|verilog/carry_1b.v|verilog/br_control.v|verilog/alu.v|verilog/alu_control.v|
 Z6 !s90 +define+RANDSEED=3|-work|__work|verilog/alu_control.v|verilog/alu.v|verilog/br_control.v|verilog/carry_1b.v|verilog/carry_4b.v|verilog/cla_16b.v|verilog/cla_4b.v|verilog/clkrst.v|verilog/control.v|verilog/decode_execute_latch.v|verilog/decode.v|verilog/dff.v|verilog/execute_memory_latch.v|verilog/execute.v|verilog/extension.v|verilog/fetch_decode_latch.v|verilog/fetch.v|verilog/fullAdder_1b.v|verilog/hdu.v|verilog/left_shift_rot.v|verilog/memory2c.v|verilog/memory.v|verilog/memory_wb_latch.v|verilog/nand2.v|verilog/nor2.v|verilog/not1.v|verilog/overflow.v|verilog/proc_hier_pbench.v|verilog/proc_hier.v|verilog/proc.v|verilog/regFile_bypass_hier.v|verilog/regFile_bypass.v|verilog/regFile.v|verilog/register.v|verilog/right_shift_rot_log.v|verilog/shifter.v|verilog/wb.v|verilog/xor2.v|
 !i113 1
@@ -496,11 +496,11 @@ R9
 vmemory_wb_latch
 R1
 !i10b 1
-!s100 7<H2V>[TzB;OVVM5AJCMj1
-IE4l7JEA_N:lNRT3dn4ggM3
+!s100 EUiDoh8o^>LmGYZm=Tcj60
+IOh^jzl8hgF<hYGg28AkO32
 R2
 R0
-w1731555750
+w1731556082
 8verilog/memory_wb_latch.v
 Fverilog/memory_wb_latch.v
 L0 1
@@ -560,7 +560,7 @@ R7
 R8
 R9
 vnot1
-Z12 !s110 1731555757
+R1
 !i10b 1
 !s100 ;VahZFm1SBjhWBk_[nfTm0
 IQf<439RW?>:hD2WnB9NF_3
@@ -582,7 +582,7 @@ R7
 R8
 R9
 voverflow
-R12
+R1
 !i10b 1
 !s100 3HVn=CLiVh97XXijihmZ[3
 ICJLiiSV=Lm5[E6BO[XXl>0
@@ -604,13 +604,13 @@ R7
 R8
 R9
 vproc
-R12
+R1
 !i10b 1
-!s100 HHJ>gP66Id<59]gC?k3o>0
-Io`AAF9g0QlB`RDm`z3O6^3
+!s100 E4I^RCAX;VYRb4G=mo5J=0
+I6=zJ0=H3K0:91[hMoh>i12
 R2
 R0
-w1731555720
+w1731556041
 8verilog/proc.v
 Fverilog/proc.v
 L0 5
@@ -626,7 +626,7 @@ R7
 R8
 R9
 vproc_hier
-R12
+R1
 !i10b 1
 !s100 V8UM3S8XS1XPNED^P<Mi:0
 I56PRH0n?YE?7E=m_Y>@4F3
@@ -648,7 +648,7 @@ R7
 R8
 R9
 vproc_hier_pbench
-R12
+R1
 !i10b 1
 !s100 8D4S7RD[9bHK_bo;19];62
 IAH6;ndRFDo;8g8?OF5gI32
@@ -670,7 +670,7 @@ R7
 R8
 R9
 vregFile
-R12
+R1
 !i10b 1
 !s100 MzZS3@UFY7QJbNPQZcQ]V0
 I86B37[mC112m2MKfz2Sn`1
@@ -679,7 +679,7 @@ R0
 R11
 8verilog/regFile.v
 Fverilog/regFile.v
-Z13 L0 10
+Z12 L0 10
 R4
 r1
 !s85 0
@@ -693,7 +693,7 @@ R8
 R9
 nreg@file
 vregFile_bypass
-R12
+R1
 !i10b 1
 !s100 jk18IhUeWJ8BcmF@MeX@@2
 IR[FAL`MY_fk]HW3=fPFP02
@@ -716,7 +716,7 @@ R8
 R9
 nreg@file_bypass
 vregFile_bypass_hier
-R12
+R1
 !i10b 1
 !s100 zP7zm@5a<I@]G>8LR0:BC2
 INN1Ze?c[Z_WGhd[dST@PG1
@@ -725,7 +725,7 @@ R0
 R11
 8verilog/regFile_bypass_hier.v
 Fverilog/regFile_bypass_hier.v
-R13
+R12
 R4
 r1
 !s85 0
@@ -739,7 +739,7 @@ R8
 R9
 nreg@file_bypass_hier
 vregister
-R12
+R1
 !i10b 1
 !s100 7DbIK<F2MLi<f9BFnKZYC0
 IAZXhFK3IMICEOCI=MA1Wb3
@@ -761,7 +761,7 @@ R7
 R8
 R9
 vright_shift_rot_log
-R12
+R1
 !i10b 1
 !s100 leDE>N]SaJ_h8lPKBNUo12
 I=Ih75:4TFZ2H2::f3PzHe1
@@ -783,7 +783,7 @@ R7
 R8
 R9
 vshifter
-R12
+R1
 !i10b 1
 !s100 CB9XY;@6kd4k8M[C7Fmnm0
 I5@V5zPU`j0h>0DhV6O6001
@@ -792,7 +792,7 @@ R0
 R11
 8verilog/shifter.v
 Fverilog/shifter.v
-R13
+R12
 R4
 r1
 !s85 0
@@ -805,7 +805,7 @@ R7
 R8
 R9
 vwb
-R12
+R1
 !i10b 1
 !s100 Zb2GNY_l7VlzTJfW`RgGD0
 I7G^WZER46^[<=@`_=caB03
@@ -827,7 +827,7 @@ R7
 R8
 R9
 vxor2
-R12
+R1
 !i10b 1
 !s100 6JlUGTVXV:FRQY7`ZJ8<n0
 I6iDCV=NPNk13]mHgFKM5=0

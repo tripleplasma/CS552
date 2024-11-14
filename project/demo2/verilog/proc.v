@@ -41,7 +41,7 @@ module proc (/*AUTOARG*/
 
    // control signals
    wire halt_d, halt_e, halt_m, haltxout;
-   wire jumpImm_d, jumpImm_e, jumpImm_m;
+   wire jumpImm_d, jumpImm_e, jumpImm_m, jumpImm_wb;
    wire link_d, link_e, link_m, link_wb;
    wire jump_d, jump_e, jump_m, jump_wb;
    wire memRead_d, memRead_e, memRead_m;
@@ -70,7 +70,7 @@ module proc (/*AUTOARG*/
                .hazard(disablePCWrite),             // still a little confused on control_hazard/data_hazard/nop
                .setFetchNOP(setFetchNOP),
                .halt_sig(haltxout), 
-               .jump_imm_sig(jumpImm_m), 
+               .jump_imm_sig(jumpImm_wb), 
                .jump_sig(jump_wb), 
                .except_sig(exception), 
                .br_contr_sig(br_contr_wb), 
@@ -303,7 +303,9 @@ module proc (/*AUTOARG*/
                               .br_contr_m(br_contr_m),
                               .br_contr_wb(br_contr_wb),
                               .jump_m(jump_m),
-                              .jump_wb(jump_wb));
+                              .jump_wb(jump_wb),
+                              .jumpImm_m(jumpImm_m), 
+                              .jumpImm_wb(jumpImm_wb));
 
    wb iWRITEBACK0(// Inputs
                   .readData(readData_wb), 
