@@ -26,11 +26,11 @@ module decode_execute_latch(clk, rst, nop, PC_d, PC_e, instruction_d, instructio
     assign instruction_e = (nop) ? 16'b0000_1000_0000_0000 : instruction_de_int;
 
     register iREAD1DATA_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(read1Data_d), .readData(read1Data_de_int));
-    assign read1Data_e = (nop | (instruction_d == 16'b0000_1000_0000_0000)) ? 16'hffff : read1Data_de_int;
+    assign read1Data_e = (nop) ? 16'hffff : read1Data_de_int;
     register iREAD2DATA_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(read2Data_d), .readData(read2Data_de_int));
     assign read2Data_e = (nop | (instruction_d == 16'b0000_1000_0000_0000)) ? 16'hffff : read2Data_de_int;
     register iIMMEXT_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(immExt_d), .readData(immExt_de_int));
-    assign immExt_e = (nop | (instruction_d == 16'b0000_1000_0000_0000)) ? 16'hffff : immExt_de_int;
+    assign immExt_e = (nop) ? 16'hffff : immExt_de_int;
 
     register #(.REGISTER_WIDTH(1)) iHALT_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(halt_d), .readData(halt_de_int));
     assign halt_e = (nop) ? 1'b0 : halt_de_int;

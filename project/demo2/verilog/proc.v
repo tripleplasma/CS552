@@ -25,10 +25,10 @@ module proc (/*AUTOARG*/
    wire [15:0] instruction_f, instruction_d, instruction_e, instruction_m, instruction_wb;
    wire [3:0] writeRegSel_d, writeRegSel_e, writeRegSel_m, writeRegSel_wb;
    wire [15:0] writeData;
-   wire [15:0] read1Data_d, read1Data_e, read1Data_m;
+   wire [15:0] read1Data_d, read1Data_e, read1Data_m, read1Data_wb;
    wire [15:0] read2Data_d, read2Data_e, read2Data_m;
    wire err_decode;
-   wire [15:0] immExt_d, immExt_e, immExt_m;
+   wire [15:0] immExt_d, immExt_e, immExt_m, immExt_wb;
    wire [3:0] aluSel;
    wire [15:0] PC_f, PC_d, PC_e, PC_m, PC_wb;
 
@@ -43,14 +43,14 @@ module proc (/*AUTOARG*/
    wire halt_d, halt_e, halt_m, haltxout;
    wire jumpImm_d, jumpImm_e, jumpImm_m;
    wire link_d, link_e, link_m, link_wb;
-   wire jump_d, jump_e, jump_m;
+   wire jump_d, jump_e, jump_m, jump_wb;
    wire memRead_d, memRead_e, memRead_m;
    wire memToReg_d, memToReg_e, memToReg_m, memToReg_wb;
    wire memWrite_d, memWrite_e, memWrite_m;
    wire aluSrc_d, aluSrc_e;
    wire regWrite_d, regWrite_e, regWrite_m, regWrite_wb;
    wire exception;
-   wire br_contr_e, br_contr_m;
+   wire br_contr_e, br_contr_m, br_contr_wb;
    wire internal_clock;
    wire [2:0] branch_d, branch_e;
    wire [1:0] regDst;
@@ -71,11 +71,11 @@ module proc (/*AUTOARG*/
                .setFetchNOP(setFetchNOP),
                .halt_sig(haltxout), 
                .jump_imm_sig(jumpImm_m), 
-               .jump_sig(jump_m), 
+               .jump_sig(jump_wb), 
                .except_sig(exception), 
-               .br_contr_sig(br_contr_m), 
-               .imm_jump_reg_val(read1Data_m), 
-               .extend_val(immExt_m),
+               .br_contr_sig(br_contr_wb), 
+               .imm_jump_reg_val(read1Data_wb), 
+               .extend_val(immExt_wb),
                // Outputs
                .instr(instruction_f), 
                .output_clk(internal_clock), 
@@ -295,7 +295,15 @@ module proc (/*AUTOARG*/
                               .regWrite_m(regWrite_m),
                               .regWrite_wb(regWrite_wb),
                               .halt_m(halt_m),
-                              .halt_wb(haltxout));
+                              .halt_wb(haltxout),
+                              .immExt_m(immExt_m),
+                              .immExt_wb(immExt_wb),
+                              .read1Data_m(read1Data_m), 
+                              .read1Data_wb(read1Data_wb),
+                              .br_contr_m(br_contr_m),
+                              .br_contr_wb(br_contr_wb),
+                              .jump_m(jump_m),
+                              .jump_wb(jump_wb));
 
    wb iWRITEBACK0(// Inputs
                   .readData(readData_wb), 
