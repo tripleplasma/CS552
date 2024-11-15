@@ -1,1 +1,1 @@
-./tests/ourTests/hazard.asm SUCCESS CPI:4.6 CYCLES:23 ICOUNT:5 IHITRATE: 0 DHITRATE: 0
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/beqz_0.asm SUCCESS CPI:3.8 CYCLES:38 ICOUNT:10 IHITRATE: 0 DHITRATE: 0
