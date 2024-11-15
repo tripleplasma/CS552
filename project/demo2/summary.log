@@ -1,1 +1,1 @@
-/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/jal_3.asm SUCCESS CPI:4.7 CYCLES:14 ICOUNT:3 IHITRATE: 0 DHITRATE: 0
+./tests/complex_demo2/perf-test-dep-ldst.asm SUCCESS CPI:2.5 CYCLES:27 ICOUNT:11 IHITRATE: 100.0 DHITRATE: 100.0

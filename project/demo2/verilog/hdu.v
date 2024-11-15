@@ -16,11 +16,11 @@ module hdu (clk, rst,
     wire immediates = opcode_d[4:2] == 3'b010 | opcode_d[4:2] == 3'b101 | opcode_d == 5'b10001;
 
     //TODO: Check if the opcodes are a valid R type instruction so that we don't confuse immediate bits for register names
-    //                                 JMP                    JAL           NOP                      ST                         STU
-    wire ignoreReg1 = (opcode_d == 5'b00100 | opcode_d == 5'b00110 | opcode_d == 5'b00001 | opcode_d == 5'b10000 | opcode_d == 5'b10011);
+    //                                 JMP                    JAL           NOP                        LBI                 HALT
+    wire ignoreReg1 = (opcode_d == 5'b00100 | opcode_d == 5'b00110 | opcode_d == 5'b00001 | opcode_d == 5'b11000 | opcode_d == 5'b00000);
 
-    //                                    JMP                       BR                    LBI                    SLBI                   BTR             NOP
-    wire ignoreReg2 = (opcode_d[4:2] == 3'b001 | opcode_d[4:2] == 3'b011 | opcode_d == 5'b11000 | opcode_d == 5'b10010 | opcode_d == 5'b11001 | opcode_d == 5'b00001 | immediates);
+    //                                    JMP                       BR                    LBI                    SLBI                   BTR             NOP             HALT
+    wire ignoreReg2 = (opcode_d[4:2] == 3'b001 | opcode_d[4:2] == 3'b011 | opcode_d == 5'b11000 | opcode_d == 5'b10010 | opcode_d == 5'b11001 | opcode_d == 5'b00001 | opcode_d == 5'b00000 | immediates);
 
     wire RAW_ID_EX = (((idExWriteRegister == ifIdReadRegister1) & ~ignoreReg1) | ((idExWriteRegister == ifIdReadRegister2) & ~ignoreReg2)) & |PC_e;
     wire RAW_EX_MEM = (((exMemWriteRegister == ifIdReadRegister1) & ~ignoreReg1) | ((exMemWriteRegister == ifIdReadRegister2) & ~ignoreReg2)) & |PC_m;
