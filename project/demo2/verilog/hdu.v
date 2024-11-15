@@ -3,59 +3,35 @@ module hdu (clk, rst, PC_e, PC_m, PC_wb, ifIdReadRegister1, ifIdReadRegister2,
             opcode, data_hazard, control_hazard, structural_hazard);
 
     input wire clk, rst;
-    input wire [15:0] PC_e, PC_m, PC_wb;
-    input wire [15:0] instruction_f, instruction_d, instruction_e, instruction_m;
-    input wire [2:0] ifIdReadRegister1, ifIdReadRegister2;
-    input wire [2:0] writeRegSel_e, writeRegSel_m, writeRegSel_wb;
-    input wire [4:0] opcode;
+    input wire[15:0] PC_e, PC_m, PC_wb;
+    input wire [4:0] opcode_f, opcode_d, opcode_e, opcode_m;
+    input wire [3:0] ifIdReadRegister1, ifIdReadRegister2;
+    input wire [3:0] idExWriteRegister, exMemWriteRegister, memWbWriteRegister;
+    output wire disablePCWrite, disableIFIDWrite, setExNOP, setFetchNOP;
 
-    output wire data_hazard, control_hazard, structural_hazard;
 
-    wire jal_hazard, control_hazard_int;
+    //TODO: Check if the opcode_f is a valid R type instruction so that we don't confuse immediate bits for register names
+    //TODO: make a check to make sure that the instructions at those stages aren't NOPs otherwise it'll think R0 is being used
+    wire data_hazard = (rst == 1'b0) & ((idExWriteRegister == ifIdReadRegister1  | idExWriteRegister == ifIdReadRegister2 & |PC_e)      |
+                                        (exMemWriteRegister == ifIdReadRegister1 | exMemWriteRegister == ifIdReadRegister2 & |PC_m)     |
+                                        (memWbWriteRegister == ifIdReadRegister1 | memWbWriteRegister == ifIdReadRegister2 & |PC_wb));
 
-    wire ifIdNop, idExNop, exMemNop, memWbNop;
-    wire ignoreReg2;
-    wire [4:0] opcode_d;
 
-    // assign structural_hazard = (opcode_d == 5'b0_0001) ? 1'b0 : pre_control_hazard | pre_data_hazard;
-    assign structural_hazard = control_hazard | data_hazard;
+    wire control_hazard =   (opcode_f[4:2] == 3'b001 | opcode_f[4:2] == 3'b011) | 
+                            (opcode_d[4:2] == 3'b001 | opcode_d[4:2] == 3'b011) |
+                            (opcode_e[4:2] == 3'b001 | opcode_e[4:2] == 3'b011) | 
+                            (opcode_m[4:2] == 3'b001 | opcode_m[4:2] == 3'b011) ;
 
-    assign opcode_d = instruction_d[15:11];
-    assign ignoreReg2 = (opcode_d[4:2] == 3'b001 | opcode_d[4:2] == 3'b011 | opcode_d == 5'b11000) ? 1'b1 : 1'b0;
+    assign disablePCWrite = data_hazard | control_hazard | (opcode_f == 5'b00000);
 
-    wire [15:0] instruction_wb;
-    register InstrWBLatch(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(instruction_m), .readData(instruction_wb));
+    //NOTE: If we setExNOP, we need to keep the decode instruction at the IFID latch so that when the hazard is gone, the instruction is still there
+    //NOTE: We don't disableIFID write during a control hazard becuse we want the BR/JMP to propagate through the pipeline
+    assign disableIFIDWrite = data_hazard;   
 
-    //TODO: check for correctness, particularly the !== 3'b000 (there becuase of reset at beginning sets everything to 0, stopgap solution that needs to be changed)
-    // maybe use a valid bit [3]?
-    assign data_hazard = (rst != 1'b1 &  
-                    (((^writeRegSel_e !== 1'bx) & (idExNop) & (writeRegSel_e == ifIdReadRegister1 | ((writeRegSel_e == ifIdReadRegister2) & ~ignoreReg2)) & |PC_e)   |
-                    ((^writeRegSel_m !== 1'bx) & (exMemNop) & (writeRegSel_m == ifIdReadRegister1 | ((writeRegSel_m == ifIdReadRegister2) & ~ignoreReg2)) & |PC_m) 	|
-                    ((^writeRegSel_wb !== 1'bx) & (memWbNop) & (writeRegSel_wb == ifIdReadRegister1 | ((writeRegSel_wb == ifIdReadRegister2) & ~ignoreReg2)) & |PC_wb)) & 
-                    (((instruction_m != 16'b0000_1000_0000_0000) | (instruction_wb == 16'b0000_1000_0000_0000)) & (instruction_d != 16'b0000_1000_0000_0000))) ? 1'b1 : 1'b0;
-    
-    // assign data_hazard = 1'b0;
+    assign setExNOP = data_hazard;
 
-    //assign data_hazard = pre_data_hazard;
-
-    assign control_hazard_int = ((~ifIdNop) & (opcode[4:2] == 3'b001 | opcode[4:2] == 3'b011) & ~data_hazard & ~((instruction_m == instruction_f) & (instruction_d == 16'b0000_1000_0000_0000) & (instruction_e == 16'b0000_1000_0000_0000))) ? 1'b1 : 1'b0;
-    //  & (instruction_m != instruction_f)
-    assign jal_hazard = ((~idExNop) & (opcode[4:1] == 4'b0011) & ~data_hazard & ~((instruction_m == instruction_f) & (instruction_d == 16'b0000_1000_0000_0000) & (instruction_e == 16'b0000_1000_0000_0000) & (instruction_m == 16'b0000_1000_0000_0000))) ? 1'b1 : 1'b0;
-
-    assign control_hazard = (opcode[4:1] == 4'b0011) ? jal_hazard : (control_hazard_int & ((instruction_d == instruction_f) | instruction_d == 16'b0000_1000_0000_0000));
-
-    assign ifIdNop = (opcode == 5'b0_0001) ? 1'b1 : 1'b0;
-    register #(.REGISTER_WIDTH(1)) IdExWriteReg(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(ifIdNop), .readData(idExNop));
-    register #(.REGISTER_WIDTH(1)) ExMemWriteReg(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(idExNop), .readData(exMemNop));
-    register #(.REGISTER_WIDTH(1)) MemWbWriteReg(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(exMemNop), .readData(memWbNop));
-
-    // wire latch_control;
-    // register #(.REGISTER_WIDTH(1)) NopLatch(.clk(clk), .rst(1'b0), .writeEn(1'b1), .writeData(control_hazard), .readData(latch_control));
-
-    // assign ifIdWriteRegister = (control_hazard | pre_data_hazard) ? 4'h0 : (
-    //                             (writeRegSel_d == 3'b000) ? 4'b1111 : {1'b0, writeRegSel_d});
-    // register #(.REGISTER_WIDTH(4)) IdExWriteReg(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(ifIdWriteRegister), .readData(idExWriteRegister));
-    // register #(.REGISTER_WIDTH(4)) ExMemWriteReg(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(idExWriteRegister), .readData(exMemWriteRegister));
-    // register #(.REGISTER_WIDTH(4)) MemWbWriteReg(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(exMemWriteRegister), .readData(memWbWriteRegister));
-
+    //These signals require a register because they need to be delayed a cycle to properly tell the pipeline to input a NOP during the E or F phase
+    // wire l = data_hazard & opcode_f == 5'b00001;
+    wire setFetchNOP_int = (control_hazard & ~data_hazard) | (control_hazard & data_hazard & opcode_f == 5'b00001) ;
+    register #(.REGISTER_WIDTH(1)) setFetchNOPReg(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(setFetchNOP_int), .readData(setFetchNOP));
 endmodule

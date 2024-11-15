@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 tests/simple_test/beqz_0.asm FAILED
+=======
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/add_0.asm SUCCESS CPI:3.3 CYCLES:30 ICOUNT:9 IHITRATE: 0 DHITRATE: 0
+>>>>>>> parent of 206bf45 (Fixed NOP thinking BR are using R0 and throwing data hazards)

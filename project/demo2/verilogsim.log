@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 SIMLOG:: Cycle           4 PC: 00000000 I: 0000c101 R: 0   0 00000000 M: 0 0 00000000 00000000
 SIMLOG:: Cycle           5 PC: 00000000 I: 0000c202 R: 0   0 00000000 M: 0 0 00000000 00000000
 SIMLOG:: Cycle           6 PC: 00000000 I: 0000c401 R: 0   0 00000000 M: 0 0 00000000 00000000
@@ -16,6 +17,38 @@ SIMLOG:: Cycle          18 PC: 00000018 I: 00000000 R: 0   0 00000000 M: 0 0 000
 SIMLOG:: Processor halted
 
 SIMLOG:: sim_cycles          18
+=======
+SIMLOG:: Cycle           4 PC: 00000000 I: 0000c164 R: 0   0 00000000 M: 0 0 00000000 00000000
+SIMLOG:: Cycle           5 PC: 00000000 I: 0000c263 R: 0   0 00000000 M: 0 0 00000000 00000000
+SIMLOG:: Cycle           6 PC: 00000000 I: 0000d94c R: 0   0 00000000 M: 0 0 00000000 00000000
+SIMLOG:: Cycle           7 PC: 00000000 I: 0000db28 R: 0   0 00000000 M: 0 0 00000064 00000000
+SIMLOG:: Cycle           8 PC: 00000002 I: 0000db28 R: 1   1 00000064 M: 0 0 00000063 00000000
+SIMLOG:: Cycle           9 PC: 00000004 I: 0000db28 R: 1   2 00000063 M: 0 0 0000ffff 0000ffff
+SIMLOG:: Cycle          10 PC: 0000ffff I: 0000db28 R: 0   7 0000ffff M: 0 0 0000ffff 0000ffff
+SIMLOG:: Cycle          11 PC: 0000ffff I: 0000d950 R: 0   7 0000ffff M: 0 0 0000ffff 0000ffff
+SIMLOG:: Cycle          12 PC: 0000ffff I: 0000d950 R: 0   7 0000ffff M: 0 0 000000c7 00000063
+SIMLOG:: Cycle          13 PC: 00000006 I: 0000d950 R: 1   3 000000c7 M: 0 0 0000ffff 0000ffff
+SIMLOG:: Cycle          14 PC: 0000ffff I: 0000d950 R: 0   7 0000ffff M: 0 0 0000ffff 0000ffff
+SIMLOG:: Cycle          15 PC: 0000ffff I: 0000da38 R: 0   7 0000ffff M: 0 0 0000ffff 0000ffff
+SIMLOG:: Cycle          16 PC: 0000ffff I: 0000da38 R: 0   7 0000ffff M: 0 0 0000012b 00000064
+SIMLOG:: Cycle          17 PC: 00000008 I: 0000da38 R: 1   2 0000012b M: 0 0 0000ffff 0000ffff
+SIMLOG:: Cycle          18 PC: 0000ffff I: 0000da38 R: 0   7 0000ffff M: 0 0 0000ffff 0000ffff
+SIMLOG:: Cycle          19 PC: 0000ffff I: 0000d994 R: 0   7 0000ffff M: 0 0 0000ffff 0000ffff
+SIMLOG:: Cycle          20 PC: 0000ffff I: 0000dd30 R: 0   7 0000ffff M: 0 0 0000018f 0000012b
+SIMLOG:: Cycle          21 PC: 0000000a I: 0000dd30 R: 1   4 0000018f M: 0 0 0000018f 00000064
+SIMLOG:: Cycle          22 PC: 0000000c I: 0000dd30 R: 1   6 0000018f M: 0 0 0000ffff 0000ffff
+SIMLOG:: Cycle          23 PC: 0000ffff I: 00000000 R: 0   7 0000ffff M: 0 0 0000ffff 0000ffff
+SIMLOG:: Cycle          24 PC: 0000ffff I: 00000000 R: 0   7 0000ffff M: 0 0 000001f3 0000018f
+SIMLOG:: Cycle          25 PC: 0000000e I: 00000000 R: 1   5 000001f3 M: 0 0 0000ffff 0000ffff
+SIMLOG:: Cycle          26 PC: 0000ffff I: 00000000 R: 0   7 0000ffff M: 0 0 0000ffff 0000ffff
+SIMLOG:: Cycle          27 PC: 0000ffff I: 00000000 R: 0   7 0000ffff M: 0 0 0000ffff 0000ffff
+SIMLOG:: Cycle          28 PC: 0000ffff I: 00000000 R: 0   7 0000ffff M: 0 0 00000257 00000064
+SIMLOG:: Cycle          29 PC: 00000010 I: 00000000 R: 1   4 00000257 M: 0 0 00000000 00000000
+SIMLOG:: Cycle          30 PC: 00000012 I: 00000000 R: 0   0 00000000 M: 0 0 0000ffff 0000ffff
+SIMLOG:: Processor halted
+
+SIMLOG:: sim_cycles          30
+>>>>>>> parent of 206bf45 (Fixed NOP thinking BR are using R0 and throwing data hazards)
 
 SIMLOG:: inst_count           9
 
