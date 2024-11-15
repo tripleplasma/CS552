@@ -18,8 +18,10 @@ module decode_execute_latch(clk, rst, nop, PC_d, PC_e, instruction_d, instructio
     wire [15:0] PC_int;
     register iPC_LATCH_DE(.clk(clk), .rst(rst), .writeEn(~nop), .writeData(PC_d), .readData(PC_int));
     assign PC_e = (nop) ? PC_e : PC_int;
-    register iINSTRUCTION_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(instruction_d), .readData(instruction_de_int));              // rchanged writeEn from ~nop to 1, unsure about it here due to other signals
-    assign instruction_e = (nop) ? 16'b0000_1000_0000_0000 : instruction_de_int;
+
+    assign instruction_de_int = (nop) ? 16'b0000_1000_0000_0000 : instruction_e;
+    register iINSTRUCTION_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(instruction_d), .readData(instruction_e));              // rchanged writeEn from ~nop to 1, unsure about it here due to other signals
+    // assign instruction_e = (nop) ? 16'b0000_1000_0000_0000 : instruction_de_int;
 
     register iREAD1DATA_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(read1Data_d), .readData(read1Data_e));
     //assign read1Data_e = (nop) ? 16'h0000 : read1Data_de_int;
