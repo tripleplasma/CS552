@@ -1,1 +1,1 @@
-./tests/complex_demo2/perf-test-dep-ldst.asm SUCCESS CPI:2.5 CYCLES:27 ICOUNT:11 IHITRATE: 100.0 DHITRATE: 100.0
+./tests/mytests/hazard.asm SUCCESS CPI:4.2 CYCLES:21 ICOUNT:5 IHITRATE: 0 DHITRATE: 0
