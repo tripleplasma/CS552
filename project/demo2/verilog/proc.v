@@ -38,6 +38,7 @@ module proc (/*AUTOARG*/
    
    // hazard signals
    wire disablePCWrite, disableIFIDWrite, setExNOP, setFetchNOP;
+   wire useExExFowardReg1, useExExFowardReg2, useMemExFowardReg1, useMemExFowardReg2, useMemMemForward;
 
    // control signals
    wire halt_d, halt_e, halt_m, haltxout;
@@ -108,11 +109,20 @@ module proc (/*AUTOARG*/
                .idExWriteRegister(writeRegSel_e), 
                .exMemWriteRegister(writeRegSel_m),
                .memWbWriteRegister(writeRegSel_wb),
+               .memRead_m(memRead_m),
+               .idExReadRegister1(read1Data_e),
+               .idExReadRegister2(read2Data_e),
+               .exMemReadRegister(read2Data_m),
                // Outputs
                .disablePCWrite(disablePCWrite),
                .disableIFIDWrite(disableIFIDWrite),
                .setExNOP(setExNOP),
-               .setFetchNOP(setFetchNOP));
+               .setFetchNOP(setFetchNOP),
+               .useExExFowardReg1(useExExFowardReg1),
+               .useExExFowardReg2(useExExFowardReg2),
+               .useMemExFowardReg1(useMemExFowardReg1),
+               .useMemExFowardReg2(useMemExFowardReg2),
+               .useMemMemForward(useMemMemForward));
 
    // determine control signals based on opcode
    control iCONTROL0(// Inputs
@@ -204,9 +214,13 @@ module proc (/*AUTOARG*/
                               // Outputs
                               .aluOp(aluSel));
 
+   //TODO: Grab the aluOut_m, grab the signal from HDU saying we should use foward, then have a mux to replace one of the readDatas to the value of aluOut_m
+   wire [15:0] read1Data_e_int, read2Data_e_int;
+   assign read1Data_e_int = useExExFowardReg1 ? aluOut_m : (useMemExFowardReg1 ? readData_wb : read1Data_e);
+   assign read2Data_e_int = useExExFowardReg2 ? aluOut_m : (useMemExFowardReg1 ? readData_wb : read2Data_e);
    execute iEXECUTE0(// Inputs
-                     .read1Data(read1Data_e), 
-                     .read2Data(read2Data_e), 
+                     .read1Data(read1Data_e_int), 
+                     .read2Data(read2Data_e_int), 
                      .aluOp(aluSel), 
                      .aluSrc(aluSrc_e), 
                      .immExt(immExt_e), 
@@ -263,11 +277,13 @@ module proc (/*AUTOARG*/
                                  .br_contr_e(br_contr_e),
                                  .br_contr_m(br_contr_m));
 
+   wire [15:0] read2Data_m_int;
+   assign read2Data_m_int = useMemMemForward ? readData_wb : read2Data_m;
    memory memory0(// Inputs
                   .clk(internal_clock), 
                   .rst(rst), 
                   .aluResult(aluOut_m), 
-                  .writeData(read2Data_m), 
+                  .writeData(read2Data_m_int), 
                   .memWrite(memWrite_m), 
                   .memRead(memRead_m), 
                   .halt(halt_m), 

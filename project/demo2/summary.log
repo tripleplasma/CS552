@@ -1,1 +1,1 @@
-./tests/mytests/hazard.asm SUCCESS CPI:4.2 CYCLES:21 ICOUNT:5 IHITRATE: 0 DHITRATE: 0
+./tests/mytests/hazard.asm FAILED
