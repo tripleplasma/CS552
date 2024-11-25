@@ -1,4 +1,4 @@
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/alignTest.asm FAILED
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/alignTest.asm SUCCESS CPI:2.0 CYCLES:14 ICOUNT:7 IHITRATE: 0 DHITRATE: 0
 /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/perf-test-dep-all.asm SUCCESS CPI:1.8 CYCLES:16 ICOUNT:9 IHITRATE: 0 DHITRATE: 0
 /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/perf-test-dep-ld.asm FAILED
 /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/perf-test-dep-ldst.asm FAILED

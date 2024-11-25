@@ -1,5 +1,5 @@
 Model Technology ModelSim DE vlog 10.7c Compiler 2018.08 Aug 17 2018
-Start time: 20:42:48 on Nov 24,2024
+Start time: 22:47:51 on Nov 24,2024
 vlog "+define+RANDSEED=3" -work __work alu_control.v alu.v br_control.v carry_1b.v carry_4b.v cla_16b.v cla_4b.v clkrst.v control.v decode_execute_latch.v decode.v dff.v execute_memory_latch.v execute.v extension.v fetch_decode_latch.v fetch.v fullAdder_1b.v hdu.v left_shift_rot.v memory2c.v memory.v memory_wb_latch.v nand2.v nor2.v not1.v overflow.v proc_hier_pbench.v proc_hier.v proc.v regFile_bypass_hier.v regFile_bypass.v regFile.v register.v right_shift_rot_log.v shifter.v wb.v xor2.v 
 -- Compiling module alu_control
 -- Compiling module alu
@@ -43,14 +43,14 @@ vlog "+define+RANDSEED=3" -work __work alu_control.v alu.v br_control.v carry_1b
 Top level modules:
 	proc_hier_pbench
 	regFile_bypass_hier
-End time: 20:42:48 on Nov 24,2024, Elapsed time: 0:00:00
+End time: 22:47:52 on Nov 24,2024, Elapsed time: 0:00:01
 Errors: 0, Warnings: 0
 Reading pref.tcl
 
 # 10.7c
 
 # vsim -c proc_hier_pbench -lib __work -voptargs="+acc" -wlf dump.wlf -do "log -howmany -rec /* ; run -all" 
-# Start time: 20:42:48 on Nov 24,2024
+# Start time: 22:47:52 on Nov 24,2024
 # ** Warning: License feature 'msimpevsimvlog' will expire in 11 days.
 # Loading __work.proc_hier_pbench
 # Loading __work.proc_hier
@@ -96,7 +96,7 @@ Reading pref.tcl
 # See verilogsim.log and verilogsim.ptrace for output
 # ** Note: $finish    : proc_hier_pbench.v(116)
 #    Time: 5105 ns  Iteration: 0  Instance: /proc_hier_pbench
-# End time: 20:42:48 on Nov 24,2024, Elapsed time: 0:00:00
+# End time: 22:47:52 on Nov 24,2024, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
 Full name to pass to Assemble.java: /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/stallTest.asm
 Created the following files
@@ -111,7 +111,7 @@ Reading pref.tcl
 # 10.7c
 
 # vsim -c proc_hier_pbench -lib __work -voptargs="+acc" -wlf dump.wlf -do "log -howmany -rec /* ; run -all" 
-# Start time: 20:42:50 on Nov 24,2024
+# Start time: 22:47:53 on Nov 24,2024
 # ** Warning: License feature 'msimpevsimvlog' will expire in 11 days.
 # Loading __work.proc_hier_pbench
 # Loading __work.proc_hier
@@ -157,7 +157,7 @@ Reading pref.tcl
 # See verilogsim.log and verilogsim.ptrace for output
 # ** Note: $finish    : proc_hier_pbench.v(116)
 #    Time: 15005 ns  Iteration: 0  Instance: /proc_hier_pbench
-# End time: 20:42:50 on Nov 24,2024, Elapsed time: 0:00:00
+# End time: 22:47:53 on Nov 24,2024, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
 Full name to pass to Assemble.java: /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/alignTest.asm
 Created the following files
@@ -172,7 +172,7 @@ Reading pref.tcl
 # 10.7c
 
 # vsim -c proc_hier_pbench -lib __work -voptargs="+acc" -wlf dump.wlf -do "log -howmany -rec /* ; run -all" 
-# Start time: 20:42:51 on Nov 24,2024
+# Start time: 22:47:54 on Nov 24,2024
 # ** Warning: License feature 'msimpevsimvlog' will expire in 11 days.
 # Loading __work.proc_hier_pbench
 # Loading __work.proc_hier
@@ -218,7 +218,7 @@ Reading pref.tcl
 # See verilogsim.log and verilogsim.ptrace for output
 # ** Note: $finish    : proc_hier_pbench.v(116)
 #    Time: 1305 ns  Iteration: 0  Instance: /proc_hier_pbench
-# End time: 20:42:51 on Nov 24,2024, Elapsed time: 0:00:00
+# End time: 22:47:54 on Nov 24,2024, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
 Full name to pass to Assemble.java: /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/perf-test-dep-zero.asm
 Created the following files
@@ -233,7 +233,7 @@ Reading pref.tcl
 # 10.7c
 
 # vsim -c proc_hier_pbench -lib __work -voptargs="+acc" -wlf dump.wlf -do "log -howmany -rec /* ; run -all" 
-# Start time: 20:42:53 on Nov 24,2024
+# Start time: 22:47:55 on Nov 24,2024
 # ** Warning: License feature 'msimpevsimvlog' will expire in 11 days.
 # Loading __work.proc_hier_pbench
 # Loading __work.proc_hier
@@ -279,7 +279,7 @@ Reading pref.tcl
 # See verilogsim.log and verilogsim.ptrace for output
 # ** Note: $finish    : proc_hier_pbench.v(116)
 #    Time: 2505 ns  Iteration: 0  Instance: /proc_hier_pbench
-# End time: 20:42:53 on Nov 24,2024, Elapsed time: 0:00:00
+# End time: 22:47:55 on Nov 24,2024, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
 Full name to pass to Assemble.java: /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/perf-test-dep-waw.asm
 Created the following files
@@ -294,7 +294,7 @@ Reading pref.tcl
 # 10.7c
 
 # vsim -c proc_hier_pbench -lib __work -voptargs="+acc" -wlf dump.wlf -do "log -howmany -rec /* ; run -all" 
-# Start time: 20:42:54 on Nov 24,2024
+# Start time: 22:47:56 on Nov 24,2024
 # ** Warning: License feature 'msimpevsimvlog' will expire in 11 days.
 # Loading __work.proc_hier_pbench
 # Loading __work.proc_hier
@@ -340,7 +340,7 @@ Reading pref.tcl
 # See verilogsim.log and verilogsim.ptrace for output
 # ** Note: $finish    : proc_hier_pbench.v(116)
 #    Time: 1505 ns  Iteration: 0  Instance: /proc_hier_pbench
-# End time: 20:42:54 on Nov 24,2024, Elapsed time: 0:00:00
+# End time: 22:47:56 on Nov 24,2024, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
 Full name to pass to Assemble.java: /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/perf-test-dep-all.asm
 Created the following files
@@ -355,7 +355,7 @@ Reading pref.tcl
 # 10.7c
 
 # vsim -c proc_hier_pbench -lib __work -voptargs="+acc" -wlf dump.wlf -do "log -howmany -rec /* ; run -all" 
-# Start time: 20:42:55 on Nov 24,2024
+# Start time: 22:47:57 on Nov 24,2024
 # ** Warning: License feature 'msimpevsimvlog' will expire in 11 days.
 # Loading __work.proc_hier_pbench
 # Loading __work.proc_hier
@@ -401,7 +401,7 @@ Reading pref.tcl
 # See verilogsim.log and verilogsim.ptrace for output
 # ** Note: $finish    : proc_hier_pbench.v(116)
 #    Time: 1505 ns  Iteration: 0  Instance: /proc_hier_pbench
-# End time: 20:42:55 on Nov 24,2024, Elapsed time: 0:00:00
+# End time: 22:47:57 on Nov 24,2024, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
 Full name to pass to Assemble.java: /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/perf-test-dep-ld.asm
 Created the following files
@@ -416,7 +416,7 @@ Reading pref.tcl
 # 10.7c
 
 # vsim -c proc_hier_pbench -lib __work -voptargs="+acc" -wlf dump.wlf -do "log -howmany -rec /* ; run -all" 
-# Start time: 20:42:56 on Nov 24,2024
+# Start time: 22:47:58 on Nov 24,2024
 # ** Warning: License feature 'msimpevsimvlog' will expire in 11 days.
 # Loading __work.proc_hier_pbench
 # Loading __work.proc_hier
@@ -462,7 +462,7 @@ Reading pref.tcl
 # See verilogsim.log and verilogsim.ptrace for output
 # ** Note: $finish    : proc_hier_pbench.v(116)
 #    Time: 1405 ns  Iteration: 0  Instance: /proc_hier_pbench
-# End time: 20:42:56 on Nov 24,2024, Elapsed time: 0:00:00
+# End time: 22:47:58 on Nov 24,2024, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
 Full name to pass to Assemble.java: /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/perf-test-dep-ldst.asm
 Created the following files
@@ -477,7 +477,7 @@ Reading pref.tcl
 # 10.7c
 
 # vsim -c proc_hier_pbench -lib __work -voptargs="+acc" -wlf dump.wlf -do "log -howmany -rec /* ; run -all" 
-# Start time: 20:42:57 on Nov 24,2024
+# Start time: 22:47:59 on Nov 24,2024
 # ** Warning: License feature 'msimpevsimvlog' will expire in 11 days.
 # Loading __work.proc_hier_pbench
 # Loading __work.proc_hier
@@ -523,5 +523,5 @@ Reading pref.tcl
 # See verilogsim.log and verilogsim.ptrace for output
 # ** Note: $finish    : proc_hier_pbench.v(116)
 #    Time: 1705 ns  Iteration: 0  Instance: /proc_hier_pbench
-# End time: 20:42:57 on Nov 24,2024, Elapsed time: 0:00:00
+# End time: 22:47:59 on Nov 24,2024, Elapsed time: 0:00:00
 # Errors: 0, Warnings: 0
