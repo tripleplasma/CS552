@@ -110,9 +110,9 @@ module proc (/*AUTOARG*/
                .exMemWriteRegister(writeRegSel_m),
                .memWbWriteRegister(writeRegSel_wb),
                .memRead_m(memRead_m),
-               .idExReadRegister1(read1Data_e),
-               .idExReadRegister2(read2Data_e),
-               .exMemReadRegister(read2Data_m),
+               .idExReadRegister1({1'b0, instruction_e[10:8]}),
+               .idExReadRegister2({1'b0, instruction_e[7:5]}),
+               .exMemReadRegister({1'b0, instruction_m[7:5]}),
                // Outputs
                .disablePCWrite(disablePCWrite),
                .disableIFIDWrite(disableIFIDWrite),
@@ -216,8 +216,8 @@ module proc (/*AUTOARG*/
 
    //TODO: Grab the aluOut_m, grab the signal from HDU saying we should use foward, then have a mux to replace one of the readDatas to the value of aluOut_m
    wire [15:0] read1Data_e_int, read2Data_e_int;
-   assign read1Data_e_int = useExExFowardReg1 ? aluOut_m : (useMemExFowardReg1 ? readData_wb : read1Data_e);
-   assign read2Data_e_int = useExExFowardReg2 ? aluOut_m : (useMemExFowardReg1 ? readData_wb : read2Data_e);
+   assign read1Data_e_int = useExExFowardReg1 ? aluOut_m : (useMemExFowardReg1 ? writeData : read1Data_e);
+   assign read2Data_e_int = useExExFowardReg2 ? aluOut_m : (useMemExFowardReg1 ? writeData : read2Data_e);
    execute iEXECUTE0(// Inputs
                      .read1Data(read1Data_e_int), 
                      .read2Data(read2Data_e_int), 

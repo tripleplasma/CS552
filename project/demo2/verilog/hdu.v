@@ -26,27 +26,42 @@ module hdu (clk, rst,
 
     //TODO: Check if the opcodes are a valid R type instruction so that we don't confuse immediate bits for register names
     //                                 JMP                    JAL           NOP                        LBI                 HALT
-    wire ignoreReg1 = (opcode_d == 5'b00100 | opcode_d == 5'b00110 | opcode_d == 5'b00001 | opcode_d == 5'b11000 | opcode_d == 5'b00000);
+    wire ignoreReg1_d = (opcode_d == 5'b00100 | opcode_d == 5'b00110 | opcode_d == 5'b00001 | opcode_d == 5'b11000 | opcode_d == 5'b00000);
 
     //                                    JMP                       BR                    LBI                    SLBI                   BTR             NOP             HALT
-    wire ignoreReg2 = (opcode_d[4:2] == 3'b001 | opcode_d[4:2] == 3'b011 | opcode_d == 5'b11000 | opcode_d == 5'b10010 | opcode_d == 5'b11001 | opcode_d == 5'b00001 | opcode_d == 5'b00000 | immediates);
+    wire ignoreReg2_d = (opcode_d[4:2] == 3'b001 | opcode_d[4:2] == 3'b011 | opcode_d == 5'b11000 | opcode_d == 5'b10010 | opcode_d == 5'b11001 | opcode_d == 5'b00001 | opcode_d == 5'b00000 | immediates);
 
+    // Expand ignoreReg to other stages in the pipeline
+    wire ignoreReg1_e = (opcode_e == 5'b00100 | opcode_e == 5'b00110 | opcode_e == 5'b00001 | opcode_e == 5'b11000 | opcode_e == 5'b00000);
+    wire ignoreReg2_e = (opcode_e[4:2] == 3'b001 | opcode_e[4:2] == 3'b011 | opcode_e == 5'b11000 | opcode_e == 5'b10010 | opcode_e == 5'b11001 | opcode_e == 5'b00001 | opcode_e == 5'b00000 | opcode_e[4:2] == 3'b010 | opcode_e[4:2] == 3'b101 | opcode_e == 5'b10001);
+    //wire ignoreReg1_m = (opcode_m == 5'b00100 | opcode_m == 5'b00110 | opcode_m == 5'b00001 | opcode_m == 5'b11000 | opcode_m == 5'b00000);
+    wire ignoreReg2_m = (opcode_m[4:2] == 3'b001 | opcode_m[4:2] == 3'b011 | opcode_m == 5'b11000 | opcode_m == 5'b10010 | opcode_m == 5'b11001 | opcode_m == 5'b00001 | opcode_m == 5'b00000 | opcode_m[4:2] == 3'b010 | opcode_m[4:2] == 3'b101 | opcode_m == 5'b10001);
 
-    assign useExExFowardReg1 = (idExReadRegister1 == exMemWriteRegister) & ~memRead_m;
-    assign useExExFowardReg2 = (idExReadRegister2 == exMemWriteRegister) & ~memRead_m;
-    assign useMemExFowardReg1 = idExReadRegister1 == memWbWriteRegister;
-    assign useMemExFowardReg2 = idExReadRegister2 == memWbWriteRegister;
-    assign useMemMemForward = exMemReadRegister == memWbWriteRegister;
+    //assign useExExFowardReg1 = (idExReadRegister1 == exMemWriteRegister) & ~memRead_m;
+    //assign useExExFowardReg2 = (idExReadRegister2 == exMemWriteRegister) & ~memRead_m;
+    //assign useMemExFowardReg1 = idExReadRegister1 == memWbWriteRegister;
+    //assign useMemExFowardReg2 = idExReadRegister2 == memWbWriteRegister;
+    //assign useMemMemForward = exMemReadRegister == memWbWriteRegister;
+    // New forwarding assignment with latched reg select
+    assign useExExFowardReg1 = (idExReadRegister1 == exMemWriteRegister) & ~memRead_m & ~ignoreReg1_e;
+    assign useExExFowardReg2 = (idExReadRegister2 == exMemWriteRegister) & ~memRead_m & ~ignoreReg2_e;
+    assign useMemExFowardReg1 = (idExReadRegister1 == memWbWriteRegister) & ~ignoreReg1_e;
+    assign useMemExFowardReg2 = (idExReadRegister2 == memWbWriteRegister) & ~ignoreReg2_e;
+    assign useMemMemForward = (exMemReadRegister == memWbWriteRegister) & ~ignoreReg2_m;
 
-    wire useForwarding = useExExFowardReg1 | useExExFowardReg2 | useMemExFowardReg1 | useMemExFowardReg2 | useMemMemForward;
+    // Need to predict if will be able to be forwarded
+    wire reg1Forwarding = ((ifIdReadRegister1 == idExWriteRegister) | (ifIdReadRegister1 == exMemWriteRegister)) & ~ignoreReg1_d;
+    wire reg2Forwarding = ((ifIdReadRegister2 == idExWriteRegister) | (ifIdReadRegister2 == exMemWriteRegister)) & ~ignoreReg2_d;
 
-    wire RAW_ID_EX = (((idExWriteRegister == ifIdReadRegister1) & ~ignoreReg1) | ((idExWriteRegister == ifIdReadRegister2) & ~ignoreReg2)) & |PC_e;
-    wire RAW_EX_MEM = (((exMemWriteRegister == ifIdReadRegister1) & ~ignoreReg1) | ((exMemWriteRegister == ifIdReadRegister2) & ~ignoreReg2)) & |PC_m;
+    //wire useForwarding = useExExFowardReg1 | useExExFowardReg2 | useMemExFowardReg1 | useMemExFowardReg2 | useMemMemForward;
+
+    wire RAW_ID_EX = (((idExWriteRegister == ifIdReadRegister1) & ~ignoreReg1_d & ~reg1Forwarding) | ((idExWriteRegister == ifIdReadRegister2) & ~ignoreReg2_d & ~reg2Forwarding)) & |PC_e;
+    wire RAW_EX_MEM = (((exMemWriteRegister == ifIdReadRegister1) & ~ignoreReg1_d & ~reg1Forwarding) | ((exMemWriteRegister == ifIdReadRegister2) & ~ignoreReg2_d & ~reg2Forwarding)) & |PC_m;
     // wire RAW_MEM_WB = (((memWbWriteRegister == ifIdReadRegister1) & ~ignoreReg1) | ((memWbWriteRegister == ifIdReadRegister2) & ~ignoreReg2)) & |PC_wb;
     //TODO: make a check to make sure that the instructions at those stages aren't NOPs otherwise it'll think R0 is being used
     wire RAW_hazard = RAW_ID_EX | RAW_EX_MEM; //| RAW_MEM_WB;
 
-    wire data_hazard = (rst == 1'b0) & RAW_hazard & ~useForwarding;
+    wire data_hazard = (rst == 1'b0) & RAW_hazard; // ~useForwarding
 
 
     wire control_hazard =   (opcode_f[4:2] == 3'b001 | opcode_f[4:2] == 3'b011) | 

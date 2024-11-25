@@ -1,8 +1,8 @@
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/alignTest.asm SUCCESS CPI:2.9 CYCLES:20 ICOUNT:7 IHITRATE: 0 DHITRATE: 0
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/perf-test-dep-all.asm SUCCESS CPI:3.3 CYCLES:30 ICOUNT:9 IHITRATE: 0 DHITRATE: 0
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/perf-test-dep-ld.asm SUCCESS CPI:2.9 CYCLES:23 ICOUNT:8 IHITRATE: 0 DHITRATE: 0
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/perf-test-dep-ldst.asm SUCCESS CPI:2.2 CYCLES:24 ICOUNT:11 IHITRATE: 100.0 DHITRATE: 100.0
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/perf-test-dep-waw.asm SUCCESS CPI:3.3 CYCLES:30 ICOUNT:9 IHITRATE: 0 DHITRATE: 0
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/alignTest.asm FAILED
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/perf-test-dep-all.asm SUCCESS CPI:1.8 CYCLES:16 ICOUNT:9 IHITRATE: 0 DHITRATE: 0
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/perf-test-dep-ld.asm FAILED
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/perf-test-dep-ldst.asm FAILED
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/perf-test-dep-waw.asm SUCCESS CPI:1.8 CYCLES:16 ICOUNT:9 IHITRATE: 0 DHITRATE: 0
 /afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/perf-test-dep-zero.asm SUCCESS CPI:5.2 CYCLES:26 ICOUNT:5 IHITRATE: 0 DHITRATE: 0
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/pipeTest.asm SUCCESS CPI:3.2 CYCLES:80 ICOUNT:25 IHITRATE: 0 DHITRATE: 0
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/stallTest.asm SUCCESS CPI:2.5 CYCLES:195 ICOUNT:77 IHITRATE: 0 DHITRATE: 0
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/pipeTest.asm FAILED
+/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo2/stallTest.asm FAILED
