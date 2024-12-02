@@ -40,13 +40,26 @@ module mem_system(/*AUTOARG*/
    wire [15:0] mem_data_in, mem_addr;
 
    // 4-bank memory outputs
-   wire mem_stall, mem_busy;
+   wire mem_stall;
+   wire [3:0] mem_busy;
    wire [15:0] mem_data_out;
 
    // err signals
-   wire controller_err, cache_err, mem_err;
-   
+   wire cache_err, mem_err; // controller_err
+
+
+   assign force_disable = mem_stall;
+   wire mem_to_cache = ((mem_addr[2:1] == 2'b00 & ~mem_busy[0]) | 
+                        (mem_addr[2:1] == 2'b01 & ~mem_busy[1]) | 
+                        (mem_addr[2:1] == 2'b10 & ~mem_busy[2]) | 
+                        (mem_addr[2:1] == 2'b11 & ~mem_busy[3])) ? 1'b1 : 1'b0;
+
+   assign cache_addr = Addr; // () ? : ; maybe
+   assign cache_data_in = (mem_to_cache) ? mem_data_out : DataIn;
+   assign cache_read = Rd;
+   assign cache_write = mem_to_cache | Wr;
    assign cache_en = (cache_read | cache_write) & (~force_disable);
+   assign cache_comp = (cache_read | cache_write) & (~victimize) & (~mem_to_cache);
 
    /* data_mem = 1, inst_mem = 0 *
     * needed for cache parameter */
@@ -72,7 +85,12 @@ module mem_system(/*AUTOARG*/
                           .valid_in             (1'b1)); // maybe
 
    assign real_hit = cache_valid & cache_hit;
-   assign victimize = (~hit) & dirty;
+   assign victimize = (~cache_hit) & cache_dirty;
+
+   assign mem_addr = (victimize) ? {actual_tag, cache_addr[10:0]} : cache_addr;
+   assign mem_data_in = cache_data_out; // (victimize) ? cache_data_out : ;
+   assign mem_write = victimize;
+   assign mem_read = ~real_hit;
 
    four_bank_mem mem(// Outputs
                      .data_out          (mem_data_out),
@@ -88,8 +106,12 @@ module mem_system(/*AUTOARG*/
                      .wr                (mem_write),
                      .rd                (mem_read));
    
-   // your code here
-   assign err = controller_err | cache_err | mem_err;
+   // Module Outputs
+   assign DataOut = (real_hit) ? cache_data_out : mem_data_out;
+   assign Done = real_hit | mem_to_cache;
+   assign Stall = mem_stall;
+   assign CacheHit = real_hit;
+   assign err = cache_err | mem_err; // | controller_err;
    
 endmodule // mem_system
 `default_nettype wire
