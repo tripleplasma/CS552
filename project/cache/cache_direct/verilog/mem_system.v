@@ -107,11 +107,13 @@ module mem_system(/*AUTOARG*/
                      .rd                (mem_read));
    
    // Module Outputs
-   assign DataOut = (real_hit) ? cache_data_out : mem_data_out;
-   assign Done = real_hit | mem_to_cache;
-   assign Stall = mem_stall;
-   assign CacheHit = real_hit;
-   assign err = cache_err | mem_err; // | controller_err;
+   always @(*) begin
+      DataOut = (real_hit) ? cache_data_out : mem_data_out;
+      Done = real_hit | mem_to_cache;
+      Stall = mem_stall;
+      CacheHit = real_hit;
+      err = cache_err | mem_err; // | controller_err;
+   end
    
 endmodule // mem_system
 `default_nettype wire

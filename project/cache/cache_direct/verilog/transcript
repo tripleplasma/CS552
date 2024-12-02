@@ -1,0 +1,5 @@
+# ** Warning: License feature 'msimviewer' will expire in 3 days.
+# dump.wlf opened as dataset "dataset"
+add wave -position insertpoint dataset:/mem_system_perfbench/DUT/m0/*
+# Break key hit
+quit
