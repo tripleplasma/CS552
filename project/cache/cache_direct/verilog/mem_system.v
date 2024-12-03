@@ -107,17 +107,17 @@ module mem_system(/*AUTOARG*/
                      .wr                (mem_write),
                      .rd                (mem_read));
 
-   // 000 Comp 001 ACCESS_READ 010 DIRTY 011 CACHE_WRITEBACK 100 MEM_READ
-   // TODO can use localparems for states
    wire [3:0] cache_state;
    reg [3:0] nxt_state;
    wire [3:0] nxt_cache_state;
    assign nxt_cache_state = nxt_state;
    
    wire cache_hit_ff, cache_valid_ff, cache_dirty_ff;
+   wire [15:0]mem_data_out_ff;
 
    // State flop
    dff state_ff[3:0](.d(nxt_cache_state), .q(cache_state), .rst(rst), .clk(clk));
+   dff data_ff[15:0](.d(mem_data_out), .q(mem_data_out_ff), .rst(rst), .clk(clk));
 
    // Cache output flops
    dff hit_ff (.d(cache_hit), .q(cache_hit_ff), .rst(rst), .clk(clk));
@@ -216,7 +216,13 @@ module mem_system(/*AUTOARG*/
                // nxt_state = 4'b1111;
                Done = 1'b1;
                CacheHit = 1'b1;
-               nxt_state = 4'b0000;
+               if (Rd | Wr) begin
+               // Go to Comp State
+               nxt_state = 4'b0001;
+               end else begin
+                  // Go to Idle state
+                  nxt_state = 4'b0000;
+               end
             end
          end
 
@@ -233,22 +239,22 @@ module mem_system(/*AUTOARG*/
          4'b0100: begin
             // Dirty so need to do writeback
             if (cache_dirty_ff & cache_valid_ff) begin
+               mem_write = 1'b1;
                nxt_state = 4'b1000;
             end else begin
                // Not dirty so can do mem read
+               mem_read = 1'b1;
                nxt_state = 4'b0101;
             end
          end
 
          // Mem read cycle 1
          4'b0101: begin
-            mem_read = 1'b1;
             nxt_state = 4'b0111;
          end
 
          // Mem read cycle 2
          4'b0111: begin
-            mem_read = 1'b1;
             // Do access write to cache next
             nxt_state = 4'b1100;
          end
@@ -256,28 +262,25 @@ module mem_system(/*AUTOARG*/
          // Mem write cycle 1
          4'b1000: begin
             mem_addr = {actual_tag, cache_addr[10:0]};
-            mem_write = 1'b1;
             nxt_state = 4'b1001;
          end
 
          // Mem write cycle 2
          4'b1001: begin
             mem_addr = {actual_tag, cache_addr[10:0]};
-            mem_write = 1'b1;
             nxt_state = 4'b1010;
          end
 
          // Mem write cycle 3
          4'b1010: begin
             mem_addr = {actual_tag, cache_addr[10:0]};
-            mem_write = 1'b1;
             nxt_state = 4'b1011;
          end
 
          // Mem write cycle 4
          4'b1011: begin
             mem_addr = {actual_tag, cache_addr[10:0]};
-            mem_write = 1'b1;
+            mem_read = 1'b1;
             // Read from cache next
             nxt_state = 4'b0101;
          end
@@ -288,7 +291,7 @@ module mem_system(/*AUTOARG*/
             cache_comp = 1'b0;
             cache_read = 1'b0;
             cache_write = 1'b1;
-            cache_data_in = mem_data_out;
+            cache_data_in = mem_data_out_ff;
             if (Wr) begin
                // Write new data to cache
                nxt_state = 4'b1101;
@@ -299,10 +302,10 @@ module mem_system(/*AUTOARG*/
             end
          end
 
-         // Do write
+         // Do write - comp not access so dirty bit set
          4'b1101: begin
             cache_en = 1'b1;
-            cache_comp = 1'b0;
+            cache_comp = 1'b1;
             nxt_state = 4'b1111;
          end
 
