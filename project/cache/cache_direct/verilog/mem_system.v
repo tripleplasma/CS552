@@ -113,10 +113,17 @@ module mem_system(/*AUTOARG*/
    reg [3:0] nxt_state;
    wire [3:0] nxt_cache_state;
    assign nxt_cache_state = nxt_state;
+   
+   wire cache_hit_ff, cache_valid_ff, cache_dirty_ff;
 
    // State flop
    dff state_ff[3:0](.d(nxt_cache_state), .q(cache_state), .rst(rst), .clk(clk));
 
+   // Cache output flops
+   dff hit_ff (.d(cache_hit), .q(cache_hit_ff), .rst(rst), .clk(clk));
+   dff valid_ff (.d(cache_valid), .q(cache_valid_ff), .rst(rst), .clk(clk));
+   dff dirty_ff (.d(cache_dirty), .q(cache_dirty_ff), .rst(rst), .clk(clk));
+   
    // not allowed
    // always @(posedge clk or posedge rst) begin
    //   if (rst) begin
@@ -180,11 +187,11 @@ module mem_system(/*AUTOARG*/
          end
 
          // Done with cache hit
-         4'b1111: begin
-            Done = 1'b1;
-            CacheHit = 1'b1;
-            nxt_state = 4'b0000;
-         end
+         //4'b1111: begin
+         //   Done = 1'b1;
+         //   CacheHit = 1'b1;
+         //   nxt_state = 4'b0000;
+         //end
 
          // Read or write comparisson
          4'b0001: begin
@@ -197,11 +204,14 @@ module mem_system(/*AUTOARG*/
          // Check if Hit state
          4'b0010: begin
             // Miss so need to do access read
-            if (~cache_hit| ~cache_valid) begin
+            if (~cache_hit_ff | ~cache_valid_ff) begin
                nxt_state = 4'b0011;
             end else begin
                // Hit so done
-               nxt_state = 4'b1111;
+               // nxt_state = 4'b1111;
+               Done = 1'b1;
+               CacheHit = 1'b1;
+               nxt_state = 4'b0000;
             end
          end
 
@@ -217,7 +227,7 @@ module mem_system(/*AUTOARG*/
          // Check if dirty state
          4'b0100: begin
             // Dirty so need to do writeback
-            if (cache_dirty) begin
+            if (cache_dirty_ff & cache_valid_ff) begin
                nxt_state = 4'b1000;
             end else begin
                // Not dirty so can do mem read
@@ -274,14 +284,30 @@ module mem_system(/*AUTOARG*/
             cache_read = 1'b0;
             cache_write = 1'b1;
             cache_data_in = mem_data_out;
+            if (Wr) begin
+               // Write new data to cache
+               nxt_state = 4'b1101;
+            end
+            else begin
+               // Do cache read and be done
+               nxt_state = 4'b1110;
+            end
+         end
+
+         // Do write
+         4'b1101: begin
+            cache_en = 1'b1;
+            cache_comp = 1'b0;
             nxt_state = 4'b1110;
          end
 
-         // 4'b1101 unused
-
-         // Done with cache miss
+         // Done with cache miss, do read
          4'b1110: begin
             Done = 1'b1;
+            cache_en = 1'b1;
+            cache_comp = 1'b0;
+            cache_read = 1'b1;
+            cache_write = 1'b0;
             nxt_state = 4'b0000;
          end
 
