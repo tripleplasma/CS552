@@ -195,6 +195,7 @@ module mem_system(/*AUTOARG*/
             end
          end
 
+         // Check for miss
          3'b001: begin
             // Miss so need to do access read
             if (~cache_hit | ~cache_valid) begin
@@ -211,6 +212,7 @@ module mem_system(/*AUTOARG*/
             end
          end
           
+         // Check for writeback
          3'b010: begin
             // Keep cache address the same
             stall_rdy = 1'b1;
@@ -221,23 +223,44 @@ module mem_system(/*AUTOARG*/
                nxt_state = 3'b011;
             end else begin
                // Not dirty so can do mem read
-               mem_read = 1'b1;
-               nxt_state = 3'b100;
+               // Don't have to read from mem if doing a write to cache
+               if (Wr) begin
+                  // Can just do access write to cache
+                  cache_en = 1'b1;
+                  cache_write = 1'b1;
+                  DataOut_nxt = DataIn;
+                  done_rdy = 1'b1;
+                  nxt_state = 3'b000;
+               end else begin
+                  mem_read = 1'b1;
+                  nxt_state = 3'b100;
+               end
             end
-
          end
 
+         // Writeback/mem write
+         // TODO does not work - ~|mem_busy
          3'b011: begin
             // Keep cache address the same
             stall_rdy = 1'b1;
             // Finished writeback when mem no longer busy
             if (~|mem_busy) begin
-               mem_read = 1'b1;
-               nxt_state = 3'b100;
+               // Don't have to read from mem if doing a write to cache
+               if (Wr) begin
+                  // Can just do access write to cache
+                  cache_en = 1'b1;
+                  cache_write = 1'b1;
+                  DataOut_nxt = DataIn;
+                  done_rdy = 1'b1;
+                  nxt_state = 3'b000;
+               end else begin
+                  mem_read = 1'b1;
+                  nxt_state = 3'b100;
+               end
             end
          end
 
-         // First cycle of read
+         // First cycle of mem read
          3'b100: begin
             // Keep cache address the same
             stall_rdy = 1'b1;
