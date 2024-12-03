@@ -186,12 +186,17 @@ module mem_system(/*AUTOARG*/
             end
          end
 
-         // Done with cache hit
-         //4'b1111: begin
-         //   Done = 1'b1;
-         //   CacheHit = 1'b1;
-         //   nxt_state = 4'b0000;
-         //end
+         // Done
+         4'b1111: begin
+            Done = 1'b1;
+            if (Rd | Wr) begin
+               // Go to Comp State
+               nxt_state = 4'b0001;
+            end else begin
+               // Go to Idle state
+               nxt_state = 4'b0000;
+            end
+         end
 
          // Read or write comparisson
          4'b0001: begin
@@ -298,23 +303,16 @@ module mem_system(/*AUTOARG*/
          4'b1101: begin
             cache_en = 1'b1;
             cache_comp = 1'b0;
-            nxt_state = 4'b1110;
+            nxt_state = 4'b1111;
          end
 
          // Done with cache miss, do read
          4'b1110: begin
-            Done = 1'b1;
             cache_en = 1'b1;
             cache_comp = 1'b0;
             cache_read = 1'b1;
             cache_write = 1'b0;
-            if (Rd | Wr) begin
-               // Go to Comp State
-               nxt_state = 4'b0001;
-            end else begin
-               // Go to Idle state
-               nxt_state = 4'b0000;
-            end
+            nxt_state = 4'b1111;
          end
 
          default: nxt_state = 4'b0000;
