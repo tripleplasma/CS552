@@ -308,7 +308,13 @@ module mem_system(/*AUTOARG*/
             cache_comp = 1'b0;
             cache_read = 1'b1;
             cache_write = 1'b0;
-            nxt_state = 4'b0000;
+            if (Rd | Wr) begin
+               // Go to Comp State
+               nxt_state = 4'b0001;
+            end else begin
+               // Go to Idle state
+               nxt_state = 4'b0000;
+            end
          end
 
          default: nxt_state = 4'b0000;
