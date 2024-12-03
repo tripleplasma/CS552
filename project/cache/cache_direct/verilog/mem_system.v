@@ -18,11 +18,11 @@ module mem_system(/*AUTOARG*/
    input wire        clk;
    input wire        rst;
    
-   output reg [15:0] DataOut;
-   output reg        Done;
-   output reg        Stall;
-   output reg        CacheHit;
-   output reg        err;
+   output wire [15:0] DataOut;
+   output wire        Done;
+   output wire        Stall;
+   output wire        CacheHit;
+   output wire        err;
 
    // cache controller signals
    // cache inputs
@@ -121,30 +121,30 @@ module mem_system(/*AUTOARG*/
    // State flop
    dff state_ff[3:0](.d(nxt_cache_state), .q(cache_state), .rst(rst), .clk(clk));
    // Done flop
-   // dff done_ff(.d(done_rdy), .q(Done), .rst(rst), .clk(clk));
+   dff done_ff(.d(done_rdy), .q(Done), .rst(rst), .clk(clk));
    // Stall flop
-   //dff stall_ff(.d(stall_rdy), .q(Stall), .rst(rst), .clk(clk));
+   dff stall_ff(.d(stall_rdy), .q(Stall), .rst(rst), .clk(clk));
    // Cache hit flop
-   //dff cacheHit_ff(.d(cache_hit & cache_valid), .q(CacheHit), .rst(rst), .clk(clk));
+   dff cacheHit_ff(.d(CacheHit_nxt), .q(CacheHit), .rst(rst), .clk(clk));
    // Data out flop
-   //dff dataOut_ff[15:0](.d(cache_data_out), .q(DataOut), .rst(rst), .clk(clk));
+   dff dataOut_ff[15:0](.d(DataOut_nxt), .q(DataOut), .rst(rst), .clk(clk));
    // err flop
-   //dff err_ff(.d(mem_err | cache_err), .q(err), .rst(rst), .clk(clk));
+   dff err_ff(.d(mem_err | cache_err), .q(err), .rst(rst), .clk(clk));
 
-   // TODO not allowed
-   always @(posedge clk or posedge rst) begin
-      if (rst) begin
-          Stall <= 1'b0;
-          Done <= 1'b0;
-          CacheHit <= 1'b0;
-          DataOut <= 16'h0000;
-      end else begin
-          Stall <= stall_rdy & ~done_rdy;
-          Done <= done_rdy;
-          CacheHit <= CacheHit_nxt;
-          DataOut <= DataOut_nxt;
-      end
-   end
+   // not allowed
+   // always @(posedge clk or posedge rst) begin
+   //   if (rst) begin
+   //       Stall <= 1'b0;
+   //       Done <= 1'b0;
+   //       CacheHit <= 1'b0;
+   //       DataOut <= 16'h0000;
+   //   end else begin
+   //       Stall <= stall_rdy & ~done_rdy;
+   //       Done <= done_rdy;
+   //       CacheHit <= CacheHit_nxt;
+   //       DataOut <= DataOut_nxt;
+   //   end
+   //end
 
    always @(cache_state or Rd or Wr) begin
       // Set default values
@@ -163,7 +163,6 @@ module mem_system(/*AUTOARG*/
       done_rdy = 1'b0;
       CacheHit_nxt = cache_hit & cache_valid;
       DataOut_nxt = cache_data_out;
-      err = mem_err | cache_err;
    
       // cache outputs
       // wire cache_hit, cache_valid, cache_dirty;
