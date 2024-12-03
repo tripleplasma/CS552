@@ -32,7 +32,7 @@ module mem_system(/*AUTOARG*/
 
    // cache outputs
    wire cache_hit, cache_valid, cache_dirty;
-   wire real_hit, victimize;
+   // wire real_hit, victimize;
    wire [4:0] actual_tag;
    wire [15:0] cache_data_out;
 
@@ -109,15 +109,19 @@ module mem_system(/*AUTOARG*/
 
    // 000 Comp 001 ACCESS_READ 010 DIRTY 011 CACHE_WRITEBACK 100 MEM_READ
    // TODO can use localparems for states
-   reg [3:0] cache_state;
-   reg [3:0] nxt_cache_state;
-   // reg done_rdy, stall_rdy;
+   wire [3:0] cache_state;
+   reg [3:0] nxt_state;
+   wire [3:0] nxt_cache_state;
+   assign nxt_cache_state = nxt_state;
+   reg done_rdy, stall_rdy, CacheHit_nxt;
+   reg [15:0] DataOut_nxt;
+
 
    /// OUTPUT FLOPS ///
    // State flop
-   //dff state_ff[3:0](.d(nxt_cache_state), .q(cache_state), .rst(rst), .clk(clk));
+   dff state_ff[3:0](.d(nxt_cache_state), .q(cache_state), .rst(rst), .clk(clk));
    // Done flop
-   //dff done_ff(.d(done_rdy), .q(Done), .rst(rst), .clk(clk));
+   // dff done_ff(.d(done_rdy), .q(Done), .rst(rst), .clk(clk));
    // Stall flop
    //dff stall_ff(.d(stall_rdy), .q(Stall), .rst(rst), .clk(clk));
    // Cache hit flop
@@ -127,26 +131,39 @@ module mem_system(/*AUTOARG*/
    // err flop
    //dff err_ff(.d(mem_err | cache_err), .q(err), .rst(rst), .clk(clk));
 
-   always @(*) begin
+   // TODO not allowed
+   always @(posedge clk or posedge rst) begin
+      if (rst) begin
+          Stall <= 1'b0;
+          Done <= 1'b0;
+          CacheHit <= 1'b0;
+          DataOut <= 16'h0000;
+      end else begin
+          Stall <= stall_rdy & ~done_rdy;
+          Done <= done_rdy;
+          CacheHit <= CacheHit_nxt;
+          DataOut <= DataOut_nxt;
+      end
+   end
+
+   always @(cache_state or Rd or Wr) begin
       // Set default values
       // cache controller signals
       // cache inputs
       cache_en = 1'b0;
       cache_comp = 1'b0;
-      cache_read = Rd;
-      cache_write = Wr;
+      cache_read = 1'b0;
+      cache_write = 1'b0;
       cache_data_in = DataIn;
       cache_addr = Addr;
 
       // Top outops
-      Stall = 1'b0;
+      stall_rdy = 1'b0;
       // TODO Done won't be asserted for 1 cycle, may be less
-      Done = 1'b0;
-      CacheHit = cache_hit & cache_valid;
-      DataOut = cache_data_out;
+      done_rdy = 1'b0;
+      CacheHit_nxt = cache_hit & cache_valid;
+      DataOut_nxt = cache_data_out;
       err = mem_err | cache_err;
-
-      cache_state = nxt_cache_state;
    
       // cache outputs
       // wire cache_hit, cache_valid, cache_dirty;
@@ -169,11 +186,12 @@ module mem_system(/*AUTOARG*/
       case (cache_state)
          // Do cache comparison read or write, also IDLE
          3'b000: begin
-            cache_en = Rd | Wr;
-            cache_comp = Rd | Wr;
             if (Rd | Wr) begin
                // Access to see if hit
-               nxt_cache_state = 3'b001;
+               cache_en = 1'b1;
+               cache_comp = 1'b1;
+               stall_rdy = 1'b1;
+               nxt_state = 3'b001;
             end
          end
 
@@ -182,66 +200,65 @@ module mem_system(/*AUTOARG*/
             if (~cache_hit | ~cache_valid) begin
                cache_en = 1'b1;
                cache_comp = 1'b0;
-               cache_write = 1'b0;
                cache_read = 1'b1;
                // Keep cache address the same
-               Stall = 1'b1;
-               cache_addr = cache_addr;
-               nxt_cache_state = 3'b010;
+               stall_rdy = 1'b1;
+               nxt_state = 3'b010;
             end else begin
                // Hit so done and can take in new input
-               Done = 1'b1;
-               nxt_cache_state = 3'b000;
+               done_rdy = 1'b1;
+               nxt_state = 3'b000;
             end
          end
           
          3'b010: begin
             // Keep cache address the same
-            Stall = 1'b1;
-            cache_addr = cache_addr;
+            stall_rdy = 1'b1;
             if (cache_dirty) begin
                // Dirty so do memory writeback
                mem_addr = {actual_tag, cache_addr[10:0]};
                mem_write = 1'b1;
-               nxt_cache_state = 3'b011;
+               nxt_state = 3'b011;
             end else begin
                // Not dirty so can do mem read
-               mem_addr = cache_addr;
                mem_read = 1'b1;
-               nxt_cache_state = 3'b100;
+               nxt_state = 3'b100;
             end
 
          end
 
          3'b011: begin
             // Keep cache address the same
-            Stall = 1'b1;
-            cache_addr = cache_addr;
+            stall_rdy = 1'b1;
             // Finished writeback when mem no longer busy
             if (~|mem_busy) begin
                mem_read = 1'b1;
-               nxt_cache_state = 3'b100;
+               nxt_state = 3'b100;
             end
          end
 
+         // First cycle of read
          3'b100: begin
             // Keep cache address the same
-            Stall = 1'b1;
-            cache_addr = cache_addr;
-            // Finished read when mem no longer busy
-            if (~|mem_busy) begin
-               // Can now do access write
-               cache_en = 1'b1;
-               cache_comp = 1'b0;
-               cache_write = 1'b1;
-               cache_read = 1'b0;
-               cache_data_in = mem_data_out;
-               Done = 1'b1;
-               nxt_cache_state = 3'b000;
-            end
+            stall_rdy = 1'b1;
+            nxt_state = 3'b101;
          end
 
-         default: nxt_cache_state = 3'b000;
+         // Mem read cycle 2
+         3'b101: begin
+            // Can now do access write
+            stall_rdy = 1'b0;
+            cache_en = 1'b1;
+            cache_comp = 1'b0;
+            cache_write = 1'b1;
+            cache_read = 1'b0;
+            cache_data_in = mem_data_out;
+            DataOut_nxt = mem_data_out;
+            done_rdy = 1'b1;
+            nxt_state = 3'b000;
+         end
+
+         default: nxt_state = 3'b000;
       endcase
     end
    
