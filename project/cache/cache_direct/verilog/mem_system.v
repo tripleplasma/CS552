@@ -280,8 +280,13 @@ module mem_system(/*AUTOARG*/
          // Mem write cycle 4
          4'b1011: begin
             mem_addr = {actual_tag, cache_addr[10:0]};
+            nxt_state = 4'b1101;
+         end
+
+         // Extra write cycle
+         4'b1101: begin
+            // Now do mem read
             mem_read = 1'b1;
-            // Read from cache next
             nxt_state = 4'b0101;
          end
 
@@ -292,29 +297,13 @@ module mem_system(/*AUTOARG*/
             cache_read = 1'b0;
             cache_write = 1'b1;
             cache_data_in = mem_data_out_ff;
-            if (Wr) begin
-               // Write new data to cache
-               nxt_state = 4'b1101;
-            end
-            else begin
-               // Do cache read and be done
-               nxt_state = 4'b1110;
-            end
+            nxt_state = 4'b1110;
          end
 
-         // Do write - comp not access so dirty bit set
-         4'b1101: begin
-            cache_en = 1'b1;
-            cache_comp = 1'b1;
-            nxt_state = 4'b1111;
-         end
-
-         // Done with cache miss, do read
+         // Done with cache miss, do read or write
          4'b1110: begin
             cache_en = 1'b1;
-            cache_comp = 1'b0;
-            cache_read = 1'b1;
-            cache_write = 1'b0;
+            cache_comp = 1'b1;
             nxt_state = 4'b1111;
          end
 
