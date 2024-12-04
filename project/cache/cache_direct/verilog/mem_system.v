@@ -64,6 +64,7 @@ module mem_system(/*AUTOARG*/
 
    /* data_mem = 1, inst_mem = 0 *
     * needed for cache parameter */
+   reg [2:0] cache_offset;
    parameter memtype = 0;
    cache #(0 + memtype) c0(// Outputs
                           .tag_out              (actual_tag),
@@ -79,7 +80,7 @@ module mem_system(/*AUTOARG*/
                           .createdump           (createdump),
                           .tag_in               (cache_addr[15:11]),
                           .index                (cache_addr[10:3]),
-                          .offset               (cache_addr[2:0]),
+                          .offset               (cache_offset),
                           .data_in              (cache_data_in),
                           .comp                 (cache_comp),
                           .write                (cache_write),
@@ -136,12 +137,14 @@ module mem_system(/*AUTOARG*/
    always @(cache_state or Rd or Wr) begin
       // Set default values
       // cache controller signals
+      
       cache_en = 1'b0;
       cache_comp = 1'b0;
       cache_read = Rd;
       cache_write = Wr;
       cache_data_in = data_in_ff;
       cache_addr = addr_ff;
+      cache_offset = cache_addr[2:0];
 
       // Top outops
       Done = 1'b0;
@@ -225,17 +228,33 @@ module mem_system(/*AUTOARG*/
             end else begin
                // Not dirty so can do mem read
                mem_read = 1'b1;
+               mem_addr = {cache_addr[15:3], 3'b000}; //Since we're putting all four words into the cache line anyways, it doesn't matter which offset we do first
                nxt_state = 5'b00101;
             end
          end
 
          // Mem read cycle 1
          5'b00101: begin
+            //Read the second word for the cache line
+            mem_read = 1'b1;
+            mem_addr = {cache_addr[15:3], 3'b010};
+
             nxt_state = 5'b00111;
          end
 
          // Mem read cycle 2
          5'b00111: begin
+            //Read the third word for the cache line
+            mem_read = 1'b1;
+            mem_addr = {cache_addr[15:3], 3'b100};
+
+            cache_offset = 3'b000;
+            cache_en = 1'b1;
+            cache_comp = 1'b0;
+            cache_read = 1'b0;
+            cache_write = 1'b1;
+            cache_data_in = mem_data_out;
+
             // Do access write to cache next
             nxt_state = 5'b01100;
          end
@@ -273,11 +292,39 @@ module mem_system(/*AUTOARG*/
 
          // Access write to cache
          5'b01100: begin
+            //Read the fourth word for the cache line
+            mem_read = 1'b1;
+            mem_addr = {cache_addr[15:3], 3'b110};
+
+            cache_offset = 3'b010;
             cache_en = 1'b1;
             cache_comp = 1'b0;
             cache_read = 1'b0;
             cache_write = 1'b1;
-            cache_data_in = mem_data_out_ff;
+            cache_data_in = mem_data_out;
+
+            // nxt_state = 5'b01110;
+            nxt_state = 5'b10000;
+         end
+
+         //TODO: Add 3 more states simply to write the values of the three other words into the cache
+         5'b10000: begin
+            cache_offset = 3'b100;
+            cache_en = 1'b1;
+            cache_comp = 1'b0;
+            cache_read = 1'b0;
+            cache_write = 1'b1;
+            cache_data_in = mem_data_out;
+            nxt_state = 5'b10001;
+         end
+
+         5'b10001: begin
+            cache_offset = 3'b110;
+            cache_en = 1'b1;
+            cache_comp = 1'b0;
+            cache_read = 1'b0;
+            cache_write = 1'b1;
+            cache_data_in = mem_data_out;
             nxt_state = 5'b01110;
          end
 
@@ -291,6 +338,7 @@ module mem_system(/*AUTOARG*/
 
          // Cache miss done
          5'b01111: begin
+            //By here, the cache_out will be the correct value
             Done = 1'b1;
             if (Wr | Rd) begin
                // Go to Idle state
