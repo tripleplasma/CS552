@@ -148,7 +148,7 @@ module mem_system(/*AUTOARG*/
    //   end
    //end
 
-   always @(cache_state or rd_ff or wr_ff) begin
+   always @(cache_state or Rd or Wr) begin
       // Set default values
       // cache controller signals
       // cache inputs
@@ -198,7 +198,13 @@ module mem_system(/*AUTOARG*/
          // Cache miss done
          5'b01111: begin
             Done = 1'b1;
-            nxt_state = 5'b00000;
+            if (Wr | Rd) begin
+               // Go to Idle state
+               nxt_state = 5'b00001;
+            end else begin
+               // Go to comp
+               nxt_state = 5'b00000;
+            end
          end
 
          // Read or write comparisson
@@ -219,7 +225,13 @@ module mem_system(/*AUTOARG*/
                // nxt_state = 4'b1111;
                Done = 1'b1;
                CacheHit = 1'b1;
-               nxt_state = 5'b00000;
+               if (Wr | Rd) begin
+                  // Go to Idle state
+                  nxt_state = 5'b00001;
+               end else begin
+                  // Go to comp
+                  nxt_state = 5'b00000;
+               end
             end
          end
 
@@ -236,25 +248,28 @@ module mem_system(/*AUTOARG*/
          5'b00100: begin
             // Dirty so need to do writeback
             if (cache_dirty_ff & cache_valid_ff) begin
-               nxt_state = 5'b11000;
+               mem_write = 1'b1;
+               mem_addr = {actual_tag, cache_addr[10:0]};
+               nxt_state = 5'b01000;
             end else begin
                // Not dirty so can do mem read
-               nxt_state = 5'b10000;
+               mem_read = 1'b1;
+               nxt_state = 5'b00101;
             end
          end
 
          // Start mem read
-         5'b10000: begin
-            mem_read = 1'b1;
-            nxt_state = 5'b00101;
-         end
+         //5'b10000: begin
+         //   mem_read = 1'b1;
+         //   nxt_state = 5'b00101;
+         //end
 
          // Start mem write
-         5'b11000: begin
-            mem_write = 1'b1;
-            mem_addr = {actual_tag, cache_addr[10:0]};
-            nxt_state = 5'b01000;
-         end
+         //5'b11000: begin
+         //   mem_write = 1'b1;
+         //   mem_addr = {actual_tag, cache_addr[10:0]};
+         //   nxt_state = 5'b01000;
+         //end
 
          // Mem read cycle 1
          5'b00101: begin
@@ -327,8 +342,13 @@ module mem_system(/*AUTOARG*/
             cache_comp = 1'b1;
             cache_read = 1'b0;
             cache_write = 1'b1;
-            // Go to Idle state
-            nxt_state = 5'b00000;
+            if (Wr | Rd) begin
+               // Go to Idle state
+               nxt_state = 5'b00001;
+            end else begin
+               // Go to comp
+               nxt_state = 5'b00000;
+            end
          end
 
          default: nxt_state = 5'b00000;
