@@ -117,6 +117,13 @@ module mem_system(/*AUTOARG*/
    wire [15:0]data_in_ff;
    dff dataIn_ff[15:0](.d(DataIn), .q(data_in_ff), .rst(rst), .clk(clk));
 
+   wire [15:0]addr_ff;
+   dff address_ff[15:0](.d(Addr), .q(addr_ff), .rst(rst), .clk(clk));
+
+   wire rd_ff, wr_ff;
+   dff write_ff(.d(Wr), .q(wr_ff), .rst(rst), .clk(clk));
+   dff read_ff(.d(Rd), .q(rd_ff), .rst(rst), .clk(clk));
+
    // State flop
    dff state_ff[4:0](.d(nxt_cache_state), .q(cache_state), .rst(rst), .clk(clk));
    dff data_ff[15:0](.d(mem_data_out), .q(mem_data_out_ff), .rst(rst), .clk(clk));
@@ -141,7 +148,7 @@ module mem_system(/*AUTOARG*/
    //   end
    //end
 
-   always @(cache_state or Rd or Wr) begin
+   always @(cache_state or rd_ff or wr_ff) begin
       // Set default values
       // cache controller signals
       // cache inputs
@@ -150,7 +157,7 @@ module mem_system(/*AUTOARG*/
       cache_read = Rd;
       cache_write = Wr;
       cache_data_in = data_in_ff;
-      cache_addr = Addr;
+      cache_addr = addr_ff;
 
       // Top outops
       Done = 1'b0;
@@ -191,13 +198,7 @@ module mem_system(/*AUTOARG*/
          // Cache miss done
          5'b01111: begin
             Done = 1'b1;
-            if (Rd | Wr) begin
-               // Go to Comp State
-               nxt_state = 5'b00001;
-            end else begin
-               // Go to Idle state
-               nxt_state = 5'b00000;
-            end
+            nxt_state = 5'b00000;
          end
 
          // Read or write comparisson
@@ -218,13 +219,7 @@ module mem_system(/*AUTOARG*/
                // nxt_state = 4'b1111;
                Done = 1'b1;
                CacheHit = 1'b1;
-               if (Rd | Wr) begin
-                  // Go to Comp State
-                  nxt_state = 5'b00001;
-               end else begin
-                  // Go to Idle state
-                  nxt_state = 5'b00000;
-               end
+               nxt_state = 5'b00000;
             end
          end
 
@@ -257,6 +252,7 @@ module mem_system(/*AUTOARG*/
          // Start mem write
          5'b11000: begin
             mem_write = 1'b1;
+            mem_addr = {actual_tag, cache_addr[10:0]};
             nxt_state = 5'b01000;
          end
 
@@ -331,13 +327,8 @@ module mem_system(/*AUTOARG*/
             cache_comp = 1'b1;
             cache_read = 1'b0;
             cache_write = 1'b1;
-            if (Rd | Wr) begin
-               // Go to Comp State
-               nxt_state = 5'b00001;
-            end else begin
-               // Go to Idle state
-               nxt_state = 5'b00000;
-            end
+            // Go to Idle state
+            nxt_state = 5'b00000;
          end
 
          default: nxt_state = 5'b00000;
