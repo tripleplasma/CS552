@@ -107,16 +107,18 @@ module mem_system(/*AUTOARG*/
                      .wr                (mem_write),
                      .rd                (mem_read));
 
-   wire [3:0] cache_state;
-   reg [3:0] nxt_state;
-   wire [3:0] nxt_cache_state;
+   wire [4:0] cache_state, nxt_cache_state;
+   reg [4:0] nxt_state;
    assign nxt_cache_state = nxt_state;
    
    wire cache_hit_ff, cache_valid_ff, cache_dirty_ff;
    wire [15:0]mem_data_out_ff;
 
+   wire [15:0]data_in_ff;
+   dff dataIn_ff[15:0](.d(DataIn), .q(data_in_ff), .rst(rst), .clk(clk));
+
    // State flop
-   dff state_ff[3:0](.d(nxt_cache_state), .q(cache_state), .rst(rst), .clk(clk));
+   dff state_ff[4:0](.d(nxt_cache_state), .q(cache_state), .rst(rst), .clk(clk));
    dff data_ff[15:0](.d(mem_data_out), .q(mem_data_out_ff), .rst(rst), .clk(clk));
 
    // Cache output flops
@@ -147,7 +149,7 @@ module mem_system(/*AUTOARG*/
       cache_comp = 1'b0;
       cache_read = Rd;
       cache_write = Wr;
-      cache_data_in = DataIn;
+      cache_data_in = data_in_ff;
       cache_addr = Addr;
 
       // Top outops
@@ -169,7 +171,7 @@ module mem_system(/*AUTOARG*/
       mem_data_in = cache_data_out;
       mem_addr = cache_addr;
 
-      nxt_state = 4'b0000;
+      nxt_state = 5'b00000;
    
       // 4-bank memory outputs
       // wire mem_stall;
@@ -179,135 +181,166 @@ module mem_system(/*AUTOARG*/
       // State machine
       case (cache_state)
          // IDLE
-         4'b0000: begin
+         5'b00000: begin
             if (Rd | Wr) begin
                // Go to Comp State
-               nxt_state = 4'b0001;
+               nxt_state = 5'b00001;
             end
          end
 
-         // Done
-         4'b1111: begin
+         // Cache miss done
+         5'b01111: begin
             Done = 1'b1;
             if (Rd | Wr) begin
                // Go to Comp State
-               nxt_state = 4'b0001;
+               nxt_state = 5'b00001;
             end else begin
                // Go to Idle state
-               nxt_state = 4'b0000;
+               nxt_state = 5'b00000;
             end
          end
 
          // Read or write comparisson
-         4'b0001: begin
+         5'b00001: begin
             // Access to see if hit
             cache_en = 1'b1;
             cache_comp = 1'b1;
-            nxt_state = 4'b0010;
+            nxt_state = 5'b00010;
          end
 
          // Check if Hit state
-         4'b0010: begin
+         5'b0010: begin
             // Miss so need to do access read
             if (~cache_hit_ff | ~cache_valid_ff) begin
-               nxt_state = 4'b0011;
+               nxt_state = 5'b00011;
             end else begin
                // Hit so done
                // nxt_state = 4'b1111;
                Done = 1'b1;
                CacheHit = 1'b1;
                if (Rd | Wr) begin
-               // Go to Comp State
-               nxt_state = 4'b0001;
+                  // Go to Comp State
+                  nxt_state = 5'b00001;
                end else begin
                   // Go to Idle state
-                  nxt_state = 4'b0000;
+                  nxt_state = 5'b00000;
                end
             end
          end
 
          // Access read to cache
-         4'b0011: begin
+         5'b00011: begin
             cache_en = 1'b1;
             cache_comp = 1'b0;
             cache_read = 1'b1;
             cache_write = 1'b0;
-            nxt_state = 4'b0100;
+            nxt_state = 5'b00100;
          end
 
          // Check if dirty state
-         4'b0100: begin
+         5'b00100: begin
             // Dirty so need to do writeback
             if (cache_dirty_ff & cache_valid_ff) begin
-               mem_write = 1'b1;
-               nxt_state = 4'b1000;
+               nxt_state = 5'b11000;
             end else begin
                // Not dirty so can do mem read
-               mem_read = 1'b1;
-               nxt_state = 4'b0101;
+               nxt_state = 5'b10000;
             end
          end
 
+         // Start mem read
+         5'b10000: begin
+            mem_read = 1'b1;
+            nxt_state = 5'b00101;
+         end
+
+         // Start mem write
+         5'b11000: begin
+            mem_write = 1'b1;
+            nxt_state = 5'b01000;
+         end
+
          // Mem read cycle 1
-         4'b0101: begin
-            nxt_state = 4'b0111;
+         5'b00101: begin
+            nxt_state = 5'b00111;
          end
 
          // Mem read cycle 2
-         4'b0111: begin
+         5'b00111: begin
             // Do access write to cache next
-            nxt_state = 4'b1100;
+            nxt_state = 5'b01100;
          end
 
          // Mem write cycle 1
-         4'b1000: begin
+         5'b01000: begin
             mem_addr = {actual_tag, cache_addr[10:0]};
-            nxt_state = 4'b1001;
+            nxt_state = 5'b01001;
          end
 
          // Mem write cycle 2
-         4'b1001: begin
+         5'b01001: begin
             mem_addr = {actual_tag, cache_addr[10:0]};
-            nxt_state = 4'b1010;
+            nxt_state = 5'b01010;
          end
 
          // Mem write cycle 3
-         4'b1010: begin
+         5'b01010: begin
             mem_addr = {actual_tag, cache_addr[10:0]};
-            nxt_state = 4'b1011;
+            nxt_state = 5'b01011;
          end
 
          // Mem write cycle 4
-         4'b1011: begin
+         5'b01011: begin
             mem_addr = {actual_tag, cache_addr[10:0]};
-            nxt_state = 4'b1101;
+            nxt_state = 5'b01101;
          end
 
          // Extra write cycle
-         4'b1101: begin
+         // TODO delete
+         5'b01101: begin
             // Now do mem read
             mem_read = 1'b1;
-            nxt_state = 4'b0101;
+            nxt_state = 5'b00101;
          end
 
          // Access write to cache
-         4'b1100: begin
+         5'b01100: begin
             cache_en = 1'b1;
             cache_comp = 1'b0;
             cache_read = 1'b0;
             cache_write = 1'b1;
             cache_data_in = mem_data_out_ff;
-            nxt_state = 4'b1110;
+            if (Wr) begin
+               nxt_state = 5'b11111;
+            end else begin
+               nxt_state = 5'b01110;
+            end
          end
 
          // Done with cache miss, do read or write
-         4'b1110: begin
+         5'b01110: begin
             cache_en = 1'b1;
             cache_comp = 1'b1;
-            nxt_state = 4'b1111;
+            nxt_state = 5'b01111;
          end
 
-         default: nxt_state = 4'b0000;
+         // Cache miss done
+         5'b11111: begin
+            Done = 1'b1;
+            cache_en = 1'b1;
+            cache_comp = 1'b1;
+            cache_read = 1'b0;
+            cache_write = 1'b1;
+            if (Rd | Wr) begin
+               // Go to Comp State
+               nxt_state = 5'b00001;
+            end else begin
+               // Go to Idle state
+               nxt_state = 5'b00000;
+            end
+         end
+
+         default: nxt_state = 5'b00000;
       endcase
     end
    
