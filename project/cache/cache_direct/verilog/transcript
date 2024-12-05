@@ -1,4 +1,4 @@
-# ** Warning: License feature 'msimviewer' will expire in 1 days.
+# ** Warning: License feature 'msimviewer' will expire today.
 # dump.wlf opened as dataset "dataset"
 add wave -position insertpoint dataset:/mem_system_perfbench/DUT/m0/*
 quit

@@ -91,7 +91,6 @@ module mem_system(/*AUTOARG*/
    // State flop
    dff state_ff[4:0](.d(nxt_state), .q(cache_state), .rst(rst), .clk(clk));
    
-   // reg hadCacheHit;
    always @(cache_state or Rd or Wr or cache_hit or cache_valid or cache_dirty) begin
       // Set default values
       // cache controller signals
@@ -109,7 +108,6 @@ module mem_system(/*AUTOARG*/
       Stall = (Rd | Wr) & ~Done;
       DataOut = cache_data_out;
       CacheHit = 1'b0;
-      // hadCacheHit = 1'b0;
       err = cache_err | mem_err;
    
       // 4-bank memory inputs
@@ -136,25 +134,24 @@ module mem_system(/*AUTOARG*/
             // Access to see if hit
             cache_en = 1'b1;
             cache_comp = 1'b1;
+            cache_write = 1'b0;
             nxt_state = ~(cache_hit & cache_valid) ? 5'b00011 : 5'b00010;
          end
 
          //Cache Hit State
          5'b00010: begin
-            // Miss so need to do access read
-            if (~cache_hit | ~cache_valid) begin
-               nxt_state = 5'b00011;
+            CacheHit = 1'b1;
+
+            //Same as done state below
+            Done = 1'b1;
+            cache_en = 1'b1;
+            cache_comp = 1'b1;
+            if (Wr | Rd) begin
+               // Go to Idle state
+               nxt_state = 5'b00001;
             end else begin
-               // Hit so done
-               Done = 1'b1;
-               CacheHit = 1'b1;
-               if (Wr | Rd) begin
-                  // Go to Idle state
-                  nxt_state = 5'b00001;
-               end else begin
-                  // Go to comp
-                  nxt_state = 5'b00000;
-               end
+               // Go to comp
+               nxt_state = 5'b00000;
             end
          end
 
@@ -162,11 +159,11 @@ module mem_system(/*AUTOARG*/
          5'b00011: begin
             cache_en = 1'b1;
             cache_comp = 1'b0;
-            cache_read = 1'b1;
             cache_write = 1'b0;
 
             //Check if the cacheline was dirty before writing new words into cacheline
             if (cache_dirty & cache_valid) begin
+               cache_offset = 3'b000;
                nxt_state = 5'b00100;
             end else begin
                nxt_state = 5'b10100;
@@ -200,7 +197,6 @@ module mem_system(/*AUTOARG*/
             cache_offset = 3'b000;
             cache_en = 1'b1;
             cache_comp = 1'b0;
-            cache_read = 1'b0;
             cache_write = 1'b1;
             cache_data_in = mem_data_out;
 
@@ -217,7 +213,6 @@ module mem_system(/*AUTOARG*/
             cache_offset = 3'b010;
             cache_en = 1'b1;
             cache_comp = 1'b0;
-            cache_read = 1'b0;
             cache_write = 1'b1;
             cache_data_in = mem_data_out;
 
@@ -230,7 +225,6 @@ module mem_system(/*AUTOARG*/
             cache_offset = 3'b100;
             cache_en = 1'b1;
             cache_comp = 1'b0;
-            cache_read = 1'b0;
             cache_write = 1'b1;
             cache_data_in = mem_data_out;
             nxt_state = 5'b10001;
@@ -242,7 +236,6 @@ module mem_system(/*AUTOARG*/
             cache_offset = 3'b110;
             cache_en = 1'b1;
             cache_comp = 1'b0;
-            cache_read = 1'b0;
             cache_write = 1'b1;
             cache_data_in = mem_data_out;
 
@@ -260,6 +253,8 @@ module mem_system(/*AUTOARG*/
          //========================== END OF EVICTS ==========================
          //========================== START OF WRITEBACK WITH DIRTY ==========================
          5'b00100: begin
+            cache_en = 1'b1;
+            cache_offset = 3'b010; //Cache_data_out and mem_data_in are a cycle apart so we read it a cycle ahead, to write it in this state
             mem_write = 1'b1;
             mem_addr = {actual_tag, cache_addr[10:3], 3'b000};
             nxt_state = 5'b01000;
@@ -267,6 +262,8 @@ module mem_system(/*AUTOARG*/
 
          // Mem write cycle 1
          5'b01000: begin
+            cache_en = 1'b1;
+            cache_offset = 3'b100;
             mem_write = 1'b1;
             mem_addr = {actual_tag, cache_addr[10:3], 3'b010};
             nxt_state = 5'b01001;
@@ -274,6 +271,8 @@ module mem_system(/*AUTOARG*/
 
          // Mem write cycle 2
          5'b01001: begin
+            cache_en = 1'b1;
+            cache_offset = 3'b110;
             mem_write = 1'b1;
             mem_addr = {actual_tag, cache_addr[10:3], 3'b100};
             nxt_state = 5'b01010;
@@ -281,9 +280,11 @@ module mem_system(/*AUTOARG*/
 
          // Mem write cycle 3
          5'b01010: begin
+            cache_en = 1'b1;
+            cache_offset = cache_addr[2:0];
             mem_write = 1'b1;
             mem_addr = {actual_tag, cache_addr[10:3], 3'b110};
-            nxt_state = 5'b01110;
+            nxt_state = 5'b10100; //After writing cacheline to memory, evict the line and move all the new words associated with the new tag in
          end
          //========================== END OF WRITEBACK WITH DIRTY ==========================
 
@@ -293,7 +294,6 @@ module mem_system(/*AUTOARG*/
             cache_comp = 1'b1;
             // Assert done next
             // nxt_state = 5'b01111;
-            // CacheHit = hadCacheHit;
             Done = 1'b1;
             if (Wr | Rd) begin
                // Go to Idle state
