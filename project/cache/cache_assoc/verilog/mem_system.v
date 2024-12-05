@@ -94,7 +94,7 @@ module mem_system(/*AUTOARG*/
                           .valid                (cache_valid_1),
                           .err                  (cache_err_1),
                           // Inputs
-                          .enable               (cache_en),
+                          .enable               (cache_en), // cache1 has a different cache_en from cache0 (see schematic_SA) - (cache_en & victimway)?
                           .clk                  (clk),
                           .rst                  (rst),
                           .createdump           (createdump),
