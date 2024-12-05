@@ -187,8 +187,27 @@ module mem_system(/*AUTOARG*/
             // Access to see if hit
             cache_en = 1'b1;
             cache_comp = 1'b1;
-            // nxt_state = 5'b00010;
+            nxt_state = 5'b00010;
 
+            //// Miss so need to do access read
+            //if (~cache_hit_ff | ~cache_valid_ff) begin
+            //   nxt_state = 5'b00011;
+            //end else begin
+            //   // Hit so done
+            //   Done = 1'b1;
+            //   CacheHit = 1'b1;
+            //   if (Wr | Rd) begin
+            //      // Go to Idle state
+            //      nxt_state = 5'b00001;
+            //   end else begin
+            //      // Go to comp
+            //      nxt_state = 5'b00000;
+            //   end
+            //end
+         end
+
+         // Check if Hit state
+         5'b0010: begin
             // Miss so need to do access read
             if (~cache_hit_ff | ~cache_valid_ff) begin
                nxt_state = 5'b00011;
@@ -205,25 +224,6 @@ module mem_system(/*AUTOARG*/
                end
             end
          end
-
-         // Check if Hit state
-         // 5'b0010: begin
-         //    // Miss so need to do access read
-         //    if (~cache_hit_ff | ~cache_valid_ff) begin
-         //       nxt_state = 5'b00011;
-         //    end else begin
-         //       // Hit so done
-         //       Done = 1'b1;
-         //       CacheHit = 1'b1;
-         //       if (Wr | Rd) begin
-         //          // Go to Idle state
-         //          nxt_state = 5'b00001;
-         //       end else begin
-         //          // Go to comp
-         //          nxt_state = 5'b00000;
-         //       end
-         //    end
-         // end
 
          // Access read to cache
          5'b00011: begin
