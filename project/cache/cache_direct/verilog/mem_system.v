@@ -142,8 +142,8 @@ module mem_system(/*AUTOARG*/
       cache_comp = 1'b0;
       cache_read = Rd;
       cache_write = Wr;
-      cache_data_in = data_in_ff;
-      cache_addr = addr_ff;
+      cache_data_in = DataIn;
+      cache_addr = Addr;
       cache_offset = cache_addr[2:0];
 
       // Top outputs
@@ -168,8 +168,10 @@ module mem_system(/*AUTOARG*/
          // IDLE
          5'b00000: begin
             if (Rd | Wr) begin
-               // Go to Comp State
-               nxt_state = 5'b00001;
+               // Access to see if hit
+               cache_en = 1'b1;
+               cache_comp = 1'b1;
+               nxt_state = 5'b00010;
             end
          end
 
@@ -362,8 +364,10 @@ module mem_system(/*AUTOARG*/
             //By here, the cache_out will be the correct value
             Done = 1'b1;
             if (Wr | Rd) begin
-               // Go to Comp state
-               nxt_state = 5'b00001;
+               // Access to see if hit
+               cache_en = 1'b1;
+               cache_comp = 1'b1;
+               nxt_state = 5'b00010;
             end else begin
                // Go to Idle
                nxt_state = 5'b00000;
