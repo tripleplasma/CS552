@@ -27,8 +27,7 @@ module mem_system(/*AUTOARG*/
    // cache controller signals
    // cache inputs
    reg cache_en;
-   reg cache_comp_0, cache_write_0;
-   reg cache_comp_1, cache_write_1;
+   reg cache_comp, cache_write;
    reg [15:0] cache_data_in, cache_addr;
 
    // cache outputs
@@ -55,11 +54,13 @@ module mem_system(/*AUTOARG*/
    reg [2:0] cache_offset;
 
    //TODO: Don't invert on these conditions
-   // - instructions that do not read or write cache
-   // - invalid instructions
-   // - instructions that are squashed due to branch misprediction
-   reg victimway;
-   dff victimway_ff(.d(~victimway), .q(victimway), .clk(clk), .rst(rst));
+   // - instructions that do not read or write cache (cache_read = 0 or cache_write = 0)
+   // - invalid instructions (cache_valid_0 = 0 or cache_valid_1 = 0) do these need to be flip flopped? 
+   // - instructions that are squashed due to branch misprediction (not for cache demo, worry about for integrating with pipeline)
+   wire victimway, victimway_ff, toggle_victimway;
+   assign toggle_victimway = ((cache_read = 0 | cache_write = 0) | (cache_valid_0 = 0 | cache_valid_1 = 0)) ? 1'b0 : 1'b1; // do valids need to be flip-flopped?
+   assign victimway = (toggle_victimway) ? ~victimway_ff : victimway_ff;
+   dff victimway_ff(.d(victimway), .q(victimway_ff), .clk(clk), .rst(rst));
 
    //NOTE: cache0 and cache1 are apart of the same SET, thus it is arbitrary which cache the data_in gets place into.
    // Because it doesn't matter (jk, they tell us which cache to send each addr to in the writeup) which cache we write to, 
@@ -81,8 +82,8 @@ module mem_system(/*AUTOARG*/
                           .index                (cache_addr[10:3]),
                           .offset               (cache_offset),
                           .data_in              (cache_data_in),
-                          .comp                 (cache_comp_0),
-                          .write                (cache_write_0),
+                          .comp                 (cache_comp),
+                          .write                (cache_write),
                           .valid_in             (1'b1)); // maybe
 
 
@@ -94,7 +95,7 @@ module mem_system(/*AUTOARG*/
                           .valid                (cache_valid_1),
                           .err                  (cache_err_1),
                           // Inputs
-                          .enable               (cache_en), // cache1 has a different cache_en from cache0 (see schematic_SA) - (cache_en & victimway)?
+                          .enable               (cache_en & victimway_ff),
                           .clk                  (clk),
                           .rst                  (rst),
                           .createdump           (createdump),
@@ -102,8 +103,8 @@ module mem_system(/*AUTOARG*/
                           .index                (cache_addr[10:3]),
                           .offset               (cache_offset),
                           .data_in              (cache_data_in),
-                          .comp                 (cache_comp_1),
-                          .write                (cache_write_1),
+                          .comp                 (cache_comp),
+                          .write                (cache_write),
                           .valid_in             (1'b1));
 
    four_bank_mem mem(// Outputs
@@ -157,8 +158,8 @@ module mem_system(/*AUTOARG*/
       // cache controller signals
       
       cache_en = 1'b0;
-      cache_comp_0 = 1'b0;
-      cache_write_0 = Wr;
+      cache_comp = 1'b0;
+      cache_write = Wr;
       cache_data_in = DataIn;
       cache_addr = Addr;
       cache_offset = cache_addr[2:0];
@@ -185,7 +186,7 @@ module mem_system(/*AUTOARG*/
          // IDLE
          5'b00000: begin
             cache_en = (Rd | Wr);
-            cache_comp_0 = (Rd | Wr);
+            cache_comp = (Rd | Wr);
             nxt_state = (Rd | Wr) ? 5'b00010 : 5'b00000;
          end
 
@@ -193,7 +194,7 @@ module mem_system(/*AUTOARG*/
          5'b00001: begin
             // Access to see if hit
             cache_en = 1'b1;
-            cache_comp_0 = 1'b1;
+            cache_comp = 1'b1;
             nxt_state = 5'b00010;
          end
 
@@ -201,9 +202,9 @@ module mem_system(/*AUTOARG*/
          5'b0010: begin
             // Miss so need to do access read
             cache_en = ~((cache_hit_0_ff & cache_valid_0_ff) | (cache_hit_1_ff & cache_valid_1_ff)) ? 1'b1 : cache_en;
-            //cache_comp_0 = 1'b0 by default
+            //cache_comp = 1'b0 by default
 
-            cache_write_0 = (~cache_hit_0_ff | ~cache_valid_0_ff) ? 1'b0 : cache_write_0;
+            cache_write = (~cache_hit_0_ff | ~cache_valid_0_ff) ? 1'b0 : cache_write;
             cache_offset = (~cache_hit_0_ff | ~cache_valid_0_ff) ? 3'b000 : cache_offset;
 
             //TODO:  Use one of the hit outputs as a select for a mux between the two data outputs
@@ -221,8 +222,8 @@ module mem_system(/*AUTOARG*/
 
             // Dirty so need to do writeback
             cache_en = (cache_dirty_0_ff & cache_valid_0_ff) ? 1'b1 : cache_en;
-            //cache_comp_0 = 1'b0 by default
-            cache_write_0 = (cache_dirty_0_ff & cache_valid_0_ff) ? 1'b0 : cache_write_0;
+            //cache_comp = 1'b0 by default
+            cache_write = (cache_dirty_0_ff & cache_valid_0_ff) ? 1'b0 : cache_write;
             cache_offset = (cache_dirty_0_ff & cache_valid_0_ff) ? 3'b010 : cache_offset;
             mem_write = (cache_dirty_0_ff & cache_valid_0_ff) ? 1'b1 : mem_write;
             mem_addr = (cache_dirty_0_ff & cache_valid_0_ff) ? {actual_tag_0, cache_addr[10:3], 3'b000} : {cache_addr[15:3], 3'b000};
@@ -249,8 +250,8 @@ module mem_system(/*AUTOARG*/
 
             cache_offset = 3'b000;
             cache_en = 1'b1;
-            cache_comp_0 = 1'b0;
-            cache_write_0 = 1'b1;
+            cache_comp = 1'b0;
+            cache_write = 1'b1;
             cache_data_in = mem_data_out;
 
             // Do access write to cache next
@@ -260,8 +261,8 @@ module mem_system(/*AUTOARG*/
          // Mem write cycle 1
          5'b01000: begin
             cache_en = 1'b1;
-            cache_comp_0 = 1'b0;
-            cache_write_0 = 1'b0;
+            cache_comp = 1'b0;
+            cache_write = 1'b0;
             cache_offset = 3'b100;
 
             mem_write = 1'b1;
@@ -272,8 +273,8 @@ module mem_system(/*AUTOARG*/
          // Mem write cycle 2
          5'b01001: begin
             cache_en = 1'b1;
-            cache_comp_0 = 1'b0;
-            cache_write_0 = 1'b0;
+            cache_comp = 1'b0;
+            cache_write = 1'b0;
             cache_offset = 3'b110;
             
             mem_write = 1'b1;
@@ -303,8 +304,8 @@ module mem_system(/*AUTOARG*/
 
             cache_offset = 3'b010;
             cache_en = 1'b1;
-            cache_comp_0 = 1'b0;
-            cache_write_0 = 1'b1;
+            cache_comp = 1'b0;
+            cache_write = 1'b1;
             cache_data_in = mem_data_out;
 
             // nxt_state = 5'b01110;
@@ -315,8 +316,8 @@ module mem_system(/*AUTOARG*/
          5'b10000: begin
             cache_offset = 3'b100;
             cache_en = 1'b1;
-            cache_comp_0 = 1'b0;
-            cache_write_0 = 1'b1;
+            cache_comp = 1'b0;
+            cache_write = 1'b1;
             cache_data_in = mem_data_out;
             nxt_state = 5'b10001;
          end
@@ -324,8 +325,8 @@ module mem_system(/*AUTOARG*/
          5'b10001: begin
             cache_offset = 3'b110;
             cache_en = 1'b1;
-            cache_comp_0 = 1'b0;
-            cache_write_0 = 1'b1;
+            cache_comp = 1'b0;
+            cache_write = 1'b1;
             cache_data_in = mem_data_out;
             nxt_state = 5'b01110;
          end
@@ -333,7 +334,7 @@ module mem_system(/*AUTOARG*/
          // Done with cache miss, do comp read or write
          5'b01110: begin
             cache_en = 1'b1;
-            cache_comp_0 = 1'b1;
+            cache_comp = 1'b1;
             // Assert done next
             nxt_state = 5'b01111;
          end
@@ -344,7 +345,7 @@ module mem_system(/*AUTOARG*/
             Done = 1'b1;
 
             cache_en = (Wr | Rd) ? 1'b1 : cache_en;
-            cache_comp_0 = (Wr | Rd) ? 1'b1 : cache_comp_0;
+            cache_comp = (Wr | Rd) ? 1'b1 : cache_comp;
             
             nxt_state = (Wr | Rd) ? 5'b00010 : 5'b00000;
          end
