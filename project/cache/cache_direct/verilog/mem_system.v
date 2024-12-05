@@ -223,7 +223,7 @@ module mem_system(/*AUTOARG*/
             // Dirty so need to do writeback
             if (cache_dirty_ff & cache_valid_ff) begin
                mem_write = 1'b1;
-               mem_addr = {actual_tag, cache_addr[10:0]};
+               mem_addr = {actual_tag, cache_addr[10:3], 3'b000};
                nxt_state = 5'b01000;
             end else begin
                // Not dirty so can do mem read
@@ -261,34 +261,35 @@ module mem_system(/*AUTOARG*/
 
          // Mem write cycle 1
          5'b01000: begin
-            mem_addr = {actual_tag, cache_addr[10:0]};
+            mem_addr = {actual_tag, cache_addr[10:3], 3'b010};
             nxt_state = 5'b01001;
          end
 
          // Mem write cycle 2
          5'b01001: begin
-            mem_addr = {actual_tag, cache_addr[10:0]};
+            mem_addr = {actual_tag, cache_addr[10:3], 3'b100};
             nxt_state = 5'b01010;
          end
 
          // Mem write cycle 3
          5'b01010: begin
-            mem_addr = {actual_tag, cache_addr[10:0]};
+            mem_addr = {actual_tag, cache_addr[10:3], 3'b110};
             nxt_state = 5'b01011;
          end
 
          // Mem write cycle 4
          5'b01011: begin
-            mem_addr = {actual_tag, cache_addr[10:0]};
-            nxt_state = 5'b01101;
+            mem_read = 1'b1;
+            mem_addr = {cache_addr[15:3], 3'b000}; //Since we're putting all four words into the cache line anyways, it doesn't matter which offset we do first
+            nxt_state = 5'b00101;
          end
 
          // Extra write cycle
-         5'b01101: begin
-            // Now do mem read
-            mem_read = 1'b1;
-            nxt_state = 5'b00101;
-         end
+         // 5'b01101: begin
+         //    // Now do mem read
+         //    mem_read = 1'b1;
+         //    nxt_state = 5'b00100;
+         // end
 
          // Access write to cache
          5'b01100: begin
