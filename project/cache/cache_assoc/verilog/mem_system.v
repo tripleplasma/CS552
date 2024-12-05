@@ -54,11 +54,11 @@ module mem_system(/*AUTOARG*/
    reg [2:0] cache_offset;
 
    //TODO: Don't invert on these conditions
-   // - instructions that do not read or write cache (cache_read = 0 or cache_write = 0)
-   // - invalid instructions (cache_valid_0 = 0 or cache_valid_1 = 0) do these need to be flip flopped? 
+   // - instructions that do not read or write cache
+   // - invalid instructions
    // - instructions that are squashed due to branch misprediction (not for cache demo, worry about for integrating with pipeline)
-   wire victimway, victimway_ff, toggle_victimway;
-   assign toggle_victimway = ((cache_read = 0 | cache_write = 0) | (cache_valid_0 = 0 | cache_valid_1 = 0)) ? 1'b0 : 1'b1; // do valids need to be flip-flopped?
+   wire victimway, victimway_ff, 
+   reg toggle_victimway;
    assign victimway = (toggle_victimway) ? ~victimway_ff : victimway_ff;
    dff victimway_ff(.d(victimway), .q(victimway_ff), .clk(clk), .rst(rst));
 
@@ -166,6 +166,7 @@ module mem_system(/*AUTOARG*/
 
       // Top outputs
       Done = 1'b0;
+      toggle_victimway = 1'b0;
       Stall = (Rd | Wr) & ~Done;
       DataOut = cache_data_out_0;
       CacheHit = 1'b0;
@@ -209,7 +210,8 @@ module mem_system(/*AUTOARG*/
 
             //TODO:  Use one of the hit outputs as a select for a mux between the two data outputs
             //Hit so done
-            Done = (cache_hit_0_ff & cache_valid_0_ff);
+            Done = (cache_hit_0_ff & cache_valid_0_ff) | (cache_hit_1_ff & cache_valid_1_ff);
+            toggle_victimway = (cache_hit_0_ff & cache_valid_0_ff) | (cache_hit_1_ff & cache_valid_1_ff);
             CacheHit = ((cache_hit_0_ff & cache_valid_0_ff) | (cache_hit_1_ff & cache_valid_1_ff));
 
             nxt_state = (~cache_hit_0_ff | ~cache_valid_0_ff) ? 5'b00100 : ((Wr | Rd) ? 5'b00001 : 5'b00000);
@@ -343,6 +345,7 @@ module mem_system(/*AUTOARG*/
          5'b01111: begin
             //By here, the cache_out will be the correct value
             Done = 1'b1;
+            toggle_victimway = 1'b1;
 
             cache_en = (Wr | Rd) ? 1'b1 : cache_en;
             cache_comp = (Wr | Rd) ? 1'b1 : cache_comp;
