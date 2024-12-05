@@ -146,17 +146,13 @@ module mem_system(/*AUTOARG*/
       cache_addr = addr_ff;
       cache_offset = cache_addr[2:0];
 
-      // Top outops
+      // Top outputs
       Done = 1'b0;
       Stall = (Rd | Wr) & ~Done;
       DataOut = cache_data_out;
       CacheHit = 1'b0;
       err = cache_err | mem_err;
    
-      // cache outputs
-      // wire cache_hit, cache_valid, cache_dirty;
-      // wire [4:0] actual_tag;
-      // wire [15:0] cache_data_out;
    
       // 4-bank memory inputs
       mem_write = 1'b0;
@@ -167,11 +163,6 @@ module mem_system(/*AUTOARG*/
       // Default next_state to current state
       nxt_state = cache_state;
    
-      // 4-bank memory outputs
-      // wire mem_stall;
-      // wire [3:0] mem_busy;
-      // wire [15:0] mem_data_out;
-
       // State machine
       case (cache_state)
          // IDLE
@@ -188,54 +179,43 @@ module mem_system(/*AUTOARG*/
             cache_en = 1'b1;
             cache_comp = 1'b1;
             nxt_state = 5'b00010;
-
-            //// Miss so need to do access read
-            //if (~cache_hit_ff | ~cache_valid_ff) begin
-            //   nxt_state = 5'b00011;
-            //end else begin
-            //   // Hit so done
-            //   Done = 1'b1;
-            //   CacheHit = 1'b1;
-            //   if (Wr | Rd) begin
-            //      // Go to Idle state
-            //      nxt_state = 5'b00001;
-            //   end else begin
-            //      // Go to comp
-            //      nxt_state = 5'b00000;
-            //   end
-            //end
          end
 
          // Check if Hit state
          5'b0010: begin
             // Miss so need to do access read
             if (~cache_hit_ff | ~cache_valid_ff) begin
-               nxt_state = 5'b00011;
+               cache_en = 1'b1;
+               cache_comp = 1'b0;
+               cache_read = 1'b1;
+               cache_write = 1'b0;
+               cache_offset = 3'b000;
+
+               nxt_state = 5'b00100;
             end else begin
                // Hit so done
                Done = 1'b1;
                CacheHit = 1'b1;
                if (Wr | Rd) begin
-                  // Go to Idle state
+                  // Go to Comp state
                   nxt_state = 5'b00001;
                end else begin
-                  // Go to comp
+                  // Go to IDLE
                   nxt_state = 5'b00000;
                end
             end
          end
 
          // Access read to cache
-         5'b00011: begin
-            cache_en = 1'b1;
-            cache_comp = 1'b0;
-            cache_read = 1'b1;
-            cache_write = 1'b0;
-            nxt_state = 5'b00100;
-            // if (cache_dirty_ff & cache_valid_ff) begin
-               cache_offset = 3'b000;
-            // end
-         end
+         // 5'b00011: begin
+         //    cache_en = 1'b1;
+         //    cache_comp = 1'b0;
+         //    cache_read = 1'b1;
+         //    cache_write = 1'b0;
+         //    cache_offset = 3'b000;
+// 
+         //    nxt_state = 5'b00100;
+         // end
 
          // Check if dirty state
          5'b00100: begin
@@ -382,10 +362,10 @@ module mem_system(/*AUTOARG*/
             //By here, the cache_out will be the correct value
             Done = 1'b1;
             if (Wr | Rd) begin
-               // Go to Idle state
+               // Go to Comp state
                nxt_state = 5'b00001;
             end else begin
-               // Go to comp
+               // Go to Idle
                nxt_state = 5'b00000;
             end
          end
