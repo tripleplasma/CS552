@@ -85,7 +85,7 @@ module mem_system(/*AUTOARG*/
                           .write                (cache_write_0),
                           .valid_in             (1'b1)); // maybe
 
-   //TODO: Hook up the cache1 outputs to muxes
+
    cache #(2 + memtype) c1(// Outputs
                           .tag_out              (actual_tag_1),
                           .data_out             (cache_data_out_1),
@@ -125,6 +125,8 @@ module mem_system(/*AUTOARG*/
    assign nxt_cache_state = nxt_state;
    
    wire cache_hit_0_ff, cache_valid_0_ff, cache_dirty_0_ff;
+   wire cache_hit_1_ff, cache_valid_1_ff, cache_dirty_1_ff;
+
    wire [15:0]mem_data_out_ff;
 
    wire [15:0]data_in_ff;
@@ -142,9 +144,13 @@ module mem_system(/*AUTOARG*/
    dff data_ff[15:0](.d(mem_data_out), .q(mem_data_out_ff), .rst(rst), .clk(clk));
 
    // Cache output flops
-   dff hit_ff (.d(cache_hit_0), .q(cache_hit_0_ff), .rst(rst), .clk(clk));
-   dff valid_ff (.d(cache_valid_0), .q(cache_valid_0_ff), .rst(rst), .clk(clk));
-   dff dirty_ff (.d(cache_dirty_0), .q(cache_dirty_0_ff), .rst(rst), .clk(clk));
+   dff hit0_ff (.d(cache_hit_0), .q(cache_hit_0_ff), .rst(rst), .clk(clk));
+   dff valid0_ff (.d(cache_valid_0), .q(cache_valid_0_ff), .rst(rst), .clk(clk));
+   dff dirty0_ff (.d(cache_dirty_0), .q(cache_dirty_0_ff), .rst(rst), .clk(clk));
+
+   dff hit1_ff (.d(cache_hit_1), .q(cache_hit_1_ff), .rst(rst), .clk(clk));
+   dff valid1_ff (.d(cache_valid_1), .q(cache_valid_1_ff), .rst(rst), .clk(clk));
+   dff dirty1_ff (.d(cache_dirty_1), .q(cache_dirty_1_ff), .rst(rst), .clk(clk));
 
    always @(cache_state or Rd or Wr) begin
       // Set default values
@@ -194,20 +200,25 @@ module mem_system(/*AUTOARG*/
          // Check if Hit state
          5'b0010: begin
             // Miss so need to do access read
-            cache_en = (~cache_hit_0_ff | ~cache_valid_0_ff) ? 1'b1 : cache_en;
-            //cache_comp_0 = 1'b0 be default
+            cache_en = ~((cache_hit_0_ff & cache_valid_0_ff) | (cache_hit_1_ff & cache_valid_1_ff)) ? 1'b1 : cache_en;
+            //cache_comp_0 = 1'b0 by default
+
             cache_write_0 = (~cache_hit_0_ff | ~cache_valid_0_ff) ? 1'b0 : cache_write_0;
             cache_offset = (~cache_hit_0_ff | ~cache_valid_0_ff) ? 3'b000 : cache_offset;
 
+            //TODO:  Use one of the hit outputs as a select for a mux between the two data outputs
             //Hit so done
             Done = (cache_hit_0_ff & cache_valid_0_ff);
-            CacheHit = (cache_hit_0_ff & cache_valid_0_ff);
+            CacheHit = ((cache_hit_0_ff & cache_valid_0_ff) | (cache_hit_1_ff & cache_valid_1_ff));
 
             nxt_state = (~cache_hit_0_ff | ~cache_valid_0_ff) ? 5'b00100 : ((Wr | Rd) ? 5'b00001 : 5'b00000);
          end
 
          // Check if dirty state
          5'b00100: begin
+            //TODO: Add victimizing logic: If one is valid, select the other one. 
+            //      If neither is valid, select way zero. If both are valid, use the pseudo-random replacement algorithm specified below.
+
             // Dirty so need to do writeback
             cache_en = (cache_dirty_0_ff & cache_valid_0_ff) ? 1'b1 : cache_en;
             //cache_comp_0 = 1'b0 by default
