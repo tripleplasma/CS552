@@ -1248,7 +1248,7 @@
 # 
 # LOG: ReqNum  625 Cycle     8188 ReqCycle     8173 Wr Addr 0x9060 Value 0xe081 ValueRef 0xe081 Hit: 0
 # 
-# LOG: ReqNum  626 Cycle     8203 ReqCycle     8188 Wr Addr 0x1f72 Value 0x1ded ValueRef 0x1ded Hit: 0
+# LOG: ReqNum  626 Cycle     8203 ReqCycle     8188 Wr Addr 0x1f72 Value 0x1ded ValueRef 0x1ded Hit: 0 // suspicious
 # 
 # LOG: ReqNum  627 Cycle     8220 ReqCycle     8205 Wr Addr 0x021c Value 0x6598 ValueRef 0x6598 Hit: 0
 # 
