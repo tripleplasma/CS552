@@ -153,7 +153,7 @@ module mem_system(/*AUTOARG*/
    // - instructions that are squashed due to branch misprediction (not for cache demo, worry about for integrating with pipeline)
    wire victimway, victimway_ff;
    reg toggle_victimway;
-   assign victimway = (rst) ? 1'b1 : 
+   assign victimway = (rst) ? 1'b0 : 
                      (toggle_victimway) ? ~victimway_ff : victimway_ff;
 
    dff iVICTIMWAY_ff(.d(victimway), .q(victimway_ff), .clk(clk), .rst(1'b0));
@@ -214,6 +214,7 @@ module mem_system(/*AUTOARG*/
             cache_en_0 = (Rd | Wr);
             cache_en_1 = (Rd | Wr);
             cache_comp = (Rd | Wr);
+            nxt_state = (Rd | Wr);
             nxt_state = (Rd | Wr) ? 5'b00010 : 5'b00000;
          end
 
@@ -227,13 +228,13 @@ module mem_system(/*AUTOARG*/
          end
 
          // Check if Hit state
-         5'b0010: begin
+         5'b00010: begin
             victimize_cache_0 = (~real_hit & 
                                  (~cache_valid_0_ff | 
-                                 (cache_valid_0_ff & cache_valid_1_ff & ~victimway_ff))) ? 1'b1 : 1'b0;
+                                 (cache_valid_0_ff & cache_valid_1_ff & victimway_ff))) ? 1'b1 : 1'b0;
             victimize_cache_1 = (~real_hit & 
                                  ((~cache_valid_1_ff & cache_valid_0_ff) | 
-                                 (cache_valid_0_ff & cache_valid_1_ff & victimway_ff))) ? 1'b1 : 1'b0;
+                                 (cache_valid_0_ff & cache_valid_1_ff & ~victimway_ff))) ? 1'b1 : 1'b0;
             // Miss so need to do access read
             cache_en_0 = (victimize_cache_0) ? 1'b1 : cache_en_0; // real_hit_0?
             cache_en_1 = (victimize_cache_1) ? 1'b1 : cache_en_1; // real_hit_1?
