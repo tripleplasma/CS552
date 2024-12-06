@@ -280,7 +280,9 @@ module mem_system(/*AUTOARG*/
             cache_offset = 3'b100;
 
             mem_write = 1'b1;
-            mem_addr = {actual_tag_0, cache_addr[10:3], 3'b010};
+            mem_addr = (victimize_cache_0) ? {actual_tag_0, cache_addr[10:3], 3'b010} : 
+                        (victimize_cache_1) ? {actual_tag_1, cache_addr[10:3], 3'b010} :
+                                                            {cache_addr[15:3], 3'b010};
             nxt_state = 5'b01001;
          end
 
@@ -293,14 +295,18 @@ module mem_system(/*AUTOARG*/
             cache_offset = 3'b110;
             
             mem_write = 1'b1;
-            mem_addr = {actual_tag_0, cache_addr[10:3], 3'b100};
+            mem_addr = (victimize_cache_0) ? {actual_tag_0, cache_addr[10:3], 3'b100} : 
+                        (victimize_cache_1) ? {actual_tag_1, cache_addr[10:3], 3'b100} :
+                                                            {cache_addr[15:3], 3'b100};
             nxt_state = 5'b01010;
          end
 
          // Mem write cycle 3
          5'b01010: begin
             mem_write = 1'b1;
-            mem_addr = {actual_tag_0, cache_addr[10:3], 3'b110};
+            mem_addr = (victimize_cache_0) ? {actual_tag_0, cache_addr[10:3], 3'b110} : 
+                        (victimize_cache_1) ? {actual_tag_1, cache_addr[10:3], 3'b110} :
+                                                            {cache_addr[15:3], 3'b110};
             nxt_state = 5'b01011;
          end
 
