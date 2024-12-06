@@ -153,8 +153,10 @@ module mem_system(/*AUTOARG*/
    // - instructions that are squashed due to branch misprediction (not for cache demo, worry about for integrating with pipeline)
    wire victimway, victimway_ff;
    reg toggle_victimway;
-   assign victimway = (toggle_victimway) ? ~victimway_ff : victimway_ff;
-   dff iVICTIMWAY_ff(.d(victimway), .q(victimway_ff), .clk(clk), .rst(rst));
+   assign victimway = (rst) ? 1'b1 : 
+                     (toggle_victimway) ? ~victimway_ff : victimway_ff;
+
+   dff iVICTIMWAY_ff(.d(victimway), .q(victimway_ff), .clk(clk), .rst(1'b0));
 
    wire real_hit_0, real_hit_1, real_hit;
    reg victimize_cache_0, victimize_cache_1;
