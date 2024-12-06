@@ -159,11 +159,6 @@ module mem_system(/*AUTOARG*/
    wire real_hit_0, real_hit_1, real_hit;
    reg victimize_cache_0, victimize_cache_1;
 
-   assign cache_data_out = ((cache_hit_1_ff & cache_valid_1_ff) | victimize_cache_1) ? cache_data_out_1 : 
-                           ((cache_hit_0_ff & cache_valid_0_ff) | victimize_cache_0) ? cache_data_out_0 :
-                           cache_data_out_ff;
-   dff cache_data_out_dff[15:0](.d(cache_data_out), .q(cache_data_out_ff), .rst(rst), .clk(clk));
-
    assign real_hit_0 = (cache_hit_0_ff & cache_valid_0_ff);
    assign real_hit_1 = (cache_hit_1_ff & cache_valid_1_ff);
    assign real_hit = real_hit_0 | real_hit_1;
@@ -172,6 +167,11 @@ module mem_system(/*AUTOARG*/
    assign writeback_0 = cache_dirty_0_ff & cache_valid_0_ff;
    assign writeback_1 = cache_dirty_1_ff & cache_valid_1_ff;
    assign writeback = writeback_0 | writeback_1;
+
+   assign cache_data_out = ((real_hit_1) | (victimize_cache_1 & ~(real_hit))) ? cache_data_out_1 : 
+                           ((real_hit_0) | (victimize_cache_0 & ~(real_hit))) ? cache_data_out_0 :
+                           cache_data_out_ff;
+   dff cache_data_out_dff[15:0](.d(cache_data_out), .q(cache_data_out_ff), .rst(rst), .clk(clk));
 
    always @(cache_state or Rd or Wr) begin
       // Set default values
