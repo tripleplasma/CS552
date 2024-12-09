@@ -26,12 +26,11 @@ module mem_system(/*AUTOARG*/
 
    // cache controller signals
    // cache inputs
-   reg cache_en, cache_comp, cache_read, cache_write;
+   reg cache_en, cache_comp, cache_write;
    reg [15:0] cache_data_in, cache_addr;
 
    // cache outputs
    wire cache_hit, cache_valid, cache_dirty;
-   // wire real_hit, victimize;
    wire [4:0] actual_tag;
    wire [15:0] cache_data_out;
 
@@ -47,8 +46,6 @@ module mem_system(/*AUTOARG*/
    // err signals
    wire cache_err, mem_err; // controller_err
 
-   /* data_mem = 1, inst_mem = 0 *
-    * needed for cache parameter */
    reg [2:0] cache_offset;
    parameter memtype = 0;
    cache #(0 + memtype) c0(// Outputs
@@ -85,30 +82,50 @@ module mem_system(/*AUTOARG*/
                      .wr                (mem_write),
                      .rd                (mem_read));
 
-   wire [4:0] cache_state;
-   reg [4:0] nxt_state;
+   wire [3:0] cache_state, nxt_cache_state;
+   reg [3:0] nxt_state;
+   assign nxt_cache_state = nxt_state;
+   
+   wire cache_hit_ff, cache_valid_ff, cache_dirty_ff;
+   wire [15:0]mem_data_out_ff;
+
+   wire [15:0]data_in_ff;
+   dff dataIn_ff[15:0](.d(DataIn), .q(data_in_ff), .rst(rst), .clk(clk));
+
+   wire [15:0]addr_ff;
+   dff address_ff[15:0](.d(Addr), .q(addr_ff), .rst(rst), .clk(clk));
+
+   wire rd_ff, wr_ff;
+   dff write_ff(.d(Wr), .q(wr_ff), .rst(rst), .clk(clk));
+   dff read_ff(.d(Rd), .q(rd_ff), .rst(rst), .clk(clk));
 
    // State flop
-   dff state_ff[4:0](.d(nxt_state), .q(cache_state), .rst(rst), .clk(clk));
-   
-   always @(cache_state or Rd or Wr or cache_hit or cache_valid or cache_dirty) begin
+   dff state_ff[3:0](.d(nxt_cache_state), .q(cache_state), .rst(rst), .clk(clk));
+   dff data_ff[15:0](.d(mem_data_out), .q(mem_data_out_ff), .rst(rst), .clk(clk));
+
+   // Cache output flops
+   dff hit_ff (.d(cache_hit), .q(cache_hit_ff), .rst(rst), .clk(clk));
+   dff valid_ff (.d(cache_valid), .q(cache_valid_ff), .rst(rst), .clk(clk));
+   dff dirty_ff (.d(cache_dirty), .q(cache_dirty_ff), .rst(rst), .clk(clk));
+
+   always @(cache_state or Rd or Wr) begin
       // Set default values
       // cache controller signals
       
       cache_en = 1'b0;
       cache_comp = 1'b0;
-      cache_read = Rd;
       cache_write = Wr;
       cache_data_in = DataIn;
       cache_addr = Addr;
       cache_offset = cache_addr[2:0];
 
-      // Top outops
+      // Top outputs
       Done = 1'b0;
       Stall = (Rd | Wr) & ~Done;
       DataOut = cache_data_out;
       CacheHit = 1'b0;
       err = cache_err | mem_err;
+   
    
       // 4-bank memory inputs
       mem_write = 1'b0;
@@ -118,205 +135,170 @@ module mem_system(/*AUTOARG*/
 
       // Default next_state to current state
       nxt_state = cache_state;
-
+   
       // State machine
       case (cache_state)
          // IDLE
-         5'b00000: begin
-            if (Rd | Wr) begin
-               // Go to Comp State
-               nxt_state = 5'b00001;
-            end
+         4'b0000: begin
+            cache_en = (Rd | Wr);
+            cache_comp = (Rd | Wr);
+            nxt_state = (Rd | Wr) ? 4'b0010 : 4'b0000;
          end
 
-         // Read or write comparisson
-         5'b00001: begin
+         // Read or write comparison
+         4'b0001: begin
             // Access to see if hit
             cache_en = 1'b1;
             cache_comp = 1'b1;
-            cache_write = 1'b0;
-            nxt_state = ~(cache_hit & cache_valid) ? 5'b00011 : 5'b00010;
+            nxt_state = 4'b0010;
          end
 
-         //Cache Hit State
-         5'b00010: begin
-            CacheHit = 1'b1;
+         // Check if Hit state
+         4'b0010: begin
+            // Miss so need to do access read
+            cache_en = (~cache_hit_ff | ~cache_valid_ff) ? 1'b1 : cache_en;
+            //cache_comp = 1'b0 by default
+            cache_write = (~cache_hit_ff | ~cache_valid_ff) ? 1'b0 : cache_write;
+            cache_offset = (~cache_hit_ff | ~cache_valid_ff) ? 3'b000 : cache_offset;
 
-            //Same as done state below
-            Done = 1'b1;
-            cache_en = 1'b1;
-            cache_comp = 1'b1;
-            if (Wr | Rd) begin
-               // Go to Idle state
-               nxt_state = 5'b00001;
-            end else begin
-               // Go to comp
-               nxt_state = 5'b00000;
-            end
+            //Hit so done
+            Done = (cache_hit_ff & cache_valid_ff);
+            CacheHit = (cache_hit_ff & cache_valid_ff);
+
+            nxt_state = (~cache_hit_ff | ~cache_valid_ff) ? 4'b0011 : ((Wr | Rd) ? 4'b0001 : 4'b0000);
          end
 
-         // Cache Miss - Access read to cache, returns the tag and data_out from that index and word-offset in the cache
-         5'b00011: begin
+         // Check if dirty state
+         4'b0011: begin
+            // Dirty so need to do writeback
+            cache_en = (cache_dirty_ff & cache_valid_ff) ? 1'b1 : cache_en;
+            //cache_comp = 1'b0 by default
+            cache_write = (cache_dirty_ff & cache_valid_ff) ? 1'b0 : cache_write;
+            cache_offset = (cache_dirty_ff & cache_valid_ff) ? 3'b010 : cache_offset;
+            mem_write = (cache_dirty_ff & cache_valid_ff) ? 1'b1 : mem_write;
+            mem_addr = (cache_dirty_ff & cache_valid_ff) ? {actual_tag, cache_addr[10:3], 3'b000} : {cache_addr[15:3], 3'b000};
+
+            mem_read = ~(cache_dirty_ff & cache_valid_ff) ? 1'b1 : mem_read;
+
+            nxt_state = (cache_dirty_ff & cache_valid_ff) ? 4'b0100 : 4'b1000;
+         end
+
+         // Mem write cycle 1
+         4'b0100: begin
             cache_en = 1'b1;
             cache_comp = 1'b0;
             cache_write = 1'b0;
+            cache_offset = 3'b100;
 
-            //Check if the cacheline was dirty before writing new words into cacheline
-            if (cache_dirty & cache_valid) begin
-               cache_offset = 3'b000;
-               nxt_state = 5'b00100;
-            end else begin
-               nxt_state = 5'b10100;
-            end
+            mem_write = 1'b1;
+            mem_addr = {actual_tag, cache_addr[10:3], 3'b010};
+            nxt_state = 4'b0101;
          end
-         
-         //========================== START OF EVICTS ==========================
 
-         5'b10100: begin
+         // Mem write cycle 2
+         4'b0101: begin
+            cache_en = 1'b1;
+            cache_comp = 1'b0;
+            cache_write = 1'b0;
+            cache_offset = 3'b110;
+            
+            mem_write = 1'b1;
+            mem_addr = {actual_tag, cache_addr[10:3], 3'b100};
+            nxt_state = 4'b0110;
+         end
+
+         // Mem write cycle 3
+         4'b0110: begin
+            mem_write = 1'b1;
+            mem_addr = {actual_tag, cache_addr[10:3], 3'b110};
+            nxt_state = 4'b0111;
+         end
+
+         // Mem write finished, start read
+         4'b0111: begin
             mem_read = 1'b1;
-            mem_addr = {cache_addr[15:3], 3'b000}; //Since we're putting all four words into the cache line anyways, it doesn't matter which offset we do first
-            nxt_state = 5'b00101;
+            mem_addr = {cache_addr[15:3], 3'b000};
+            nxt_state = 4'b1000;
          end
 
          // Mem read cycle 1
-         5'b00101: begin
-            // Queue the write of Word1 from memory into the cacheline
+         4'b1000: begin
+            //Read the second word for the cache line
             mem_read = 1'b1;
             mem_addr = {cache_addr[15:3], 3'b010};
 
-            nxt_state = 5'b00111;
+            nxt_state = 4'b1001;
          end
 
          // Mem read cycle 2
-         5'b00111: begin
-            // Queue the write of Word2 from memory into the cacheline
+         4'b1001: begin
+            //Read the third word for the cache line
             mem_read = 1'b1;
             mem_addr = {cache_addr[15:3], 3'b100};
 
-            // Write Word0 from memory into cacheline
             cache_offset = 3'b000;
             cache_en = 1'b1;
             cache_comp = 1'b0;
             cache_write = 1'b1;
             cache_data_in = mem_data_out;
 
-            nxt_state = 5'b01100;
+            // Do access write to cache next
+            nxt_state = 4'b1010;
          end
 
-         // Mem read cycle 3
-         5'b01100: begin
-            // Queue the write of Word3 from memory into the cacheline
+         // Access write to cache
+         4'b1010: begin
+            //Read the fourth word for the cache line
             mem_read = 1'b1;
             mem_addr = {cache_addr[15:3], 3'b110};
 
-            // Write Word1 from memory into cacheline
             cache_offset = 3'b010;
             cache_en = 1'b1;
             cache_comp = 1'b0;
             cache_write = 1'b1;
             cache_data_in = mem_data_out;
 
-            nxt_state = 5'b10000;
+            nxt_state = 4'b1011;
          end
 
-         // Mem read cycle 4
-         5'b10000: begin
-            // Write Word2 from memory into cacheline
+         4'b1011: begin
             cache_offset = 3'b100;
             cache_en = 1'b1;
             cache_comp = 1'b0;
             cache_write = 1'b1;
             cache_data_in = mem_data_out;
-            nxt_state = 5'b10001;
+            nxt_state = 4'b1100;
          end
 
-         // Mem read cycle 5
-         5'b10001: begin
-            // Write Word3 from memory into cacheline
+         4'b1100: begin
             cache_offset = 3'b110;
             cache_en = 1'b1;
             cache_comp = 1'b0;
             cache_write = 1'b1;
             cache_data_in = mem_data_out;
-
-            // Completed Victimization, go to pre-done state
-            nxt_state = Wr ? 5'b10010 : 5'b01110;
+            nxt_state = 4'b1101;
          end
 
-         //After we finish evicting and replacing everything, actually do the write to cache since we were writing Word3 in the previous state
-         5'b10010: begin
-            cache_en = 1'b1;
-            cache_comp = 1'b0;
-            nxt_state = 5'b01110;
-         end
-
-         //========================== END OF EVICTS ==========================
-         //========================== START OF WRITEBACK WITH DIRTY ==========================
-         5'b00100: begin
-            cache_en = 1'b1;
-            cache_offset = 3'b010; //Cache_data_out and mem_data_in are a cycle apart so we read it a cycle ahead, to write it in this state
-            mem_write = 1'b1;
-            mem_addr = {actual_tag, cache_addr[10:3], 3'b000};
-            nxt_state = 5'b01000;
-         end
-
-         // Mem write cycle 1
-         5'b01000: begin
-            cache_en = 1'b1;
-            cache_offset = 3'b100;
-            mem_write = 1'b1;
-            mem_addr = {actual_tag, cache_addr[10:3], 3'b010};
-            nxt_state = 5'b01001;
-         end
-
-         // Mem write cycle 2
-         5'b01001: begin
-            cache_en = 1'b1;
-            cache_offset = 3'b110;
-            mem_write = 1'b1;
-            mem_addr = {actual_tag, cache_addr[10:3], 3'b100};
-            nxt_state = 5'b01010;
-         end
-
-         // Mem write cycle 3
-         5'b01010: begin
-            cache_en = 1'b1;
-            cache_offset = cache_addr[2:0];
-            mem_write = 1'b1;
-            mem_addr = {actual_tag, cache_addr[10:3], 3'b110};
-            nxt_state = 5'b10100; //After writing cacheline to memory, evict the line and move all the new words associated with the new tag in
-         end
-         //========================== END OF WRITEBACK WITH DIRTY ==========================
-
-         // Done with cache miss, do comp read or write. This ensures that it hits after everything is in the cache
-         5'b01110: begin
+         // Done with cache miss, do comp read or write
+         4'b1101: begin
             cache_en = 1'b1;
             cache_comp = 1'b1;
             // Assert done next
-            // nxt_state = 5'b01111;
-            Done = 1'b1;
-            if (Wr | Rd) begin
-               // Go to Idle state
-               nxt_state = 5'b00001;
-            end else begin
-               // Go to comp
-               nxt_state = 5'b00000;
-            end
+            nxt_state = 4'b1110;
          end
 
          // Cache miss done
-         // 5'b01111: begin
-         //    Done = 1'b1;
-         //    if (Wr | Rd) begin
-         //       // Go to Idle state
-         //       nxt_state = 5'b00001;
-         //    end else begin
-         //       // Go to comp
-         //       nxt_state = 5'b00000;
-         //    end
-         // end
+         4'b1110: begin
+            //By here, the cache_out will be the correct value
+            Done = 1'b1;
 
-         default: nxt_state = 5'b00000;
+            cache_en = (Wr | Rd) ? 1'b1 : cache_en;
+            cache_comp = (Wr | Rd) ? 1'b1 : cache_comp;
+            
+            nxt_state = (Wr | Rd) ? 4'b0010 : 4'b0000;
+         end
+
+         default: nxt_state = 4'b0000;
       endcase
     end
 
