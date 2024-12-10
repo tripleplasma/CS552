@@ -1,0 +1,2 @@
+0 1 348 0 //015C -> 0000 0001 0101 1100 -> 00000 00101011 100, we think that: On miss/invalid, fill in all 4 of the words in the cacheline instead of just 1
+0 1 350 0 //015E -> 0000 0001 0101 1110 -> 00000 00101011 110 
