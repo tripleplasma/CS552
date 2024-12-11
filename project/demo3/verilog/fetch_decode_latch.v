@@ -1,10 +1,12 @@
-module fetch_decode_latch(clk, rst, nop, rst_d, PC_f, PC_d, instruction_f, instruction_d);
+module fetch_decode_latch(clk, rst, nop, rst_d, PC_f, PC_d, instruction_f, instruction_d, align_err_fetch_f, align_err_fetch_d);
 
     input wire clk, rst;
     input wire nop;
     input wire [15:0] PC_f, instruction_f;
+    input wire align_err_fetch_f;
     output wire rst_d;
     output wire [15:0] PC_d, instruction_d;
+    output wire align_err_fetch_d;
 
     wire [15:0] instruction_fd_int;
     // wire [15:0] PC_fd_int;
@@ -16,5 +18,7 @@ module fetch_decode_latch(clk, rst, nop, rst_d, PC_f, PC_d, instruction_f, instr
 
     register iINSTRUCTION_LATCH_FD(.clk(clk), .rst(rst), .writeEn(~nop), .writeData(instruction_f), .readData(instruction_d));
     // assign instruction_d = (nop) ? instruction_d : instruction_fd_int;
+
+    register #(.REGISTER_WIDTH(1)) iALIGN_ERR_FETCH_FD(.clk(clk), .rst(1'b0), .writeEn(~nop), .writeData(align_err_fetch_f), .readData(align_err_fetch_d));
 
 endmodule

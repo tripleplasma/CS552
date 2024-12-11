@@ -1,20 +1,20 @@
 module decode_execute_latch(clk, rst, nop, PC_d, PC_e, instruction_d, instruction_e, read1Data_d, read1Data_e, read2Data_d, read2Data_e, immExt_d, immExt_e, aluSrc_d,
                             aluSrc_e, branch_d, branch_e, memRead_d, memRead_e, memToReg_d, memToReg_e, memWrite_d, memWrite_e, halt_d, halt_e, link_d, link_e, 
-                            jumpImm_d, jumpImm_e, jump_d, jump_e, writeRegSel_d, writeRegSel_e, regWrite_d, regWrite_e);
+                            jumpImm_d, jumpImm_e, jump_d, jump_e, writeRegSel_d, writeRegSel_e, regWrite_d, regWrite_e, align_err_fetch_d, align_err_fetch_e);
 
     input wire clk, rst;
     input wire nop;
     input wire [15:0] PC_d, instruction_d, read1Data_d, read2Data_d, immExt_d;
-    input wire halt_d, link_d, memRead_d, memToReg_d, memWrite_d, aluSrc_d, jumpImm_d, jump_d, regWrite_d;
+    input wire halt_d, link_d, memRead_d, memToReg_d, memWrite_d, aluSrc_d, jumpImm_d, jump_d, regWrite_d, align_err_fetch_d;
     input wire [2:0] branch_d;
     input wire [3:0] writeRegSel_d;
     output wire [15:0] PC_e, instruction_e, read1Data_e, read2Data_e, immExt_e;
-    output wire halt_e, link_e, memRead_e, memToReg_e, memWrite_e, aluSrc_e, jumpImm_e, jump_e, regWrite_e;
+    output wire halt_e, link_e, memRead_e, memToReg_e, memWrite_e, aluSrc_e, jumpImm_e, jump_e, regWrite_e, align_err_fetch_e;
     output wire [2:0] branch_e;
     output wire [3:0] writeRegSel_e;
 
     wire [15:0] instruction_de_int, read1Data_de_int, read2Data_de_int, immExt_de_int;
-    wire halt_de_int, link_de_int, memRead_de_int, memToReg_de_int, memWrite_de_int, aluSrc_de_int, jumpImm_de_int, jump_de_int, regWrite_de_int;
+    wire halt_de_int, link_de_int, memRead_de_int, memToReg_de_int, memWrite_de_int, aluSrc_de_int, jumpImm_de_int, jump_de_int, regWrite_de_int, align_err_fetch_de_int;
     wire [2:0] branch_de_int; 
     wire [3:0] writeRegSel_de_int;
 
@@ -67,6 +67,9 @@ module decode_execute_latch(clk, rst, nop, PC_d, PC_e, instruction_d, instructio
     
     assign regWrite_de_int = (nop) ? 1'b0 : regWrite_d;
     register #(.REGISTER_WIDTH(1)) iREGWRITE_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(regWrite_de_int), .readData(regWrite_e));
+
+    assign align_err_fetch_de_int = (nop) ? 1'b0 : align_err_fetch_d;
+    register #(.REGISTER_WIDTH(1)) iALIGN_ERR_FETCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(align_err_fetch_de_int), .readData(align_err_fetch_e));
 
     register #(.REGISTER_WIDTH(3)) iBRANCH_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(branch_de_int), .readData(branch_e));
     assign branch_de_int = (nop) ? 3'b000 : branch_d;
