@@ -6,7 +6,7 @@
                      processor.
 */
 `default_nettype none
-module memory (clk, rst, aluResult, writeData, memWrite, memRead, halt, readData);
+module memory (clk, rst, aluResult, writeData, memWrite, memRead, halt, readData, align_err);
 
    input wire          clk;
    input wire          rst;
@@ -16,14 +16,16 @@ module memory (clk, rst, aluResult, writeData, memWrite, memRead, halt, readData
    input wire          memRead;     // Controls if memory reads
    input wire          halt;        // Dumps the memory to a file
 
-   output wire [15:0]   readData;   // Read data from memory
+   output wire [15:0]  readData;    // Read data from memory
+   output wire         align_err;   // error if unaligned word access occurs        
 
    // Enable on reading and writing
    wire memReadorWrite;
    assign memReadorWrite = memWrite | memRead;
 
-   memory2c iMEMORY( // output wires
+   memory2c_align iMEMORY( // output wires
                      .data_out(readData), 
+                     .err(align_err),
                      // input wires
                      .data_in(writeData), 
                      .addr(aluResult), 

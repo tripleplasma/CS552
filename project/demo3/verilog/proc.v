@@ -27,14 +27,14 @@ module proc (/*AUTOARG*/
    wire [15:0] writeData;
    wire [15:0] read1Data_d, read1Data_e, read1Data_m, read1Data_wb;
    wire [15:0] read2Data_d, read2Data_e, read2Data_m;
-   wire err_decode;
+   wire err_decode, align_err_fetch, align_err_memory;
    wire [15:0] immExt_d, immExt_e, immExt_m, immExt_wb;
    wire [3:0] aluSel;
    wire [15:0] PC_f, PC_d, PC_e, PC_m, PC_wb;
 
    // OR all the err ouputs for every sub-module and assign it as this
    // err output
-   assign err = err_decode;
+   assign err = err_decode | align_err_fetch | align_err_memory;
    
    // hazard signals
    wire disablePCWrite, disableIFIDWrite, setExNOP, setFetchNOP;
@@ -79,7 +79,8 @@ module proc (/*AUTOARG*/
                // Outputs
                .instr(instruction_f), 
                .output_clk(internal_clock), 
-               .PC_2(PC_f));
+               .PC_2(PC_f),
+               .align_err(align_err_fetch));
    
    fetch_decode_latch iFDLATCH0( // Inputs
                                  .clk(internal_clock), 
@@ -272,7 +273,8 @@ module proc (/*AUTOARG*/
                   .memRead(memRead_m), 
                   .halt(halt_m), 
                   // Outputs
-                  .readData(readData_m));
+                  .readData(readData_m),
+                  .align_err(align_err_memory));
 
    memory_wb_latch iMWLATCH0(// Inputs
                               .clk(internal_clock), 

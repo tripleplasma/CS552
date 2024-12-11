@@ -8,7 +8,7 @@
 module fetch ( clk, rst, hazard, setFetchNOP,
                halt_sig, jump_imm_sig, jump_sig, except_sig, br_contr_sig, 
                imm_jump_reg_val, extend_val,
-               PC_2, instr, output_clk);
+               PC_2, instr, output_clk, align_err);
    input wire clk;
    input wire rst;
 
@@ -23,7 +23,7 @@ module fetch ( clk, rst, hazard, setFetchNOP,
    input wire [15:0] extend_val;
 
    output wire [15:0] instr;
-   output wire output_clk;
+   output wire output_clk, align_err;
 
    output wire [15:0] PC_2;
    wire [15:0] pcCurrent;
@@ -57,7 +57,7 @@ module fetch ( clk, rst, hazard, setFetchNOP,
    // assign EPC = except_sig ? PC_2 : EPC;
 
    assign instr = (setFetchNOP) ? 16'b0000_1000_0000_0000 : instr_int;
-   memory2c instr_mem(.data_out(instr_int), .data_in(16'b0), .addr(pcCurrent), .enable(1'b1), .wr(1'b0), .createdump(1'b0), .clk(output_clk), .rst(rst));
+   memory2c_align instr_mem(.data_out(instr_int), .data_in(16'b0), .addr(pcCurrent), .enable(1'b1), .wr(1'b0), .createdump(1'b0), .clk(output_clk), .rst(rst), .err(align_err));
 
 endmodule
 `default_nettype wire
