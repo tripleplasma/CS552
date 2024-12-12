@@ -1,4 +1,4 @@
-1 0 2132 33222
+1 0 2132 33222 // this test stops at first error encountered in the randbench; checking writeback on eviction
 1 0 56136 58356
 0 1 60362 27341
 0 1 26556 19488

@@ -1,4 +1,4 @@
-1 0 2132 33222
+1 0 2132 33222  // this test is similar to randbench, but with a different seed to make sure different seeds also work with our test
 1 0 56136 58356
 0 1 60362 27341
 0 1 26556 19488
