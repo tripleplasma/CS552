@@ -42,7 +42,7 @@ module proc (/*AUTOARG*/
    wire disablePCWrite, disableIFIDWrite, setExNOP, setFetchNOP;
 
    // control signals
-   wire halt_d, halt_e, halt_m, haltxout;
+   wire halt_d, halt_e, halt_m, halt_wb, haltxout;
    wire jumpImm_d, jumpImm_e, jumpImm_m, jumpImm_wb;
    wire link_d, link_e, link_m, link_wb;
    wire jump_d, jump_e, jump_m, jump_wb;
@@ -71,7 +71,7 @@ module proc (/*AUTOARG*/
                .rst(rst), 
                .hazard(disablePCWrite),
                .setFetchNOP(setFetchNOP),
-               .halt_sig(haltxout | align_err_fetch_wb | align_err_memory_wb), 
+               .halt_sig(haltxout), 
                .jump_imm_sig(jumpImm_wb), 
                .jump_sig(jump_wb), 
                .except_sig(exception), 
@@ -305,7 +305,7 @@ module proc (/*AUTOARG*/
                               .regWrite_m(regWrite_m),
                               .regWrite_wb(regWrite_wb),
                               .halt_m(halt_m),
-                              .halt_wb(haltxout),
+                              .halt_wb(halt_wb),
                               .immExt_m(immExt_m),
                               .immExt_wb(immExt_wb),
                               .read1Data_m(read1Data_m), 
@@ -327,8 +327,12 @@ module proc (/*AUTOARG*/
                   .nextPC(PC_wb), 
                   .memToReg(memToReg_wb), 
                   .link(link_wb), 
+                  .align_err_fetch(align_err_fetch_wb),
+                  .align_err_memory(align_err_memory_wb),
+                  .halt(halt_wb),
                   // Outputs
-                  .writeData(writeData));
+                  .writeData(writeData),
+                  .haltxout(haltxout));
    
 endmodule // proc
 `default_nettype wire
