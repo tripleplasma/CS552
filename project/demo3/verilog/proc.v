@@ -36,7 +36,7 @@ module proc (/*AUTOARG*/
 
    // OR all the err ouputs for every sub-module and assign it as this
    // err output
-   assign err = err_decode | align_err_fetch_wb | align_err_memory_wb;
+   assign err = err_decode; // | align_err_fetch_wb | align_err_memory_wb;
    
    // hazard signals
    wire disablePCWrite, disableIFIDWrite, setExNOP, setFetchNOP;
@@ -71,7 +71,7 @@ module proc (/*AUTOARG*/
                .rst(rst), 
                .hazard(disablePCWrite),
                .setFetchNOP(setFetchNOP),
-               .halt_sig(haltxout), 
+               .halt_sig(haltxout | align_err_fetch_wb | align_err_memory_wb), 
                .jump_imm_sig(jumpImm_wb), 
                .jump_sig(jump_wb), 
                .except_sig(exception), 
