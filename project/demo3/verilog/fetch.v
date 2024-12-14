@@ -5,7 +5,7 @@
    Description     : This is the module for the overall fetch stage of the processor.
 */
 `default_nettype none
-module fetch ( clk, rst, hazard, setFetchNOP,
+module fetch ( clk, rst, hazard, setFetchNOP, PC_2_br, br_extend,
                halt_sig, jump_imm_sig, jump_sig, except_sig, br_contr_sig, 
                imm_jump_reg_val, extend_val,
                PC_2, instr, output_clk);
@@ -13,6 +13,7 @@ module fetch ( clk, rst, hazard, setFetchNOP,
    input wire rst;
 
    input wire hazard, setFetchNOP;
+   input wire [15:0] PC_2_br, br_extend;
    input wire halt_sig;
    input wire jump_imm_sig;
    input wire jump_sig;
@@ -41,12 +42,13 @@ module fetch ( clk, rst, hazard, setFetchNOP,
    // wire[15:0] PC_jump_Imm = {PC_2[15:9], (instr[7:0]<<1)};
 
    wire[15:0] extend_imm_jump_reg_val;
-   wire[15:0] extend_PC_2;
+   wire[15:0] extend_PC_2, br_extend_PC_2;
    cla_16b iJUMP_EXTEND(.sum(extend_imm_jump_reg_val), .c_out(), .a(imm_jump_reg_val), .b(extend_val), .c_in(1'b0));
+   cla_16b iBR_EXTEND(.sum(br_extend_PC_2), .c_out(), .a(PC_2_br), .b(br_extend), .c_in(1'b0));
    cla_16b iPC_EXTEND(.sum(extend_PC_2), .c_out(), .a(PC_2), .b(extend_val), .c_in(1'b0));
 
    wire[15:0] jump_imm_addr = jump_imm_sig ? extend_imm_jump_reg_val : extend_PC_2; 
-   wire[15:0] br_imm_addr = br_contr_sig ? extend_PC_2 : PC_2;
+   wire[15:0] br_imm_addr = br_contr_sig ? br_extend_PC_2 : PC_2;
 
    wire[15:0] addr_pre_exception = jump_sig ? jump_imm_addr : br_imm_addr;
 
