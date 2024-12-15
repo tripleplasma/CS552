@@ -23,6 +23,8 @@ module memory_wb_latch(clk, rst,
     output wire [15:0] instruction_wb, immExt_wb, read1Data_wb;
     output wire br_contr_wb, jump_wb, jumpImm_wb, instr_mem_align_err_wb, data_mem_align_err_wb;
 
+    wire regWrite_mw_int;
+
     register iIMMEXT_LATCH_MW(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(immExt_m), .readData(immExt_wb));
     register iREAD1DATA_LATCH_MW(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(read1Data_m), .readData(read1Data_wb));
     register #(.REGISTER_WIDTH(1)) iBR_CONTR_LATCH_MW(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(br_contr_m), .readData(br_contr_wb));
@@ -39,7 +41,9 @@ module memory_wb_latch(clk, rst,
     
     register #(.REGISTER_WIDTH(1)) iMEMTOREG_LATCH_MW(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(memToReg_m), .readData(memToReg_wb));
     register #(.REGISTER_WIDTH(1)) iLINK_LATCH_MW(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(link_m), .readData(link_wb));
-    register #(.REGISTER_WIDTH(1)) iREGWRITE_LATCH_MW(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(regWrite_m), .readData(regWrite_wb));
+
+    assign regWrite_mw_int = regWrite_m & ~(halt_m | instr_mem_align_err_m | data_mem_align_err_m);
+    register #(.REGISTER_WIDTH(1)) iREGWRITE_LATCH_MW(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(regWrite_mw_int), .readData(regWrite_wb));
     register #(.REGISTER_WIDTH(1)) iHALT_LATCH_MW(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(halt_m), .readData(halt_wb));
     
     register #(.REGISTER_WIDTH(4)) iWRITEREGSEL_LATCH_MW(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(writeRegSel_m), .readData(writeRegSel_wb));

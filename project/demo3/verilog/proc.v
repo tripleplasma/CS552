@@ -139,7 +139,8 @@ module proc (/*AUTOARG*/
    control iCONTROL0(// Inputs
                      .rst_d(rst_d),
                      .opcode(instruction_d[15:11]),
-                     .setFetchNOP(setFetchNOP),
+                     .instr_mem_nop(instr_mem_nop),
+                     .data_mem_nop(data_mem_nop),
                      // Outputs 
                      .halt(halt_d), 
                      .jumpImm(jumpImm_d), 

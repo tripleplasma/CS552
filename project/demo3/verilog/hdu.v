@@ -40,22 +40,24 @@ module hdu (clk, rst,
                             (opcode_m[4:2] == 3'b001 | opcode_m[4:2] == 3'b011) ;
 
     // determining stalling/nops for caches
-    assign instr_mem_nop = instr_mem_stall;// & ~(instr_mem_done | instr_mem_cache_hit); // originally had these included, but I think they're for proc_hier_pbench and thats it
-    assign data_mem_nop = data_mem_stall;// & ~(data_mem_done | data_mem_cache_hit);
+    register #(.REGISTER_WIDTH(1)) iINSTR_MEM_NOP_0(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(instr_mem_stall), .readData(instr_mem_nop));
+    register #(.REGISTER_WIDTH(1)) iDATA_MEM_NOP_0(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(data_mem_stall), .readData(data_mem_nop));
+    // assign instr_mem_nop = instr_mem_stall;// & ~(instr_mem_done | instr_mem_cache_hit); // originally had these included, but I think they're for proc_hier_pbench and thats it
+    // assign data_mem_nop = data_mem_stall;// & ~(data_mem_done | data_mem_cache_hit);
 
     //NOTE: We're disabling the PCWrite when the HALT is read because otherwise we'll get XXXX's as the instruction and it will break everything, thats whay the opcode_f== is for
-    assign disablePCWrite = data_hazard | control_hazard | (opcode_f == 5'b00000) | instr_mem_nop | data_mem_nop;
+    assign disablePCWrite = data_hazard | control_hazard | (opcode_f == 5'b00000);// | data_mem_nop;// | instr_mem_nop | data_mem_nop;
 
     //NOTE: If we setExNOP, we need to keep the decode instruction at the IFID latch so that when the hazard is gone, the instruction is still there
     //NOTE: We don't disableIFID write during a control hazard becuse we want the BR/JMP to propagate through the pipeline
-    assign disableIFIDWrite = data_hazard | instr_mem_nop | data_mem_nop;   
+    assign disableIFIDWrite = data_hazard | data_mem_nop;// | instr_mem_nop | data_mem_nop;   
 
-    assign setExNOP = data_hazard | data_mem_nop;
+    assign setExNOP = data_hazard;// | data_mem_nop;
 
-    assign setMemNOP = data_mem_nop;
+    assign setMemNOP = 1'b0;//data_mem_nop;
 
     //These signals require a register because they need to be delayed a cycle to properly tell the pipeline to input a NOP during the E or F phase
     // wire l = data_hazard & opcode_f == 5'b00001;
-    wire setFetchNOP_int = (control_hazard & ~data_hazard) | (control_hazard & data_hazard & opcode_f == 5'b00001) | instr_mem_nop | data_mem_nop;
+    wire setFetchNOP_int = (control_hazard & ~data_hazard) | (control_hazard & data_hazard & opcode_f == 5'b00001);// | instr_mem_nop | data_mem_nop;
     register #(.REGISTER_WIDTH(1)) setFetchNOPReg(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(setFetchNOP_int), .readData(setFetchNOP));
 endmodule
