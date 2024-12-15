@@ -1,8 +1,10 @@
 module hdu (clk, rst, 
+                    //Inputs
                     opcode_f, opcode_d, opcode_e, opcode_m,
                     ifIdReadRegister1, ifIdReadRegister2,
                     PC_e, PC_m, PC_wb,
                     idExWriteRegister, exMemWriteRegister, memWbWriteRegister,
+                    //Output
                     disablePCWrite, disableIFIDWrite, setExNOP, setFetchNOP);
 
     input wire clk, rst;
@@ -10,6 +12,7 @@ module hdu (clk, rst,
     input wire [4:0] opcode_f, opcode_d, opcode_e, opcode_m;
     input wire [3:0] ifIdReadRegister1, ifIdReadRegister2;
     input wire [3:0] idExWriteRegister, exMemWriteRegister, memWbWriteRegister;
+
     output wire disablePCWrite, disableIFIDWrite, setExNOP, setFetchNOP;
 
     //                                                                                  LD
@@ -25,8 +28,13 @@ module hdu (clk, rst,
     wire RAW_ID_EX = (((idExWriteRegister == ifIdReadRegister1) & ~ignoreReg1) | ((idExWriteRegister == ifIdReadRegister2) & ~ignoreReg2)) & |PC_e;
     wire RAW_EX_MEM = (((exMemWriteRegister == ifIdReadRegister1) & ~ignoreReg1) | ((exMemWriteRegister == ifIdReadRegister2) & ~ignoreReg2)) & |PC_m;
     // wire RAW_MEM_WB = (((memWbWriteRegister == ifIdReadRegister1) & ~ignoreReg1) | ((memWbWriteRegister == ifIdReadRegister2) & ~ignoreReg2)) & |PC_wb;
+
+    wire canExExForward = ((ifIdReadRegister1 == idExWriteRegister) | (ifIdReadRegister2 == idExWriteRegister));
+    wire canMemExForward = ((ifIdReadRegister1 == exMemWriteRegister) | (ifIdReadRegister2 == exMemWriteRegister));
+
     //TODO: make a check to make sure that the instructions at those stages aren't NOPs otherwise it'll think R0 is being used
-    wire RAW_hazard = RAW_ID_EX | RAW_EX_MEM; //| RAW_MEM_WB;
+    //TODO: Change the RAW_hazard signal so that if we do EX-EX forwarding, it doesn't count as a hazard
+    wire RAW_hazard = (RAW_ID_EX & (~canExExForward)) | (RAW_EX_MEM & (~canMemExForward)); //| RAW_MEM_WB;
 
     wire data_hazard = (rst == 1'b0) & RAW_hazard;
 

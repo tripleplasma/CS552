@@ -1,0 +1,4 @@
+# ** Warning: License feature 'msimviewer' will expire in 5 days.
+# dump.wlf opened as dataset "dataset"
+add wave -position insertpoint dataset:/proc_hier_pbench/DUT/p0/*
+quit
