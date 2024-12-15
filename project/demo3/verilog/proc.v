@@ -39,7 +39,7 @@ module proc (/*AUTOARG*/
    assign err = err_decode; // | instr_mem_align_err_wb | data_mem_align_err_wb;
    
    // hazard signals
-   wire disablePCWrite, setFetchNOP, disableIFIDWrite, setExNOP, setMemNOP, instr_mem_nop, data_mem_nop;
+   wire disablePCWrite, setFetchNOP, disableIFIDWrite, disableIDEXWrite, setExNOP, disableEXMEMWrite, setMemNOP, instr_mem_nop, data_mem_nop;
 
    // cache signals
    wire instr_mem_done, instr_mem_stall, instr_mem_cache_hit;
@@ -94,7 +94,7 @@ module proc (/*AUTOARG*/
    fetch_decode_latch iFDLATCH0( // Inputs
                                  .clk(internal_clock), 
                                  .rst(rst), 
-                                 .nop(disableIFIDWrite), 
+                                 .disableIFIDWrite(disableIFIDWrite), 
                                  // Output
                                  .rst_d(rst_d),
                                  .PC_f(PC_f),
@@ -130,7 +130,9 @@ module proc (/*AUTOARG*/
                .disablePCWrite(disablePCWrite),
                .setFetchNOP(setFetchNOP),
                .disableIFIDWrite(disableIFIDWrite),
+               .disableIDEXWrite(disableIDEXWrite),
                .setExNOP(setExNOP),
+               .disableEXMEMWrite(disableEXMEMWrite),
                .setMemNOP(setMemNOP),
                .instr_mem_nop(instr_mem_nop),
                .data_mem_nop(data_mem_nop));
@@ -187,6 +189,7 @@ module proc (/*AUTOARG*/
                                  .clk(internal_clock), 
                                  .rst(rst), 
                                  .nop(setExNOP), 
+                                 .disableIDEXWrite(disableIDEXWrite),
                                  // Input followed by latched output
                                  .PC_d(PC_d),
                                  .PC_e(PC_e),
@@ -253,8 +256,8 @@ module proc (/*AUTOARG*/
 
    execute_memory_latch iEMLATCH0(// Inputs
                                  .clk(internal_clock), 
-                                 .rst(rst), 
-                                 .nop(setMemNOP),
+                                 .rst(rst),
+                                 .disableEXMEMWrite(disableEXMEMWrite),
                                  // Input followed by latched output
                                  .PC_e(PC_e),
                                  .PC_m(PC_m),
@@ -309,6 +312,7 @@ module proc (/*AUTOARG*/
    memory_wb_latch iMWLATCH0(// Inputs
                               .clk(internal_clock), 
                               .rst(rst), 
+                              .nop(setMemNOP),
                               // Input followed by latched output
                               .PC_m(PC_m),
                               .PC_wb(PC_wb), 

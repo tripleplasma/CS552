@@ -5,7 +5,7 @@ module hdu (clk, rst,
                     idExWriteRegister, exMemWriteRegister, memWbWriteRegister,
                     instr_mem_done, instr_mem_stall, instr_mem_cache_hit,
                     data_mem_done, data_mem_stall, data_mem_cache_hit,
-                    disablePCWrite, setFetchNOP, disableIFIDWrite, setExNOP, setMemNOP, instr_mem_nop, data_mem_nop);
+                    disablePCWrite, setFetchNOP, disableIFIDWrite, disableIDEXWrite, setExNOP, disableEXMEMWrite, setMemNOP, instr_mem_nop, data_mem_nop);
 
     input wire clk, rst;
     input wire[15:0] PC_e, PC_m, PC_wb;
@@ -13,7 +13,7 @@ module hdu (clk, rst,
     input wire [3:0] ifIdReadRegister1, ifIdReadRegister2;
     input wire [3:0] idExWriteRegister, exMemWriteRegister, memWbWriteRegister;
     input wire instr_mem_done, instr_mem_stall, instr_mem_cache_hit, data_mem_done, data_mem_stall, data_mem_cache_hit;
-    output wire disablePCWrite, setFetchNOP, disableIFIDWrite, setExNOP, setMemNOP, instr_mem_nop, data_mem_nop;
+    output wire disablePCWrite, setFetchNOP, disableIFIDWrite, disableIDEXWrite, setExNOP, disableEXMEMWrite, setMemNOP, instr_mem_nop, data_mem_nop;
 
     //                                                                                  LD
     wire immediates = opcode_d[4:2] == 3'b010 | opcode_d[4:2] == 3'b101 | opcode_d == 5'b10001;
@@ -46,15 +46,20 @@ module hdu (clk, rst,
     // assign data_mem_nop = data_mem_stall;// & ~(data_mem_done | data_mem_cache_hit);
 
     //NOTE: We're disabling the PCWrite when the HALT is read because otherwise we'll get XXXX's as the instruction and it will break everything, thats whay the opcode_f== is for
-    assign disablePCWrite = data_hazard | control_hazard | (opcode_f == 5'b00000);// | data_mem_nop;// | instr_mem_nop | data_mem_nop;
+    assign disablePCWrite = data_hazard | control_hazard | (opcode_f == 5'b00000) | instr_mem_stall | data_mem_stall;// | data_mem_nop;// | instr_mem_nop | data_mem_nop;
 
     //NOTE: If we setExNOP, we need to keep the decode instruction at the IFID latch so that when the hazard is gone, the instruction is still there
     //NOTE: We don't disableIFID write during a control hazard becuse we want the BR/JMP to propagate through the pipeline
-    assign disableIFIDWrite = data_hazard | data_mem_nop;// | instr_mem_nop | data_mem_nop;   
+    assign disableIFIDWrite = data_hazard | data_mem_stall;// | data_mem_nop;// | instr_mem_nop | data_mem_nop;   
+    
+    assign disableIDEXWrite = data_mem_stall; // | data_mem_nop;
 
-    assign setExNOP = data_hazard;// | data_mem_nop;
+    assign setExNOP = data_hazard;
 
-    assign setMemNOP = 1'b0;//data_mem_nop;
+    assign disableEXMEMWrite = data_mem_nop; // for some reason, data_mem_nop here causes stores to work in ld_3.asm
+                                             // compare/contrast with data_mem_stall to see why one "works" and one doesn't?
+
+    assign setMemNOP = data_mem_stall;
 
     //These signals require a register because they need to be delayed a cycle to properly tell the pipeline to input a NOP during the E or F phase
     // wire l = data_hazard & opcode_f == 5'b00001;

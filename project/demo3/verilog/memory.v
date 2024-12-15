@@ -37,7 +37,7 @@ module memory (clk, rst, aluResult, writeData, memWrite, memRead, halt, readData
    //                   .createdump(halt), 
    //                   .clk(clk), 
    //                   .rst(rst));
-   stallmem instr_mem(// Outputs
+   stallmem data_mem(// Outputs
                       .DataOut(readData), 
                       .Done(mem_done), 
                       .Stall(mem_stall), 
