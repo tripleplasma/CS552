@@ -35,7 +35,7 @@ module hdu (clk, rst,
     wire control_hazard =   (opcode_f[4:2] == 3'b001 | (opcode_f[4:2] == 3'b011 & predict_taken)) | 
                             (opcode_d[4:2] == 3'b001 | (opcode_d[4:2] == 3'b011 & predict_taken)) |
                             (opcode_e[4:2] == 3'b001 | (opcode_e[4:2] == 3'b011 & predict_taken)) | 
-                            (opcode_m[4:2] == 3'b001 | (opcode_m[4:2] == 3'b011 & predict_taken)) ;
+                            (opcode_m[4:2] == 3'b001); // (opcode_m[4:2] == 3'b011 & predict_taken))
 
     //NOTE: We're disabling the PCWrite when the HALT is read because otherwise we'll get XXXX's as the instruction and it will break everything, thats whay the opcode_f== is for
     // TODO breaks branch no taken if we flush
@@ -62,7 +62,7 @@ module hdu (clk, rst,
 
     // TODO (~br_contr_sig & ~predict_taken) one level above
 
-    always @(br_contr_sig) begin
+    always @(opcode_e) begin
 
         // Default stay in current state
         nxt_state_reg = state;
