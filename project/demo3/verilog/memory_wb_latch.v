@@ -8,30 +8,30 @@ module memory_wb_latch(clk, rst,
                         br_contr_m, br_contr_wb,
                         jump_m, jump_wb,
                         jumpImm_m, jumpImm_wb,
-                        align_err_fetch_m, align_err_fetch_wb,
-                        align_err_memory_m, align_err_memory_wb);
+                        instr_mem_align_err_m, instr_mem_align_err_wb,
+                        data_mem_align_err_m, data_mem_align_err_wb);
 
     input wire clk, rst;
     input wire [15:0] PC_m, readData_m, aluOut_m;
     input wire memToReg_m, link_m, regWrite_m, halt_m;
     input wire [3:0] writeRegSel_m;
     input wire [15:0] instruction_m, immExt_m, read1Data_m;
-    input wire br_contr_m, jump_m, jumpImm_m, align_err_fetch_m, align_err_memory_m;
+    input wire br_contr_m, jump_m, jumpImm_m, instr_mem_align_err_m, data_mem_align_err_m;
     output wire [15:0] PC_wb, readData_wb, aluOut_wb;
     output wire memToReg_wb, link_wb, regWrite_wb, halt_wb;
     output wire [3:0] writeRegSel_wb;
     output wire [15:0] instruction_wb, immExt_wb, read1Data_wb;
-    output wire br_contr_wb, jump_wb, jumpImm_wb, align_err_fetch_wb, align_err_memory_wb;
+    output wire br_contr_wb, jump_wb, jumpImm_wb, instr_mem_align_err_wb, data_mem_align_err_wb;
 
     register iIMMEXT_LATCH_MW(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(immExt_m), .readData(immExt_wb));
     register iREAD1DATA_LATCH_MW(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(read1Data_m), .readData(read1Data_wb));
     register #(.REGISTER_WIDTH(1)) iBR_CONTR_LATCH_MW(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(br_contr_m), .readData(br_contr_wb));
     register #(.REGISTER_WIDTH(1)) iJUMP_LATCH_MW(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(jump_m), .readData(jump_wb));
     register #(.REGISTER_WIDTH(1)) iJUMPIMM_LATCH_MW(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(jumpImm_m), .readData(jumpImm_wb));
-    register #(.REGISTER_WIDTH(1)) iALIGN_ERR_FETCH_MW(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(align_err_fetch_m), .readData(align_err_fetch_wb));
-    register #(.REGISTER_WIDTH(1)) iALIGN_ERR_MEMORY_MW(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(align_err_memory_m), .readData(align_err_memory_wb));
+    register #(.REGISTER_WIDTH(1)) iINSTR_MEM_ALIGN_ERR_MW(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(instr_mem_align_err_m), .readData(instr_mem_align_err_wb));
+    register #(.REGISTER_WIDTH(1)) iDATA_MEM_ALIGN_ERR_MW(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(data_mem_align_err_m), .readData(data_mem_align_err_wb));
 
-    register iINSTRUCTION_LATCH_DE(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(instruction_m), .readData(instruction_wb));
+    register iINSTRUCTION_LATCH_MW(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(instruction_m), .readData(instruction_wb));
 
     register iPC_LATCH_MW(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(PC_m), .readData(PC_wb));
     register iREADDATA_LATCH_MW(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(readData_m), .readData(readData_wb));  // use ~nop for writeEn?

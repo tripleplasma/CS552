@@ -28,18 +28,22 @@ module proc (/*AUTOARG*/
    wire [15:0] read1Data_d, read1Data_e, read1Data_m, read1Data_wb;
    wire [15:0] read2Data_d, read2Data_e, read2Data_m;
    wire err_decode;
-   wire align_err_fetch_f, align_err_fetch_d, align_err_fetch_e, align_err_fetch_m, align_err_fetch_wb;
-   wire align_err_memory_m, align_err_memory_wb;
+   wire instr_mem_align_err_f, instr_mem_align_err_d, instr_mem_align_err_e, instr_mem_align_err_m, instr_mem_align_err_wb;
+   wire data_mem_align_err_m, data_mem_align_err_wb;
    wire [15:0] immExt_d, immExt_e, immExt_m, immExt_wb;
    wire [3:0] aluSel;
    wire [15:0] PC_f, PC_d, PC_e, PC_m, PC_wb;
 
    // OR all the err ouputs for every sub-module and assign it as this
    // err output
-   assign err = err_decode; // | align_err_fetch_wb | align_err_memory_wb;
+   assign err = err_decode; // | instr_mem_align_err_wb | data_mem_align_err_wb;
    
    // hazard signals
-   wire disablePCWrite, disableIFIDWrite, setExNOP, setFetchNOP;
+   wire disablePCWrite, setFetchNOP, disableIFIDWrite, setExNOP, setMemNOP, instr_mem_nop, data_mem_nop;
+
+   // cache signals
+   wire instr_mem_done, instr_mem_stall, instr_mem_cache_hit;
+   wire data_mem_done, data_mem_stall, data_mem_cache_hit;
 
    // control signals
    wire halt_d, halt_e, halt_m, halt_wb, haltxout;
@@ -82,7 +86,10 @@ module proc (/*AUTOARG*/
                .instr(instruction_f), 
                .output_clk(internal_clock), 
                .PC_2(PC_f),
-               .align_err(align_err_fetch_f));
+               .align_err(instr_mem_align_err_f),
+               .mem_done(instr_mem_done), 
+               .mem_stall(instr_mem_stall), 
+               .mem_cache_hit(instr_mem_cache_hit));
    
    fetch_decode_latch iFDLATCH0( // Inputs
                                  .clk(internal_clock), 
@@ -94,8 +101,8 @@ module proc (/*AUTOARG*/
                                  .PC_d(PC_d),
                                  .instruction_f(instruction_f), 
                                  .instruction_d(instruction_d),
-                                 .align_err_fetch_f(align_err_fetch_f),
-                                 .align_err_fetch_d(align_err_fetch_d));
+                                 .instr_mem_align_err_f(instr_mem_align_err_f),
+                                 .instr_mem_align_err_d(instr_mem_align_err_d));
    
    hdu iHDU_0( // Inputs
                .clk(internal_clock), 
@@ -113,16 +120,26 @@ module proc (/*AUTOARG*/
                .idExWriteRegister(writeRegSel_e), 
                .exMemWriteRegister(writeRegSel_m),
                .memWbWriteRegister(writeRegSel_wb),
+               .instr_mem_done(instr_mem_done),
+               .instr_mem_stall(instr_mem_stall),
+               .instr_mem_cache_hit(instr_mem_cache_hit),
+               .data_mem_done(data_mem_done),
+               .data_mem_stall(data_mem_stall),
+               .data_mem_cache_hit(data_mem_cache_hit),
                // Outputs
                .disablePCWrite(disablePCWrite),
+               .setFetchNOP(setFetchNOP),
                .disableIFIDWrite(disableIFIDWrite),
                .setExNOP(setExNOP),
-               .setFetchNOP(setFetchNOP));
+               .setMemNOP(setMemNOP),
+               .instr_mem_nop(instr_mem_nop),
+               .data_mem_nop(data_mem_nop));
 
    // determine control signals based on opcode
    control iCONTROL0(// Inputs
                      .rst_d(rst_d),
                      .opcode(instruction_d[15:11]),
+                     .setFetchNOP(setFetchNOP),
                      // Outputs 
                      .halt(halt_d), 
                      .jumpImm(jumpImm_d), 
@@ -202,8 +219,8 @@ module proc (/*AUTOARG*/
                                  .writeRegSel_e(writeRegSel_e),
                                  .regWrite_d(regWrite_d),
                                  .regWrite_e(regWrite_e),
-                                 .align_err_fetch_d(align_err_fetch_d),
-                                 .align_err_fetch_e(align_err_fetch_e));
+                                 .instr_mem_align_err_d(instr_mem_align_err_d),
+                                 .instr_mem_align_err_e(instr_mem_align_err_e));
 
    alu_control iCONTROL_ALU0(// Inputs
                               .opcode(instruction_e[15:11]), 
@@ -236,6 +253,7 @@ module proc (/*AUTOARG*/
    execute_memory_latch iEMLATCH0(// Inputs
                                  .clk(internal_clock), 
                                  .rst(rst), 
+                                 .nop(setMemNOP),
                                  // Input followed by latched output
                                  .PC_e(PC_e),
                                  .PC_m(PC_m),
@@ -269,8 +287,8 @@ module proc (/*AUTOARG*/
                                  .regWrite_m(regWrite_m),
                                  .br_contr_e(br_contr_e),
                                  .br_contr_m(br_contr_m),
-                                 .align_err_fetch_e(align_err_fetch_e),
-                                 .align_err_fetch_m(align_err_fetch_m));
+                                 .instr_mem_align_err_e(instr_mem_align_err_e),
+                                 .instr_mem_align_err_m(instr_mem_align_err_m));
 
    memory memory0(// Inputs
                   .clk(internal_clock), 
@@ -282,7 +300,10 @@ module proc (/*AUTOARG*/
                   .halt(halt_m), 
                   // Outputs
                   .readData(readData_m),
-                  .align_err(align_err_memory_m));
+                  .align_err(data_mem_align_err_m),
+                  .mem_done(data_mem_done), 
+                  .mem_stall(data_mem_stall), 
+                  .mem_cache_hit(data_mem_cache_hit));
 
    memory_wb_latch iMWLATCH0(// Inputs
                               .clk(internal_clock), 
@@ -316,10 +337,10 @@ module proc (/*AUTOARG*/
                               .jump_wb(jump_wb),
                               .jumpImm_m(jumpImm_m), 
                               .jumpImm_wb(jumpImm_wb),
-                              .align_err_fetch_m(align_err_fetch_m),
-                              .align_err_fetch_wb(align_err_fetch_wb),
-                              .align_err_memory_m(align_err_memory_m),
-                              .align_err_memory_wb(align_err_memory_wb));
+                              .instr_mem_align_err_m(instr_mem_align_err_m),
+                              .instr_mem_align_err_wb(instr_mem_align_err_wb),
+                              .data_mem_align_err_m(data_mem_align_err_m),
+                              .data_mem_align_err_wb(data_mem_align_err_wb));
 
    wb iWRITEBACK0(// Inputs
                   .readData(readData_wb), 
@@ -327,8 +348,8 @@ module proc (/*AUTOARG*/
                   .nextPC(PC_wb), 
                   .memToReg(memToReg_wb), 
                   .link(link_wb), 
-                  .align_err_fetch(align_err_fetch_wb),
-                  .align_err_memory(align_err_memory_wb),
+                  .instr_mem_align_err(instr_mem_align_err_wb),
+                  .data_mem_align_err(data_mem_align_err_wb),
                   .halt(halt_wb),
                   // Outputs
                   .writeData(writeData),

@@ -1,3 +1,4 @@
 1 0 10096 55287 // iteration of mem.addr where a read from a separate memory address doesn't affect the cache
 0 1 10104 30343
 0 1 10096 55287
+0 1 10504 67926

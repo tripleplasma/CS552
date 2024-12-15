@@ -8,7 +8,7 @@
 module fetch ( clk, rst, hazard, setFetchNOP,
                halt_sig, jump_imm_sig, jump_sig, except_sig, br_contr_sig, 
                imm_jump_reg_val, extend_val,
-               PC_2, instr, output_clk, align_err);
+               PC_2, instr, output_clk, align_err, mem_done, mem_stall, mem_cache_hit);
    input wire clk;
    input wire rst;
 
@@ -26,6 +26,8 @@ module fetch ( clk, rst, hazard, setFetchNOP,
    output wire output_clk, align_err;
 
    output wire [15:0] PC_2;
+   output wire mem_done, mem_stall, mem_cache_hit;
+
    wire [15:0] pcCurrent;
    // wire[15:0] EPC = 16'b0;
    wire [15:0] nextPC;
@@ -57,7 +59,21 @@ module fetch ( clk, rst, hazard, setFetchNOP,
    // assign EPC = except_sig ? PC_2 : EPC;
 
    assign instr = (setFetchNOP) ? 16'b0000_1000_0000_0000 : instr_int;
-   memory2c_align instr_mem(.data_out(instr_int), .data_in(16'b0), .addr(pcCurrent), .enable(1'b1), .wr(1'b0), .createdump(1'b0), .clk(output_clk), .rst(rst), .err(align_err));
+   // memory2c_align instr_mem(.data_out(instr_int), .data_in(16'b0), .addr(pcCurrent), .enable(1'b1), .wr(1'b0), .createdump(1'b0), .clk(output_clk), .rst(rst), .err(align_err));
+   stallmem instr_mem(// Outputs
+                      .DataOut(instr_int), 
+                      .Done(mem_done), 
+                      .Stall(mem_stall), 
+                      .CacheHit(mem_cache_hit), 
+                      .err(align_err), 
+                      // Inputs
+                      .Addr(pcCurrent), 
+                      .DataIn(16'b0), 
+                      .Rd(1'b1), 
+                      .Wr(1'b0), 
+                      .createdump(1'b0), 
+                      .clk(output_clk), 
+                      .rst(rst));
 
 endmodule
 `default_nettype wire
