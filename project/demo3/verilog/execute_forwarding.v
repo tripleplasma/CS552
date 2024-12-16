@@ -1,5 +1,6 @@
 module execute_forwarding(
                             //Inputs
+                            opcode_m, opcode_wb,
                             read1RegSel_e, read2RegSel_e,
                             writeRegSel_m, aluOut_m, 
                             writeRegSel_wb, writeData_wb,
@@ -12,16 +13,18 @@ module execute_forwarding(
     input wire[2:0] read1RegSel_e, read2RegSel_e;
     input wire[15:0] read1Data_e, read2Data_e;
     input wire[3:0] writeRegSel_m, writeRegSel_wb;
+    input wire[4:0] opcode_m, opcode_wb;
 
     //   For EX-EX forwarding, For MEM-EX forwarding
     input wire[15:0] aluOut_m, writeData_wb; 
 
     output wire[15:0] read1ForwardData_e, read2ForwardData_e;
 
-    wire canExExForward1 = (read1RegSel_e == writeRegSel_m);
-    wire canExExForward2 = (read2RegSel_e == writeRegSel_m);
-    wire canMemExForward1 = (read1RegSel_e == writeRegSel_wb);
-    wire canMemExForward2 = (read2RegSel_e == writeRegSel_wb);
+    //                                                                        ST
+    wire canExExForward1 = (read1RegSel_e == writeRegSel_m) & (opcode_m != 5'b10000);
+    wire canExExForward2 = (read2RegSel_e == writeRegSel_m) & (opcode_m != 5'b10000);
+    wire canMemExForward1 = (read1RegSel_e == writeRegSel_wb) & (opcode_wb != 5'b10000);
+    wire canMemExForward2 = (read2RegSel_e == writeRegSel_wb) & (opcode_wb != 5'b10000);
 
     //NOTE: We will always be using the Ex-Ex forwarding in the case where both are available since it has the latest value
     //NOTE: We assume the HDU will handle hazards correctly for these 2 lines to work correctly

@@ -207,7 +207,9 @@ module proc (/*AUTOARG*/
    wire[15:0] forwarding_value1_e;
    wire[15:0] forwarding_value2_e;
    execute_forwarding IFORWARDING0(
-                     //Inputs
+                     //Inputs  
+                     .opcode_m(instruction_m[15:11]),
+                     .opcode_wb(instruction_wb[15:11]),
                      .read1RegSel_e(instruction_e[10:8]), //We can grab these values like how the decode stage does this
                      .read2RegSel_e(instruction_e[7:5]),
 
