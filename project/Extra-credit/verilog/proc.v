@@ -50,7 +50,7 @@ module proc (/*AUTOARG*/
    wire aluSrc_d, aluSrc_e;
    wire regWrite_d, regWrite_e, regWrite_m, regWrite_wb;
    wire exception;
-   wire br_contr_e, br_contr_m, br_contr_wb, br_contr_sig, predict_taken;
+   wire br_contr_e, br_contr_m, br_contr_wb, br_contr_sig, predict_taken, taken_flush;
    wire internal_clock;
    wire [2:0] branch_d, branch_e;
    wire [1:0] regDst;
@@ -78,6 +78,9 @@ module proc (/*AUTOARG*/
                .extend_val(immExt_wb),
                .PC_2_br(PC_e),
                .br_extend(immExt_e),
+               .predict_taken(predict_taken),
+               .taken_flush(taken_flush),
+               .PC_e(PC_e),
                // Outputs
                .instr(instruction_f), 
                .output_clk(internal_clock), 
@@ -86,7 +89,7 @@ module proc (/*AUTOARG*/
    fetch_decode_latch iFDLATCH0( // Inputs
                                  .clk(internal_clock), 
                                  .rst(rst), 
-                                 .nop(br_contr_sig & ~predict_taken), 
+                                 .nop((br_contr_sig & ~predict_taken) | taken_flush), 
                                  .stall(disableIFIDWrite),
                                  // Output
                                  .rst_d(rst_d),
@@ -114,6 +117,7 @@ module proc (/*AUTOARG*/
                .br_contr_sig(br_contr_sig),
                // Outputs
                .predict_taken(predict_taken),
+               .taken_flush(taken_flush),
                .disablePCWrite(disablePCWrite),
                .disableIFIDWrite(disableIFIDWrite),
                .setExNOP(setExNOP),
@@ -168,7 +172,7 @@ module proc (/*AUTOARG*/
    decode_execute_latch iDELATCH0(// Inputs 
                                  .clk(internal_clock), 
                                  .rst(rst), 
-                                 .nop(setExNOP | (br_contr_sig & ~predict_taken)), 
+                                 .nop(setExNOP | (br_contr_sig & ~predict_taken) | taken_flush), 
                                  // Input followed by latched output
                                  .PC_d(PC_d),
                                  .PC_e(PC_e),

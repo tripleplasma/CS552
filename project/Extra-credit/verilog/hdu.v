@@ -3,7 +3,7 @@ module hdu (clk, rst,
                     ifIdReadRegister1, ifIdReadRegister2,
                     PC_e, PC_m, PC_wb,
                     idExWriteRegister, exMemWriteRegister, memWbWriteRegister,
-                    disablePCWrite, disableIFIDWrite, setExNOP, setFetchNOP, br_contr_sig, predict_taken);
+                    disablePCWrite, disableIFIDWrite, setExNOP, setFetchNOP, br_contr_sig, predict_taken, taken_flush);
 
     input wire clk, rst;
     input wire br_contr_sig;
@@ -12,6 +12,7 @@ module hdu (clk, rst,
     input wire [3:0] ifIdReadRegister1, ifIdReadRegister2;
     input wire [3:0] idExWriteRegister, exMemWriteRegister, memWbWriteRegister;
     output wire disablePCWrite, disableIFIDWrite, setExNOP, setFetchNOP, predict_taken;
+    output reg taken_flush;
 
     //                                                                                  LD
     wire immediates = opcode_d[4:2] == 3'b010 | opcode_d[4:2] == 3'b101 | opcode_d == 5'b10001;
@@ -32,24 +33,24 @@ module hdu (clk, rst,
     wire data_hazard = (rst == 1'b0) & RAW_hazard;
 
 
-    wire control_hazard =   (opcode_f[4:2] == 3'b001 | (opcode_f[4:2] == 3'b011 & predict_taken)) | 
-                            (opcode_d[4:2] == 3'b001 | (opcode_d[4:2] == 3'b011 & predict_taken)) |
-                            (opcode_e[4:2] == 3'b001 | (opcode_e[4:2] == 3'b011 & predict_taken)) | 
-                            (opcode_m[4:2] == 3'b001); // (opcode_m[4:2] == 3'b011 & predict_taken))
+    wire control_hazard =   (opcode_f[4:2] == 3'b001) | // (opcode_f[4:2] == 3'b011 & predict_taken)) | 
+                            (opcode_d[4:2] == 3'b001) | // (opcode_d[4:2] == 3'b011 & predict_taken)) |
+                            (opcode_e[4:2] == 3'b001) | // (opcode_e[4:2] == 3'b011 & predict_taken)) | 
+                            (opcode_m[4:2] == 3'b001);  // (opcode_m[4:2] == 3'b011 & predict_taken))
 
     //NOTE: We're disabling the PCWrite when the HALT is read because otherwise we'll get XXXX's as the instruction and it will break everything, thats whay the opcode_f== is for
     // TODO breaks branch no taken if we flush
-    assign disablePCWrite = (data_hazard | control_hazard | (opcode_f == 5'b00000)) & (~br_contr_sig);
+    assign disablePCWrite = (data_hazard | control_hazard | (opcode_f == 5'b00000)) & (~br_contr_sig | predict_taken);
 
     //NOTE: If we setExNOP, we need to keep the decode instruction at the IFID latch so that when the hazard is gone, the instruction is still there
     //NOTE: We don't disableIFID write during a control hazard becuse we want the BR/JMP to propagate through the pipeline
-    assign disableIFIDWrite = data_hazard & (~br_contr_sig);   
+    assign disableIFIDWrite = data_hazard & (~br_contr_sig | predict_taken);   
 
-    assign setExNOP = data_hazard & (~br_contr_sig);
+    assign setExNOP = data_hazard & (~br_contr_sig | predict_taken);
 
     //These signals require a register because they need to be delayed a cycle to properly tell the pipeline to input a NOP during the E or F phase
     // wire l = data_hazard & opcode_f == 5'b00001;
-    wire setFetchNOP_int = ((control_hazard & ~data_hazard) | (control_hazard & data_hazard & opcode_f == 5'b00001)) & (~br_contr_sig);
+    wire setFetchNOP_int = ((control_hazard & ~data_hazard) | (control_hazard & data_hazard & opcode_f == 5'b00001)) & (~br_contr_sig | predict_taken);
     register #(.REGISTER_WIDTH(1)) setFetchNOPReg(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(setFetchNOP_int), .readData(setFetchNOP));
 
     // 00 and 01 not taken, 10 and 11 predict taken
@@ -66,6 +67,7 @@ module hdu (clk, rst,
 
         // Default stay in current state
         nxt_state_reg = state;
+        taken_flush = 1'b0;
 
         case(state)
             // Predict not take
@@ -97,6 +99,7 @@ module hdu (clk, rst,
                     if (!br_contr_sig) begin
                         // Branch not taken so go to weak not taken
                         nxt_state_reg = 2'b01;
+                        taken_flush = 1'b1;
                     end else begin
                         // Branch taken so go to strong predict taken
                         nxt_state_reg = 2'b11;
@@ -109,6 +112,7 @@ module hdu (clk, rst,
                 if (opcode_e[4:2] == 3'b011) begin
                     if (!br_contr_sig) begin
                         // Branch not taken so go to weak taken
+                        taken_flush = 1'b1;
                         nxt_state_reg = 2'b10;
                     end
                 end
