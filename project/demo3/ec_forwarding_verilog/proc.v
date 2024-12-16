@@ -285,11 +285,26 @@ module proc (/*AUTOARG*/
                                  .br_contr_e(br_contr_e),
                                  .br_contr_m(br_contr_m));
 
+   wire[15:0] forwarding_value2_m;
+   // memory_forwarding IMEMFORWARD(
+   //                //Inputs
+   //                .opcode_m(instruction_m[15:11]), 
+   //                .opcode_wb(instruction_wb[15:11]),
+   //                .memReadReg({1'b0, instruction_m[7:5]}),
+   //                .read2Data_m(read2Data_m),
+   //                .writeRegSel_wb(writeRegSel_wb),
+   //                .writeData_wb(writeData),
+   //                //Output
+   //                .read2ForwardData_m(forwarding_value2_m)
+   // );
+   assign forwarding_value2_m = (({1'b0, instruction_m[7:5]} == writeRegSel_wb) & 
+                                 ((instruction_m[15:11] == 5'b10000) & (instruction_wb[15:11] == 5'b10001))) ? readData_wb : read2Data_m; 
+
    memory memory0(// Inputs
                   .clk(internal_clock), 
                   .rst(rst), 
                   .aluResult(aluOut_m), 
-                  .writeData(read2Data_m), 
+                  .writeData(forwarding_value2_m), 
                   .memWrite(memWrite_m), 
                   .memRead(memRead_m), 
                   .halt(halt_m), 

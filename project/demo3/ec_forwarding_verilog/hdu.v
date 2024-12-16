@@ -29,13 +29,14 @@ module hdu (clk, rst,
     wire RAW_EX_MEM = (((ifIdReadRegister1 == exMemWriteRegister) & ~ignoreReg1) | ((ifIdReadRegister2 == exMemWriteRegister) & ~ignoreReg2)) & |PC_m;
     // wire RAW_MEM_WB = (((memWbWriteRegister == ifIdReadRegister1) & ~ignoreReg1) | ((memWbWriteRegister == ifIdReadRegister2) & ~ignoreReg2)) & |PC_wb;
 
-    //                                                                                                                                      LD
+    //                                                                                                                                  LD              
     wire canExExForward = (((ifIdReadRegister1 == idExWriteRegister) | (ifIdReadRegister2 == idExWriteRegister)) & (|PC_e) & (opcode_e != 5'b10001));
     wire canMemExForward = ((ifIdReadRegister1 == exMemWriteRegister) | (ifIdReadRegister2 == exMemWriteRegister) & (|PC_m));
+    wire canMemMemForward = ((ifIdReadRegister2 == idExWriteRegister) & (|PC_e) & ((opcode_d == 5'b10000) & (opcode_e == 5'b10001)));
 
     //TODO: make a check to make sure that the instructions at those stages aren't NOPs otherwise it'll think R0 is being used
     //TODO: Change the RAW_hazard signal so that if we do EX-EX forwarding, it doesn't count as a hazard
-    wire RAW_hazard = (RAW_ID_EX & (~canExExForward)) | (RAW_EX_MEM & (~canMemExForward)); //| RAW_MEM_WB;
+    wire RAW_hazard = (RAW_ID_EX & ~(canExExForward | canMemMemForward)) | (RAW_EX_MEM & ~(canMemExForward | canMemMemForward)); //| RAW_MEM_WB;
     // wire RAW_hazard = 1'b0;
 
     wire data_hazard = (rst == 1'b0) & RAW_hazard;
