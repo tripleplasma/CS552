@@ -18,14 +18,13 @@ module execute_forwarding(
 
     output wire[15:0] read1ForwardData_e, read2ForwardData_e;
 
-    //TODO: might have to do some extra logic to determine if we should take the WB value over the MEM value first
-    //NOTE: We assume the HDU will handle hazards correctly for these 2 lines to work correctly
-
     wire canExExForward1 = (read1RegSel_e == writeRegSel_m);
     wire canExExForward2 = (read2RegSel_e == writeRegSel_m);
     wire canMemExForward1 = (read1RegSel_e == writeRegSel_wb);
     wire canMemExForward2 = (read2RegSel_e == writeRegSel_wb);
 
+    //NOTE: We will always be using the Ex-Ex forwarding in the case where both are available since it has the latest value
+    //NOTE: We assume the HDU will handle hazards correctly for these 2 lines to work correctly
     assign read1ForwardData_e = canExExForward1 ? (aluOut_m) : (canMemExForward1 ? (writeData_wb) : read1Data_e);
     assign read2ForwardData_e = canExExForward2 ? (aluOut_m) : (canMemExForward2 ? (writeData_wb) : read2Data_e);
 

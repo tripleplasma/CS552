@@ -25,16 +25,18 @@ module hdu (clk, rst,
     //                                    JMP                       BR                    LBI                    SLBI                   BTR             NOP             HALT
     wire ignoreReg2 = (opcode_d[4:2] == 3'b001 | opcode_d[4:2] == 3'b011 | opcode_d == 5'b11000 | opcode_d == 5'b10010 | opcode_d == 5'b11001 | opcode_d == 5'b00001 | opcode_d == 5'b00000 | immediates);
 
-    wire RAW_ID_EX = (((idExWriteRegister == ifIdReadRegister1) & ~ignoreReg1) | ((idExWriteRegister == ifIdReadRegister2) & ~ignoreReg2)) & |PC_e;
-    wire RAW_EX_MEM = (((exMemWriteRegister == ifIdReadRegister1) & ~ignoreReg1) | ((exMemWriteRegister == ifIdReadRegister2) & ~ignoreReg2)) & |PC_m;
+    wire RAW_ID_EX = (((ifIdReadRegister1 == idExWriteRegister) & ~ignoreReg1) | ((ifIdReadRegister2 == idExWriteRegister) & ~ignoreReg2)) & |PC_e;
+    wire RAW_EX_MEM = (((ifIdReadRegister1 == exMemWriteRegister) & ~ignoreReg1) | ((ifIdReadRegister2 == exMemWriteRegister) & ~ignoreReg2)) & |PC_m;
     // wire RAW_MEM_WB = (((memWbWriteRegister == ifIdReadRegister1) & ~ignoreReg1) | ((memWbWriteRegister == ifIdReadRegister2) & ~ignoreReg2)) & |PC_wb;
 
-    wire canExExForward = ((ifIdReadRegister1 == idExWriteRegister) | (ifIdReadRegister2 == idExWriteRegister));
-    wire canMemExForward = ((ifIdReadRegister1 == exMemWriteRegister) | (ifIdReadRegister2 == exMemWriteRegister));
+    //                                                                                                                                      LD
+    wire canExExForward = (((ifIdReadRegister1 == idExWriteRegister) | (ifIdReadRegister2 == idExWriteRegister)) & (|PC_e) & (opcode_e != 5'b10001));
+    wire canMemExForward = ((ifIdReadRegister1 == exMemWriteRegister) | (ifIdReadRegister2 == exMemWriteRegister) & (|PC_m));
 
     //TODO: make a check to make sure that the instructions at those stages aren't NOPs otherwise it'll think R0 is being used
     //TODO: Change the RAW_hazard signal so that if we do EX-EX forwarding, it doesn't count as a hazard
     wire RAW_hazard = (RAW_ID_EX & (~canExExForward)) | (RAW_EX_MEM & (~canMemExForward)); //| RAW_MEM_WB;
+    // wire RAW_hazard = 1'b0;
 
     wire data_hazard = (rst == 1'b0) & RAW_hazard;
 
