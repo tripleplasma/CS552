@@ -14,48 +14,44 @@ module regFile (
                 clk, rst, read1RegSel, read2RegSel, writeRegSel, writeData, writeEn
                 );
 
-    input        clk, rst;
-    input [2:0]  read1RegSel;
-    input [2:0]  read2RegSel;
-    input [2:0]  writeRegSel;
-    input [15:0] writeData;
-    input        writeEn;
+   input        clk, rst;
+   input [2:0]  read1RegSel;
+   input [2:0]  read2RegSel;
+   input [2:0]  writeRegSel;
+   input [15:0] writeData;
+   input        writeEn;
 
-    output [15:0] read1Data;
-    output [15:0] read2Data;
-    output        err;
+   output [15:0] read1Data;
+   output [15:0] read2Data;
+   output        err;
 
-    /* YOUR CODE HERE */
-    parameter REGISTER_WIDTH = 16;
-    
-    // Register storage
-    wire [REGISTER_WIDTH-1:0] reg_out[7:0];  // 8 registers, each 16 bits wide
-    
-    // select register to write
-    assign writeReg0 = (writeRegSel == 3'b000) ? 1'b1 : 1'b0;
-    assign writeReg1 = (writeRegSel == 3'b001) ? 1'b1 : 1'b0;
-    assign writeReg2 = (writeRegSel == 3'b010) ? 1'b1 : 1'b0;
-    assign writeReg3 = (writeRegSel == 3'b011) ? 1'b1 : 1'b0;
-    assign writeReg4 = (writeRegSel == 3'b100) ? 1'b1 : 1'b0;
-    assign writeReg5 = (writeRegSel == 3'b101) ? 1'b1 : 1'b0;
-    assign writeReg6 = (writeRegSel == 3'b110) ? 1'b1 : 1'b0;
-    assign writeReg7 = (writeRegSel == 3'b111) ? 1'b1 : 1'b0;
+   wire [15:0] reg_in  [7:0];
+   wire [15:0] reg_out [7:0];
+   parameter DATA_WIDTH = 16;
    
-    // instantiate registers
-    register iREGISTER_0(.clk(clk), .rst(rst), .writeEn(writeEn & writeReg0), .writeData(writeData), .readData(reg_out[0]));
-    register iREGISTER_1(.clk(clk), .rst(rst), .writeEn(writeEn & writeReg1), .writeData(writeData), .readData(reg_out[1]));
-    register iREGISTER_2(.clk(clk), .rst(rst), .writeEn(writeEn & writeReg2), .writeData(writeData), .readData(reg_out[2]));
-    register iREGISTER_3(.clk(clk), .rst(rst), .writeEn(writeEn & writeReg3), .writeData(writeData), .readData(reg_out[3]));
-    register iREGISTER_4(.clk(clk), .rst(rst), .writeEn(writeEn & writeReg4), .writeData(writeData), .readData(reg_out[4]));
-    register iREGISTER_5(.clk(clk), .rst(rst), .writeEn(writeEn & writeReg5), .writeData(writeData), .readData(reg_out[5]));
-    register iREGISTER_6(.clk(clk), .rst(rst), .writeEn(writeEn & writeReg6), .writeData(writeData), .readData(reg_out[6]));
-    register iREGISTER_7(.clk(clk), .rst(rst), .writeEn(writeEn & writeReg7), .writeData(writeData), .readData(reg_out[7]));
+   assign reg_in[0] = (writeEn & writeRegSel == 3'h0) ? writeData : reg_out[0];
+   assign reg_in[1] = (writeEn & writeRegSel == 3'h1) ? writeData : reg_out[1];
+   assign reg_in[2] = (writeEn & writeRegSel == 3'h2) ? writeData : reg_out[2];
+   assign reg_in[3] = (writeEn & writeRegSel == 3'h3) ? writeData : reg_out[3];
+   assign reg_in[4] = (writeEn & writeRegSel == 3'h4) ? writeData : reg_out[4];
+   assign reg_in[5] = (writeEn & writeRegSel == 3'h5) ? writeData : reg_out[5];
+   assign reg_in[6] = (writeEn & writeRegSel == 3'h6) ? writeData : reg_out[6];
+   assign reg_in[7] = (writeEn & writeRegSel == 3'h7) ? writeData : reg_out[7];
 
-    // set readData
-    assign read1Data = reg_out[read1RegSel];
-    assign read2Data = reg_out[read2RegSel];
+   reg1 dff0 (.clk(clk), .rst(rst), .d(reg_in[0]), .q(reg_out[0]));
+   reg1 dff1 (.clk(clk), .rst(rst), .d(reg_in[1]), .q(reg_out[1]));
+   reg1 dff2 (.clk(clk), .rst(rst), .d(reg_in[2]), .q(reg_out[2]));
+   reg1 dff3 (.clk(clk), .rst(rst), .d(reg_in[3]), .q(reg_out[3]));
+   reg1 dff4 (.clk(clk), .rst(rst), .d(reg_in[4]), .q(reg_out[4]));
+   reg1 dff5 (.clk(clk), .rst(rst), .d(reg_in[5]), .q(reg_out[5]));
+   reg1 dff6 (.clk(clk), .rst(rst), .d(reg_in[6]), .q(reg_out[6]));
+   reg1 dff7 (.clk(clk), .rst(rst), .d(reg_in[7]), .q(reg_out[7]));
 
-    // set err if any of the inputs are unknown
-    assign err = (rst != 1'b1) & ((^read1RegSel === 1'bx) | (^read2RegSel === 1'bx) | (^writeRegSel === 1'bx) | (^writeData === 1'bx) | (writeEn === 1'bx));
+   assign read1Data = reg_out[read1RegSel];
+   assign read2Data = reg_out[read2RegSel];
+
+   assign err = (^read1RegSel === 1'bx | ^read2RegSel === 1'bx | 
+                 ^writeRegSel === 1'bx | ^writeData === 1'bx | 
+                  writeEn === 1'bx | writeEn === 1'bz);
 
 endmodule
