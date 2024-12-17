@@ -22,11 +22,11 @@ module decode (
   output wire [15:0]  imm5Ext_d,
   output wire [15:0]  imm8Ext_d,
   output wire [15:0]  imm11Ext_d,
-  output wire         ImmSrc,				
-  output wire [1:0]   BSrc,				
-  output wire [1:0]   RegSrc,			
-  output wire [1:0]   Instr_Funct_out,	// Instruction[1:0]
-  output wire [1:0]	  Instr_BrchCnd_sel,  // Instruction[12:11] 
+  output wire         immExtSel_d,				
+  output wire [1:0]   B_int_d,				
+  output wire [1:0]   wbSel_d,			
+  output wire [1:0]   extension_d,
+  output wire [1:0]	  branchSel_d, 
   output wire [3:0]   ALUOp,
   output wire         InvA,
   output wire         InvB,
@@ -67,8 +67,8 @@ assign instruction_out = instruction;
 instruction_decoder my_instruction_decoder (
   .Opcode(instruction[15:11]),   //Input
   .ALUOp(ALUOp),  //FLUSH                 
-  .RegSrc(RegSrc),  //FLUSH              
-  .BSrc(BSrc), //FLUSH                   
+  .RegSrc(wbSel_d),  //FLUSH              
+  .BSrc(B_int_d), //FLUSH                   
   .RegDst(RegDst),     //Dealth with in Decode           
   .RegWrt(RegWrt_out),  //FLUSH              
   .SLBI(SLBI),             //FLUSH       
@@ -80,7 +80,7 @@ instruction_decoder my_instruction_decoder (
   .InvA(InvA),    //FLUSH
   .InvB(InvB),    //FLUSH
   .MemWrt(MemWrt), //FLUSH
-  .ImmSrc(ImmSrc), //FLUSH
+  .ImmSrc(immExtSel_d), //FLUSH
   .ALUJmp(ALUJmp), //FLUSH
   .halt(halt), //FLUSH
   .btr(btr), //FLUSH
@@ -98,8 +98,8 @@ assign writeRegSel_out = (RegDst == 0) ? instruction[10:8] :
                          (RegDst == 2) ? instruction[4:2]  : 3'h7;
 
 // Pass through signals from fetch to next stages
-assign Instr_Funct_out = instruction[1:0];
-assign Instr_BrchCnd_sel = instruction[12:11];
+assign extension_d = instruction[1:0];
+assign branchSel_d = instruction[12:11];
 
 // Register file with bypass logic
 regFile_bypass regfile(
