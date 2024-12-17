@@ -8,8 +8,8 @@
 module decode (
   input  wire         clk, 
   input  wire         rst,
-  input  wire         stall_mem_stg,
-  input  wire         stall_fetch,
+  input  wire         dataMem_stall,
+  input  wire         instrMem_stall,
   input  wire [15:0]  instruction_in,
   input  wire [15:0]  instruction_f,
   input  wire			    RegWrt_in,
@@ -67,7 +67,7 @@ wire prev_haz;
 dff instr_ff [15:0] (.clk(clk), .rst(rst), .d(instruction_in), .q(prev_instr));
 dff haz_ff (.clk(clk), .rst(rst), .d(hazard), .q(prev_haz));
 
-assign instruction = (hazard | flush_out | stall_mem_stg) ? 16'h0800 : (prev_haz & prev_instr!=16'h0800) ? prev_instr : instruction_in; 
+assign instruction = (hazard | flush_out | dataMem_stall) ? 16'h0800 : (prev_haz & prev_instr!=16'h0800) ? prev_instr : instruction_in; 
 assign RegisterRs = instruction[10:8];
 assign RegisterRt = instruction[7:5];
 assign instruction_out = instruction;
@@ -128,7 +128,7 @@ regFile_bypass regfile(
 hazard_detect hazard_detect(
   .clk                (clk),
   .rst                (rst),
-  .stall              (stall_mem_stg | stall_fetch),
+  .stall              (dataMem_stall | instrMem_stall),
   .MemRd              (MemRd),
   .PCSrc_X            (PCSrc_X),
   .RegisterRt_id_ex   (RegisterRt_id_ex),

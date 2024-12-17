@@ -107,10 +107,10 @@ fetch_decode_latch iFD (// Inputs
 
 // Instantiate decode module
 decode decode (// Inputs
-   .clk					(clk),            
-   .rst					(rst),
-   .stall_mem_stg		(dataMem_stall),
-   .stall_fetch			(instrMem_stall),
+   .clk(clk),            
+   .rst(rst),
+   .dataMem_stall(dataMem_stall),
+   .instrMem_stall(instrMem_stall),
    .instruction_in		(instruction_fd),
    .instruction_f		(instruction_f),
    .RegWrt_in			(regWrite_wb),
