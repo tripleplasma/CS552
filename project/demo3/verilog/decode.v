@@ -56,8 +56,10 @@ wire [15:0] instruction_d_int;
 
 wire [15:0] instruction_fd_prev;
 wire data_hazard_prev;
-dff instr_ff [15:0] (.clk(clk), .rst(rst), .d(instruction_fd), .q(instruction_fd_prev));
-dff haz_ff (.clk(clk), .rst(rst), .d(data_hazard), .q(data_hazard_prev));
+// dff instr_ff [15:0] (.clk(clk), .rst(rst), .d(instruction_fd), .q(instruction_fd_prev));
+register iINSTRUCTION_FD_PREV(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(instruction_fd), .readData(instruction_fd_prev));
+// dff haz_ff (.clk(clk), .rst(rst), .d(data_hazard), .q(data_hazard_prev));
+register #(.REGISTER_WIDTH(1)) iHAZARD_PREV(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(data_hazard), .readData(data_hazard_prev));
 
 assign instruction_d_int = (data_hazard | flush | dataMem_stall) ? 16'h0800 : (data_hazard_prev & instruction_fd_prev!=16'h0800) ? instruction_fd_prev : instruction_fd; 
 assign regRs_d = instruction_d_int[10:8];
