@@ -29,7 +29,7 @@ module proc (/*AUTOARG*/
 wire [15:0] PC_jmp_m, PC_f, PC_d, PC_e, PC_m, PC_wb, PC_jmp_e;
 wire [15:0] instruction_f, instruction_fd, instruction_d, instruction_e, instruction_m, instruction_wb;
 
-wire [15:0] writeData;
+wire [15:0] writeData_wb;
 wire [15:0] read1Data_d, read1Data_e;
 wire [15:0] read2Data_d, read2Data_e, read2Data_em, read2Data_m;
 
@@ -114,7 +114,7 @@ decode decode (// Inputs
    .instruction_fd(instruction_fd),
    .regWrite_wb(regWrite_wb),
    .writeRegSel_wb(writeRegSel_wb),    
-   .writeData(writeData),     
+   .writeData(writeData_wb),     
    .read1Data_d(read1Data_d),     
    .read2Data_d(read2Data_d),
    .memRead(~memWrite_e & memEnable_e),
@@ -223,7 +223,7 @@ id_ex id_ex (// Inputs
 execute execute ( // Inputs
 	.exec_out_fmem		((instruction_m[15:11]==5'b11000) ? imm8Ext_m : aluOut_m),
 	.instruction		(instruction_e),
-    .write_data         (writeData),              
+    .write_data         (writeData_wb),              
     .pc_in              (PC_e),
 	.stall_mem_stg		(dataMem_stall),
 	.RegisterRs_id_ex	(regRs_e),
@@ -338,12 +338,14 @@ mem_wb mem_wb (// Inputs
 
 // Instantiate wb module
 wb wb (
-    .RegSrc     (wbSel_wb),       
-    .addr       (aluOut_wb),           
-    .read_data  (readData_wb),
-    .pc         (PC_wb),           
-    .imm8_ext   (imm8Ext_wb),
-    .write_data (writeData)   
+	//Inputs
+    .RegSrcSel     (wbSel_wb),       
+    .Addr       (aluOut_wb),           
+    .Read_Data  (readData_wb),
+    .PC         (PC_wb),           
+    .Imm8_Ext   (imm8Ext_wb),
+	//Outputs
+    .Write_Data (writeData_wb)   
 );
 
 endmodule // proc
