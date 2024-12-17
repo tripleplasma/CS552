@@ -12,3 +12,5 @@ demo2 test all:
 
 demo3 stallmem (change seed for different rand patterns): 
     1. wsrun.pl -wave -pipe -seed 0 -prog /u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/inst_tests/ld_3.asm proc_hier_pbench verilog/*.v
+
+demo3 check: wsrun.pl -pipe -list /u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demofinal/all.list proc_hier_pbench verilog/*.v
