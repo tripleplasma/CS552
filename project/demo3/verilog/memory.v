@@ -37,17 +37,25 @@ module memory (clk, rst, aluResult, writeData, memWrite, memRead, halt, readData
    //                   .createdump(halt), 
    //                   .clk(clk), 
    //                   .rst(rst));
-   stallmem data_mem(// Outputs
+
+   // The NOP we throw in ID-EX have Addr and DataIn of xffff which throws an error in the cache. So we disable reads and writes while this is true
+   wire nop = (aluResult == 16'hffff);
+
+   wire[15:0] Addr_nop_check, DataIn_nop_check;
+   assign Addr_nop_check = nop ? 16'b0 : aluResult;
+   assign DataIn_nop_check = nop ? 16'b0 : writeData;
+
+   mem_system #(1) data_mem(// Outputs
                       .DataOut(readData), 
                       .Done(mem_done), 
                       .Stall(mem_stall), 
                       .CacheHit(mem_cache_hit), 
                       .err(align_err), 
                       // Inputs
-                      .Addr(aluResult), 
-                      .DataIn(writeData), 
-                      .Rd(memRead), // memReadorWrite? don't think so
-                      .Wr(memWrite), 
+                      .Addr(Addr_nop_check), 
+                      .DataIn(DataIn_nop_check), 
+                      .Rd(memRead & ~nop), // memReadorWrite? don't think so
+                      .Wr(memWrite & ~nop), 
                       .createdump(halt), 
                       .clk(clk), 
                       .rst(rst));

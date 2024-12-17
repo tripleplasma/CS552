@@ -3,7 +3,7 @@
 /* $Rev: 77 $ */
 
 `default_nettype none
-module mem_system(/*AUTOARG*/
+module mem_system_other(/*AUTOARG*/
    // Outputs
    DataOut, Done, Stall, CacheHit, err,
    // Inputs

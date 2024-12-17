@@ -39,7 +39,7 @@ module proc (/*AUTOARG*/
    assign err = err_decode; // | instr_mem_align_err_wb | data_mem_align_err_wb;
    
    // hazard signals
-   wire disablePCWrite, setFetchNOP, disableIFIDWrite, disableIDEXWrite, setExNOP, disableEXMEMWrite, setMemNOP, instr_mem_nop, data_mem_nop;
+   wire disablePCWrite, setFetchNOP, disableIFIDWrite, disableIDEXWrite, setExNOP, disableEXMEMWrite, setMemNOP;
 
    // cache signals
    wire instr_mem_done, instr_mem_stall, instr_mem_cache_hit;
@@ -120,9 +120,6 @@ module proc (/*AUTOARG*/
                .idExWriteRegister(writeRegSel_e), 
                .exMemWriteRegister(writeRegSel_m),
                .memWbWriteRegister(writeRegSel_wb),
-               .instr_mem_done(instr_mem_done),
-               .instr_mem_stall(instr_mem_stall),
-               .instr_mem_cache_hit(instr_mem_cache_hit),
                .data_mem_done(data_mem_done),
                .data_mem_stall(data_mem_stall),
                .data_mem_cache_hit(data_mem_cache_hit),
@@ -133,16 +130,12 @@ module proc (/*AUTOARG*/
                .disableIDEXWrite(disableIDEXWrite),
                .setExNOP(setExNOP),
                .disableEXMEMWrite(disableEXMEMWrite),
-               .setMemNOP(setMemNOP),
-               .instr_mem_nop(instr_mem_nop),
-               .data_mem_nop(data_mem_nop));
+               .setMemNOP(setMemNOP));
 
    // determine control signals based on opcode
    control iCONTROL0(// Inputs
                      .rst_d(rst_d),
                      .opcode(instruction_d[15:11]),
-                     .instr_mem_nop(instr_mem_nop),
-                     .data_mem_nop(data_mem_nop),
                      // Outputs 
                      .halt(halt_d), 
                      .jumpImm(jumpImm_d), 

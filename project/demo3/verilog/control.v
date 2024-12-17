@@ -4,9 +4,9 @@
    Filename        : control.v
    Description     : This is a module that handles all of the control signals.
 */
-module control(rst_d, opcode, instr_mem_nop, data_mem_nop, halt, jumpImm, link, regDst, jump, branch, memRead, memToReg, memWrite, aluSrc, regWrite, immExtSel, exception);
+module control(rst_d, opcode, halt, jumpImm, link, regDst, jump, branch, memRead, memToReg, memWrite, aluSrc, regWrite, immExtSel, exception);
 
-    input rst_d, instr_mem_nop, data_mem_nop;
+    input rst_d;
     input [4:0] opcode;
     output halt, jumpImm, link, jump, memRead, memToReg, memWrite, aluSrc, regWrite, exception;
     output [1:0] regDst;
