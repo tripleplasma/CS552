@@ -79,9 +79,9 @@ assign imm8Ext_d  = (zeroExt) ? {8'h00, instruction_d_int[7:0]}   : {{8{instruct
 assign imm11Ext_d = {{5{instruction_d_int[10]}}, instruction_d_int[10:0]};
 
 // Mux to select write register
-assign writeRegSel_d =  (regDst == 3'b000) ? instruction_d_int[10:8] :
+assign writeRegSel_d =  (regDst == 3'b000) ? instruction_d_int[4:2] :
                         (regDst == 3'b001) ? instruction_d_int[7:5]  :
-                        (regDst == 3'b010) ? instruction_d_int[4:2]  : 3'b111;
+                        (regDst == 3'b010) ? instruction_d_int[10:8]  : 3'b111;
 
 // Pass through signals from fetch to next stages
 assign extension_d = instruction_d_int[1:0];
