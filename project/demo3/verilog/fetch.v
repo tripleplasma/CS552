@@ -5,14 +5,14 @@
    Description     : This is the module for the overall fetch stage of the processor.
 */
 `default_nettype none
-module fetch ( clk, rst, hazard, setFetchNOP,
+module fetch ( clk, rst, disablePCWrite, instr_mem_read, setFetchNOP,// data_mem_stall,
                halt_sig, jump_imm_sig, jump_sig, except_sig, br_contr_sig, 
                imm_jump_reg_val, extend_val,
-               PC_2, instr, output_clk, align_err, mem_done, mem_stall, mem_cache_hit);
+               PC_2, instr, output_clk, align_err, instr_mem_done, instr_mem_stall, instr_mem_cache_hit);
    input wire clk;
    input wire rst;
 
-   input wire hazard, setFetchNOP;
+   input wire instr_mem_read, disablePCWrite, setFetchNOP;//, data_mem_stall;
    input wire halt_sig;
    input wire jump_imm_sig;
    input wire jump_sig;
@@ -26,12 +26,14 @@ module fetch ( clk, rst, hazard, setFetchNOP,
    output wire output_clk, align_err;
 
    output wire [15:0] PC_2;
-   output wire mem_done, mem_stall, mem_cache_hit;
+   output wire instr_mem_done, instr_mem_stall, instr_mem_cache_hit;
 
    wire [15:0] pcCurrent;
    // wire[15:0] EPC = 16'b0;
    wire [15:0] nextPC;
    wire [15:0] instr_int;
+   // wire instr_mem_stall_int;
+   // assign instr_mem_stall = instr_mem_stall_int;
 
    register PC(.clk(output_clk), .rst(rst), .writeEn(1'b1), .writeData(nextPC), .readData(pcCurrent));
    
@@ -55,25 +57,26 @@ module fetch ( clk, rst, hazard, setFetchNOP,
    //output_clk is for managing the Halt instruction
    assign output_clk = halt_sig ? 1'b0 : clk;
    // assign nextPC = rst ? 16'b0 : (except_sig ? 16'h02 : addr_pre_exception);
-   assign nextPC = (rst) ? 16'b0 : (hazard) ? pcCurrent : addr_pre_exception;
+   assign nextPC = (rst) ? 16'b0 : (disablePCWrite) ? pcCurrent : addr_pre_exception; // | instr_mem_stall | data_mem_stall
    // assign EPC = except_sig ? PC_2 : EPC;
 
    assign instr = (setFetchNOP) ? 16'b0000_1000_0000_0000 : instr_int;
    // memory2c_align instr_mem(.data_out(instr_int), .data_in(16'b0), .addr(pcCurrent), .enable(1'b1), .wr(1'b0), .createdump(1'b0), .clk(output_clk), .rst(rst), .err(align_err));
+   // mem_system #(0) instr_mem(// Outputs
    stallmem instr_mem(// Outputs
-                      .DataOut(instr_int), 
-                      .Done(mem_done), 
-                      .Stall(mem_stall), 
-                      .CacheHit(mem_cache_hit), 
-                      .err(align_err), 
-                      // Inputs
-                      .Addr(pcCurrent), 
-                      .DataIn(16'b0), 
-                      .Rd(1'b1), 
-                      .Wr(1'b0), 
-                      .createdump(1'b0), 
-                      .clk(output_clk), 
-                      .rst(rst));
+                           .DataOut(instr_int), 
+                           .Done(instr_mem_done), 
+                           .Stall(instr_mem_stall), 
+                           .CacheHit(instr_mem_cache_hit), 
+                           .err(align_err), 
+                           // Inputs
+                           .Addr(pcCurrent), 
+                           .DataIn(16'b0), 
+                           .Rd(1'b1), // ~(hazard | instr_mem_stall | data_mem_stall)
+                           .Wr(1'b0), 
+                           .createdump(1'b0), 
+                           .clk(output_clk), 
+                           .rst(rst));
 
 endmodule
 `default_nettype wire

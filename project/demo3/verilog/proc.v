@@ -39,7 +39,7 @@ module proc (/*AUTOARG*/
    assign err = err_decode; // | instr_mem_align_err_wb | data_mem_align_err_wb;
    
    // hazard signals
-   wire disablePCWrite, setFetchNOP, disableIFIDWrite, disableIDEXWrite, setExNOP, disableEXMEMWrite, setMemNOP, instr_mem_nop, data_mem_nop;
+   wire disablePCWrite, setFetchNOP, disableIFIDWrite, disableIDEXWrite, setExNOP, disableEXMEMWrite, disableMEMWBWrite, instr_mem_nop, data_mem_nop, data_hazard, instr_mem_read;
 
    // cache signals
    wire instr_mem_done, instr_mem_stall, instr_mem_cache_hit;
@@ -73,7 +73,8 @@ module proc (/*AUTOARG*/
    fetch fetch0(// Inputs
                .clk(clk), 
                .rst(rst), 
-               .hazard(disablePCWrite),
+               .disablePCWrite(disablePCWrite),
+               .instr_mem_read(instr_mem_read),
                .setFetchNOP(setFetchNOP),
                .halt_sig(haltxout), 
                .jump_imm_sig(jumpImm_wb), 
@@ -87,14 +88,17 @@ module proc (/*AUTOARG*/
                .output_clk(internal_clock), 
                .PC_2(PC_f),
                .align_err(instr_mem_align_err_f),
-               .mem_done(instr_mem_done), 
-               .mem_stall(instr_mem_stall), 
-               .mem_cache_hit(instr_mem_cache_hit));
+               .instr_mem_done(instr_mem_done), 
+               .instr_mem_stall(instr_mem_stall), 
+               .instr_mem_cache_hit(instr_mem_cache_hit));
    
    fetch_decode_latch iFDLATCH0( // Inputs
                                  .clk(internal_clock), 
                                  .rst(rst), 
-                                 .disableIFIDWrite(disableIFIDWrite), 
+                                 .data_hazard(data_hazard),
+                                 .disableIFIDWrite(disableIFIDWrite),
+                                 .instr_mem_done(instr_mem_done),
+                                 .data_mem_stall(data_mem_stall),
                                  // Output
                                  .rst_d(rst_d),
                                  .PC_f(PC_f),
@@ -133,16 +137,18 @@ module proc (/*AUTOARG*/
                .disableIDEXWrite(disableIDEXWrite),
                .setExNOP(setExNOP),
                .disableEXMEMWrite(disableEXMEMWrite),
-               .setMemNOP(setMemNOP),
-               .instr_mem_nop(instr_mem_nop),
-               .data_mem_nop(data_mem_nop));
+               .disableMEMWBWrite(disableMEMWBWrite),
+               .instr_mem_stall_ff(instr_mem_nop),
+               .data_mem_stall_ff(data_mem_nop),
+               .data_hazard(data_hazard),
+               .instr_mem_read(instr_mem_read));
 
    // determine control signals based on opcode
    control iCONTROL0(// Inputs
                      .rst_d(rst_d),
                      .opcode(instruction_d[15:11]),
-                     .instr_mem_nop(instr_mem_nop),
-                     .data_mem_nop(data_mem_nop),
+                     .instr_mem_nop(instr_mem_stall | instr_mem_nop),
+                     .data_mem_nop(data_mem_stall | instr_mem_nop),
                      // Outputs 
                      .halt(halt_d), 
                      .jumpImm(jumpImm_d), 
@@ -305,14 +311,14 @@ module proc (/*AUTOARG*/
                   // Outputs
                   .readData(readData_m),
                   .align_err(data_mem_align_err_m),
-                  .mem_done(data_mem_done), 
-                  .mem_stall(data_mem_stall), 
-                  .mem_cache_hit(data_mem_cache_hit));
+                  .data_mem_done(data_mem_done), 
+                  .data_mem_stall(data_mem_stall), 
+                  .data_mem_cache_hit(data_mem_cache_hit));
 
    memory_wb_latch iMWLATCH0(// Inputs
                               .clk(internal_clock), 
                               .rst(rst), 
-                              .nop(setMemNOP),
+                              .disableMEMWBWrite(disableMEMWBWrite),
                               // Input followed by latched output
                               .PC_m(PC_m),
                               .PC_wb(PC_wb), 

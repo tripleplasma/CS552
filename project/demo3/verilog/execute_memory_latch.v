@@ -22,13 +22,13 @@ module execute_memory_latch(clk, rst, disableEXMEMWrite, PC_e, PC_m, aluOut_e, a
     register iINSTRUCTION_LATCH_EM(.clk(clk), .rst(rst), .writeEn(~disableEXMEMWrite), .writeData(instruction_e), .readData(instruction_m));
 
     
-    // assign memRead_em_int = (nop) ? 1'b0 : memRead_e;
+    // assign memRead_em_int = (disableEXMEMWrite) ? 1'b0 : memRead_e;
     register #(.REGISTER_WIDTH(1)) iMEMREAD_LATCH_EM(.clk(clk), .rst(rst), .writeEn(~disableEXMEMWrite), .writeData(memRead_e), .readData(memRead_m));
 
-    // assign memToReg_em_int = (nop) ? 1'b0 : memToReg_e;
+    // assign memToReg_em_int = (disableEXMEMWrite) ? 1'b0 : memToReg_e;
     register #(.REGISTER_WIDTH(1)) iMEMTOREG_LATCH_EM(.clk(clk), .rst(rst), .writeEn(~disableEXMEMWrite), .writeData(memToReg_e), .readData(memToReg_m));
 
-    // assign memWrite_em_int = (nop) ? 1'b0 : memWrite_e;
+    // assign memWrite_em_int = (disableEXMEMWrite) ? 1'b0 : memWrite_e;
     register #(.REGISTER_WIDTH(1)) iMEMWRITE_LATCH_EM(.clk(clk), .rst(rst), .writeEn(~disableEXMEMWrite), .writeData(memWrite_e), .readData(memWrite_m));
 
     // assign halt_em_int = (nop) ? 1'b0 : halt_e;
@@ -46,7 +46,7 @@ module execute_memory_latch(clk, rst, disableEXMEMWrite, PC_e, PC_m, aluOut_e, a
     // assign regWrite_em_int = (nop) ? 1'b0 : regWrite_e;
     register #(.REGISTER_WIDTH(1)) iREGWRITE_LATCH_EM(.clk(clk), .rst(rst), .writeEn(~disableEXMEMWrite), .writeData(regWrite_e), .readData(regWrite_m));
 
-    // assign br_contr_em_int = (nop) ? 1'b0 : br_contr_e;
+    // assign br_contr_em_int = (disableEXMEMWrite) ? 1'b0 : br_contr_e;   // check this for error when branching
     register #(.REGISTER_WIDTH(1)) iBR_CONTR_LATCH_EM(.clk(clk), .rst(rst), .writeEn(~disableEXMEMWrite), .writeData(br_contr_e), .readData(br_contr_m));
 
     // assign instr_mem_align_err_em_int = (nop) ? 1'b0 : instr_mem_align_err_e;
