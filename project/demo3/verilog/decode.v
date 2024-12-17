@@ -15,13 +15,13 @@ module decode (
   input  wire [2:0]	  writeRegSel_wb,
   input  wire [15:0]  writeData,
   input  wire         PCSrc_X,  
-  input  wire         MemRd,
-  input  wire [2:0]   RegisterRt_id_ex,
-  output wire [15:0]  read_data1,
-  output wire [15:0]  read_data2,
-  output wire [15:0]  imm5_ext,
-  output wire [15:0]  imm8_ext,
-  output wire [15:0]  imm11_ext,
+  input  wire         memRead,
+  input  wire [2:0]   regRt_e,
+  output wire [15:0]  read1Data_d,
+  output wire [15:0]  read2Data_d,
+  output wire [15:0]  imm5Ext_d,
+  output wire [15:0]  imm8Ext_d,
+  output wire [15:0]  imm11Ext_d,
   output wire         ImmSrc,				
   output wire [1:0]   BSrc,				
   output wire [1:0]   RegSrc,			
@@ -88,9 +88,9 @@ instruction_decoder my_instruction_decoder (
 );
 
 // Sign or Zero extend the immediate values from I type instructions
-assign imm5_ext  = (ZeroExt) ? {11'h000, instruction[4:0]} : {{11{instruction[4]}}, instruction[4:0]};
-assign imm8_ext  = (ZeroExt) ? {8'h00, instruction[7:0]}   : {{8{instruction[7]}}, instruction[7:0]};
-assign imm11_ext = {{5{instruction[10]}}, instruction[10:0]};
+assign imm5Ext_d  = (ZeroExt) ? {11'h000, instruction[4:0]} : {{11{instruction[4]}}, instruction[4:0]};
+assign imm8Ext_d  = (ZeroExt) ? {8'h00, instruction[7:0]}   : {{8{instruction[7]}}, instruction[7:0]};
+assign imm11Ext_d = {{5{instruction[10]}}, instruction[10:0]};
 
 // Mux to select write register
 assign writeRegSel_out = (RegDst == 0) ? instruction[10:8] :
@@ -112,8 +112,8 @@ regFile_bypass regfile(
   .writeData        (writeData),
   .writeEn          (regWrite_wb),
   // Outputs
-  .read1Data        (read_data1),
-  .read2Data        (read_data2),
+  .read1Data        (read1Data_d),
+  .read2Data        (read2Data_d),
   .err              (err)
 );
 
@@ -121,9 +121,9 @@ hazard_detect hazard_detect(
   .clk                (clk),
   .rst                (rst),
   .stall              (dataMem_stall | instrMem_stall),
-  .MemRd              (MemRd),
+  .MemRd              (memRead),
   .PCSrc_X            (PCSrc_X),
-  .RegisterRt_id_ex   (RegisterRt_id_ex),
+  .RegisterRt_id_ex   (regRt_e),
   .read_reg1          (instruction_fd[10:8]),
   .read_reg2          (instruction_fd[7:5]),
   .hazard_out         (hazard),
