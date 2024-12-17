@@ -26,6 +26,8 @@ module mem_wb_latch (
 );
 
 dff halt_ff (.clk(clk), .rst(rst), .d(dataMem_stall ? halt_q : halt_m), .q(halt_q));
+// register ihalt(.clk(clk), .rst(rst), .writeEn(~dataMem_stall), .writeData(halt_m), .readData(halt_q));
+
 dff halt_fetch_ff (.clk(clk), .rst(rst), .d(dataMem_stall ? halt_fetch_q : halt_fetch_m), .q(halt_fetch_q));
 dff RegSrc__ff [1:0] (.clk(clk), .rst(rst), .d(dataMem_stall ? RegSrcSel_wb : RegSrcSel_m), .q(RegSrcSel_wb));
 dff RegWrt_ff (.clk(clk), .rst(rst), .d(dataMem_stall ? RegWrtSel_wb : RegWrtSel_m), .q(RegWrtSel_wb));
@@ -33,7 +35,7 @@ dff writeRegSel_ff [2:0] (.clk(clk), .rst(rst), .d(dataMem_stall ? writeRegSel_w
 dff read_data_ff [15:0] (.clk(clk), .rst(rst), .d(done_mem ? read_data_m : dataMem_stall ? read_data_wb : read_data_m), .q(read_data_wb));
 dff pc_out_ff [15:0] (.clk(clk), .rst(rst), .d(dataMem_stall ? PC_wb : PC_m), .q(PC_wb));
 dff exec_out_ff [15:0] (.clk(clk), .rst(rst), .d(dataMem_stall ? exec_out_wb : exec_out_m), .q(exec_out_wb));
-dff imm8_ext_ff [15:0] (.clk(clk), .rst(rst), .d(dataMem_stall ? imm8_ext_q : imm8_ext_m), .q(imm8_ext_q));
+dff imm8_ext_ff [15:0] (.clk(clk), .rst(rst), .d(dataMem_stall ? imm8_ext_wb : imm8_ext_m), .q(imm8_ext_wb));
 dff instruction_ff [15:0] (.clk(clk), .rst(rst), .d(dataMem_stall ? instruction_wb : instruction_m), .q(instruction_wb));
 
 endmodule
