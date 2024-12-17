@@ -91,22 +91,19 @@ fetch fetch (// Inputs
 			.PC_f(PC_f),
 			.instruction_f(instruction_f));
 
-// 1st pipeline registers (FETCH & DECODE)
-if_id if_id (// Inputs
-	.clk			(clk),
-	.rst			(rst),
-	.pc_out			(PC_f),
-	.instruction	(instruction_f),
-	.halt_fetch		(instrMem_err_f),
-	.done_fetch		(instrMem_done),
-	.stall_fetch	(instrMem_stall),
-	.stall_mem_stg	(dataMem_stall),
-	// Outputs
-	.halt_fetch_q	(instrMem_err_d),
-	.pc_out_q		(PC_d),
-	.instruction_q	(instruction_fd),
-	.flush_in		(flush) //TODO Implement flush
-);
+fetch_decode_latch iFD (// Inputs
+						.clk(clk),
+						.rst(rst),
+						.PC_f(PC_f),
+						.instruction_f(instruction_f),
+						.flush(flush),
+						.instrMem_err_f(instrMem_err_f),
+						.instrMem_done(instrMem_done),
+						.dataMem_stall(dataMem_stall),
+						// Outputs
+						.instrMem_err_d(instrMem_err_d),
+						.PC_d(PC_d),
+						.instruction_fd(instruction_fd));
 
 // Instantiate decode module
 decode decode (// Inputs
