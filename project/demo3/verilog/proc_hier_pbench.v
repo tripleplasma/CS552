@@ -128,53 +128,51 @@ module proc_hier_pbench();
    // Edit the example below. You must change the signal
    // names on the right hand side
     
-   assign PC = DUT.p0.PC_wb;
-   assign Inst = DUT.p0.instruction_f;
+   assign PC = DUT.p0.fetch.currentPC; //wb?
+   assign Inst = DUT.p0.decode.instruction_d_int; // wb?
    
-   assign RegWrite = DUT.p0.regWrite_wb;
+   assign RegWrite = DUT.p0.decode.regWrite_wb & ((~DUT.p0.memory.stall_out) | Halt);
    // Is register file being written to, one bit signal (1 means yes, 0 means no)
    //    
-   assign WriteRegister = DUT.p0.writeRegSel_wb;
+   assign WriteRegister = DUT.p0.decode.writeRegSel_wb;
    // The name of the register being written to. (3 bit signal)
    
-   assign WriteData = DUT.p0.writeData;
+   assign WriteData = DUT.p0.decode.writeData;
    // Data being written to the register. (16 bits)
    
-   //assign MemRead =  (DUT.p0.memRxout & ~DUT.p0.notdonem);
-   assign MemRead =  DUT.p0.memRead_m;
+   assign MemRead = DUT.p0.memory.data_mem.Rd & ~Halt & DUT.p0.memory.done;
    // Is memory being read, one bit signal (1 means yes, 0 means no)
    
-   //assign MemWrite = (DUT.p0.memWxout & ~DUT.p0.notdonem);
-   assign MemWrite = DUT.p0.memWrite_m;
+   assign MemWrite = DUT.p0.memory.data_mem.Wr & ~Halt & DUT.p0.memory.done;
    // Is memory being written to (1 bit signal)
    
-   assign MemAddress = DUT.p0.aluOut_m;
+   assign MemAddress = DUT.p0.memory.data_mem.Addr;
    // Address to access memory with (for both reads and writes to memory, 16 bits)
    
-   assign MemDataIn = DUT.p0.read2Data_m;
+   assign MemDataIn = DUT.p0.memory.data_mem.DataIn;
    // Data to be written to memory for memory writes (16 bits)
    
-   assign MemDataOut = DUT.p0.readData_m;
+   assign MemDataOut = DUT.p0.memory.read_data;
    // Data read from memory for memory reads (16 bits)
 
    // new added 05/03
-   assign ICacheReq = DUT.p0.instr_mem_done;
+   assign ICacheReq = DUT.p0.fetch.instrMem_done_int;
    // Signal indicating a valid instruction read request to cache
    // Above assignment is a dummy example
    
-   assign ICacheHit = DUT.p0.instr_mem_cache_hit;
+   assign ICacheHit = DUT.p0.fetch.instrMem_cache_hit;
    // Signal indicating a valid instruction cache hit
    // Above assignment is a dummy example
 
-   assign DCacheReq = DUT.p0.data_mem_done;
+   assign DCacheReq = DUT.p0.memory.done;
    // Signal indicating a valid instruction data read or write request to cache
    // Above assignment is a dummy example
    //    
-   assign DCacheHit = DUT.p0.data_mem_cache_hit;
+   assign DCacheHit = DUT.p0.memory.cache_hit;
    // Signal indicating a valid data cache hit
    // Above assignment is a dummy example
    
-   assign Halt = DUT.p0.haltxout;
+   assign Halt = DUT.p0.mem_wb.halt_q | DUT.p0.mem_wb.halt_fetch_q | (DUT.p0.memory.halt_mem & DUT.p0.memory.mem_en);
    // Processor halted
    
    

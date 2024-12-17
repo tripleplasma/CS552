@@ -6,65 +6,53 @@
                      processor.
 */
 `default_nettype none
-module memory (clk, rst, aluResult, writeData, memWrite, memRead, halt, readData, align_err, data_mem_done, data_mem_stall, data_mem_cache_hit);
+module memory (
+   input  wire          clk,
+   input  wire          rst,
+   input  wire          mem_en,
+   input  wire          write_en,
+   input  wire [15:0]   addr_in,
+   input  wire [15:0]   write_data_in,
+   output wire          stall_out,
+   output wire          done_out,
+   output wire          halt_mem,
+   output wire [15:0]   read_data
+);
 
-   input wire          clk;
-   input wire          rst;
-   input wire [15:0]   aluResult;   // aluResult to memory
-   input wire [15:0]   writeData;   // Data to write into the ALU
-   input wire          memWrite;    // Controls if memory writes
-   input wire          memRead;     // Controls if memory reads
-   input wire          halt;        // Dumps the memory to a file
+wire done, stall, cache_hit;
 
-   output wire [15:0]  readData;    // Read data from memory
-   output wire         align_err;   // error if unaligned word access occurs
-   output wire         data_mem_done;  
-   output wire         data_mem_stall;  
-   output wire         data_mem_cache_hit;  
+assign stall_out = stall;
+assign done_out = done;
 
-   // Enable on reading and writing
-   wire memReadorWrite;
-   assign memReadorWrite = memWrite | memRead;
+wire [15:0] addr_in_q, write_data_in_q;
+wire write_en_q, mem_en_q;
+dff write_en_ff (.clk(clk), .rst(rst), .d(stall_out ? write_en_q : write_en), .q(write_en_q));
+dff mem_en_ff (.clk(clk), .rst(rst), .d(stall_out ? mem_en_q : mem_en), .q(mem_en_q));
+dff addr_in_ff [15:0] (.clk(clk), .rst(rst), .d(stall_out ? addr_in_q : addr_in), .q(addr_in_q));
+dff write_data_in_ff [15:0] (.clk(clk), .rst(rst), .d(stall_out ? write_data_in_q : write_data_in), .q(write_data_in_q));
 
-   // wire memRead_prev, memRead_int, memWrite_prev, memWrite_int;
-   // wire [15:0] aluResult_prev, addr_int, writeData_prev, writeData_int;
+wire rd_set, wr_set;
+wire [15:0] addr_set, data_in_set;
 
-   // register #(.REGISTER_WIDTH(1)) iMEMREAD_PREV(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(memRead), .readData(memRead_prev));
-   // register #(.REGISTER_WIDTH(1)) iMEMWRITE_PREV(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(memWrite), .readData(memWrite_prev));
-   // register iALURESULT_PREV(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(aluResult), .readData(aluResult_prev));
-   // register iWRITEDATA_PREV(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(writeData), .readData(writeData_prev));
+assign rd_set = stall_out ? mem_en_q & ~write_en_q : mem_en & ~write_en;
+assign wr_set = stall_out ? mem_en_q & write_en_q : mem_en & write_en;
+assign addr_set = stall_out ? addr_in_q : addr_in;
+assign data_in_set = stall_out ? write_data_in_q : write_data_in;
 
-   // assign memRead_int = (data_mem_stall) ? memRead_prev : memRead;
-   // assign memWrite_int = (data_mem_stall) ? memWrite_prev : memWrite;
-   // assign addr_int = (data_mem_stall) ? aluResult_prev : aluResult;
-   // assign writeData_int = (data_mem_stall) ? writeData_prev : writeData;
+mem_system #(1) data_mem(
+   .clk        (clk),
+   .rst        (rst),
+   .err        (halt_mem),
+   .Rd         (rd_set),
+   .Wr         (wr_set),
+   .Addr       (addr_set),
+   .DataIn     (data_in_set),
+   .DataOut    (read_data), 
+   .createdump (1'b0),
+   .Done       (done),
+   .Stall      (stall),
+   .CacheHit   (cache_hit)   
+);
 
-   // memory2c_align iMEMORY( // output wires
-   //                   .data_out(readData), 
-   //                   .err(align_err),
-   //                   // input wires
-   //                   .data_in(writeData), 
-   //                   .addr(aluResult), 
-   //                   .enable(memReadorWrite), 
-   //                   .wr(memWrite), 
-   //                   .createdump(halt), 
-   //                   .clk(clk), 
-   //                   .rst(rst));
-   // mem_system #(1) data_mem(// Outputs
-   stallmem data_mem(// Outputs
-                      .DataOut(readData), 
-                      .Done(data_mem_done), 
-                      .Stall(data_mem_stall), 
-                      .CacheHit(data_mem_cache_hit), 
-                      .err(align_err), 
-                      // Inputs
-                      .Addr(aluResult), // addr_int
-                      .DataIn(writeData), // writeData_int
-                      .Rd(memRead), // memRead_int
-                      .Wr(memWrite), // memWrite_int
-                      .createdump(halt), 
-                      .clk(clk), 
-                      .rst(rst));
-   
 endmodule
 `default_nettype wire

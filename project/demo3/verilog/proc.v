@@ -12,360 +12,341 @@ module proc (/*AUTOARG*/
    input wire clk;
    input wire rst;
 
-   // Can't use assign with reg - output reg err;
    output wire err;
 
    // None of the above lines can be modified
 
-   // As desribed in the homeworks, use the err signal to trap corner
-   // cases that you think are illegal in your statemachines
-
-   /* your code here -- should include instantiations of fetch, decode, execute, mem and wb modules */
-   wire rst_d;
-   wire [15:0] instruction_f, instruction_d, instruction_e, instruction_m, instruction_wb;
-   wire [3:0] writeRegSel_d, writeRegSel_e, writeRegSel_m, writeRegSel_wb;
-   wire [15:0] writeData;
-   wire [15:0] read1Data_d, read1Data_e, read1Data_m, read1Data_wb;
-   wire [15:0] read2Data_d, read2Data_e, read2Data_m;
-   wire err_decode;
-   wire instr_mem_align_err_f, instr_mem_align_err_d, instr_mem_align_err_e, instr_mem_align_err_m, instr_mem_align_err_wb;
-   wire data_mem_align_err_m, data_mem_align_err_wb;
-   wire [15:0] immExt_d, immExt_e, immExt_m, immExt_wb;
-   wire [3:0] aluSel;
-   wire [15:0] PC_f, PC_d, PC_e, PC_m, PC_wb;
-
    // OR all the err ouputs for every sub-module and assign it as this
    // err output
-   assign err = err_decode; // | instr_mem_align_err_wb | data_mem_align_err_wb;
+
+   // As desribed in the homeworks, use the err signal to trap corner
+   // cases that you think are illegal in your statemachines
    
-   // hazard signals
-   wire disablePCWrite, setFetchNOP, disableIFIDWrite, disableIDEXWrite, setExNOP, disableEXMEMWrite, disableMEMWBWrite, instr_mem_nop, data_mem_nop, data_hazard, instr_mem_read;
-
-   // cache signals
-   wire instr_mem_done, instr_mem_stall, instr_mem_cache_hit;
-   wire data_mem_done, data_mem_stall, data_mem_cache_hit;
-
-   // control signals
-   wire halt_d, halt_e, halt_m, halt_wb, haltxout;
-   wire jumpImm_d, jumpImm_e, jumpImm_m, jumpImm_wb;
-   wire link_d, link_e, link_m, link_wb;
-   wire jump_d, jump_e, jump_m, jump_wb;
-   wire memRead_d, memRead_e, memRead_m;
-   wire memToReg_d, memToReg_e, memToReg_m, memToReg_wb;
-   wire memWrite_d, memWrite_e, memWrite_m;
-   wire aluSrc_d, aluSrc_e;
-   wire regWrite_d, regWrite_e, regWrite_m, regWrite_wb;
-   wire exception;
-   wire br_contr_e, br_contr_m, br_contr_wb;
-   wire internal_clock;
-   wire [2:0] branch_d, branch_e;
-   wire [1:0] regDst;
-   wire [2:0] immExtSel;
-
-   //Execute Signals
-   wire zero_flag, signed_flag, overflow_flag, carry_flag;
-   wire [15:0] aluOut_e, aluOut_m, aluOut_wb;
-
-   // Memory Signals
-   wire [15:0] readData_m, readData_wb;
-
-   //Fetch
-   fetch fetch0(// Inputs
-               .clk(clk), 
-               .rst(rst), 
-               .disablePCWrite(disablePCWrite),
-               .instr_mem_read(instr_mem_read),
-               .setFetchNOP(setFetchNOP),
-               .halt_sig(haltxout), 
-               .jump_imm_sig(jumpImm_wb), 
-               .jump_sig(jump_wb), 
-               .except_sig(exception), 
-               .br_contr_sig(br_contr_wb), 
-               .imm_jump_reg_val(read1Data_wb), 
-               .extend_val(immExt_wb),
-               // Outputs
-               .instr(instruction_f), 
-               .output_clk(internal_clock), 
-               .PC_2(PC_f),
-               .align_err(instr_mem_align_err_f),
-               .instr_mem_done(instr_mem_done), 
-               .instr_mem_stall(instr_mem_stall), 
-               .instr_mem_cache_hit(instr_mem_cache_hit));
    
-   fetch_decode_latch iFDLATCH0( // Inputs
-                                 .clk(internal_clock), 
-                                 .rst(rst), 
-                                 .data_hazard(data_hazard),
-                                 .disableIFIDWrite(disableIFIDWrite),
-                                 .instr_mem_done(instr_mem_done),
-                                 .data_mem_stall(data_mem_stall),
-                                 // Output
-                                 .rst_d(rst_d),
-                                 .PC_f(PC_f),
-                                 .PC_d(PC_d),
-                                 .instruction_f(instruction_f), 
-                                 .instruction_d(instruction_d),
-                                 .instr_mem_align_err_f(instr_mem_align_err_f),
-                                 .instr_mem_align_err_d(instr_mem_align_err_d));
-   
-   hdu iHDU_0( // Inputs
-               .clk(internal_clock), 
-               .rst(rst),
-               .PC_e(PC_e),
-               .PC_m(PC_m),
-               .PC_wb(PC_wb),
-               .opcode_f(instruction_f[15:11]),
-               .opcode_d(instruction_d[15:11]),
-               .opcode_e(instruction_e[15:11]),
-               .opcode_m(instruction_m[15:11]),
-               // .opcode_wb(instruction_wb[15:11]),
-               .ifIdReadRegister1({1'b0, instruction_d[10:8]}), 
-               .ifIdReadRegister2({1'b0, instruction_d[7:5]}),
-               .idExWriteRegister(writeRegSel_e), 
-               .exMemWriteRegister(writeRegSel_m),
-               .memWbWriteRegister(writeRegSel_wb),
-               .instr_mem_done(instr_mem_done),
-               .instr_mem_stall(instr_mem_stall),
-               .instr_mem_cache_hit(instr_mem_cache_hit),
-               .data_mem_done(data_mem_done),
-               .data_mem_stall(data_mem_stall),
-               .data_mem_cache_hit(data_mem_cache_hit),
-               // Outputs
-               .disablePCWrite(disablePCWrite),
-               .setFetchNOP(setFetchNOP),
-               .disableIFIDWrite(disableIFIDWrite),
-               .disableIDEXWrite(disableIDEXWrite),
-               .setExNOP(setExNOP),
-               .disableEXMEMWrite(disableEXMEMWrite),
-               .disableMEMWBWrite(disableMEMWBWrite),
-               .instr_mem_stall_ff(instr_mem_nop),
-               .data_mem_stall_ff(data_mem_nop),
-               .data_hazard(data_hazard),
-               .instr_mem_read(instr_mem_read));
+   /* your code here -- should include instantiations of fetch, decode, execute, mem and wb modules */
 
-   // determine control signals based on opcode
-   control iCONTROL0(// Inputs
-                     .rst_d(rst_d),
-                     .opcode(instruction_d[15:11]),
-                     .instr_mem_nop(instr_mem_stall | instr_mem_nop),
-                     .data_mem_nop(data_mem_stall | instr_mem_nop),
-                     // Outputs 
-                     .halt(halt_d), 
-                     .jumpImm(jumpImm_d), 
-                     .link(link_d), 
-                     .regDst(regDst), 
-                     .jump(jump_d), 
-                     .branch(branch_d), 
-                     .memRead(memRead_d), 
-                     .memToReg(memToReg_d), 
-                     .memWrite(memWrite_d), 
-                     .aluSrc(aluSrc_d), 
-                     .regWrite(regWrite_d), 
-                     .immExtSel(immExtSel), 
-                     .exception(exception));
-   
-   //----Want inside decode----
-   assign writeRegSel_d = (regDst == 2'b00) ? {1'b0, instruction_d[4:2]} :
-                           (regDst == 2'b01) ? {1'b0, instruction_d[7:5]} :
-                           (regDst == 2'b10) ? {1'b0, instruction_d[10:8]} :
-                           4'b0111;
-                        
-   // assign writeData = (link) ? PC + 2 : wbData;
-   //----END----
+// Signal declarations
+wire [15:0] PC_jmp_m, PC_f, PC_d, PC_e, PC_m, PC_wb, PC_jmp_e;
+wire [15:0] instruction_f, instruction_fd, instruction_d, instruction_e, instruction_m, instruction_wb;
 
-   decode decode0(// Inputs
-                  .clk(internal_clock), 
-                  .rst(rst), 
-                  .read1RegSel(instruction_d[10:8]), 
-                  .read2RegSel(instruction_d[7:5]), 
-                  .writeregsel(writeRegSel_wb[2:0]), 
-                  .writedata(writeData), 
-                  .write(regWrite_wb),
-                  .imm_5(instruction_d[4:0]), 
-                  .imm_8(instruction_d[7:0]), 
-                  .imm_11(instruction_d[10:0]), 
-                  .immExtSel(immExtSel), 
-                  // Outputs
-                  .read1Data(read1Data_d), 
-                  .read2Data(read2Data_d), 
-                  .err(err_decode), 
-                  .immExt(immExt_d));
+wire [15:0] writeData;
+wire [15:0] read1Data_d, read1Data_e;
+wire [15:0] read2Data_d, read2Data_e, read2Data_em, read2Data_m;
 
-   decode_execute_latch iDELATCH0(// Inputs 
-                                 .clk(internal_clock), 
-                                 .rst(rst), 
-                                 .nop(setExNOP), 
-                                 .disableIDEXWrite(disableIDEXWrite),
-                                 // Input followed by latched output
-                                 .PC_d(PC_d),
-                                 .PC_e(PC_e),
-                                 .instruction_d(instruction_d), 
-                                 .instruction_e(instruction_e), 
-                                 .read1Data_d(read1Data_d), 
-                                 .read1Data_e(read1Data_e), 
-                                 .read2Data_d(read2Data_d), 
-                                 .read2Data_e(read2Data_e), 
-                                 .immExt_d(immExt_d), 
-                                 .immExt_e(immExt_e), 
-                                 .aluSrc_d(aluSrc_d),
-                                 .aluSrc_e(aluSrc_e), 
-                                 .branch_d(branch_d), 
-                                 .branch_e(branch_e), 
-                                 .memRead_d(memRead_d), 
-                                 .memRead_e(memRead_e), 
-                                 .memToReg_d(memToReg_d),
-                                 .memToReg_e(memToReg_e), 
-                                 .memWrite_d(memWrite_d), 
-                                 .memWrite_e(memWrite_e), 
-                                 .halt_d(halt_d), 
-                                 .halt_e(halt_e), 
-                                 .link_d(link_d), 
-                                 .link_e(link_e),
-                                 .jumpImm_d(jumpImm_d), 
-                                 .jumpImm_e(jumpImm_e), 
-                                 .jump_d(jump_d), 
-                                 .jump_e(jump_e), 
-                                 .writeRegSel_d(writeRegSel_d), 
-                                 .writeRegSel_e(writeRegSel_e),
-                                 .regWrite_d(regWrite_d),
-                                 .regWrite_e(regWrite_e),
-                                 .instr_mem_align_err_d(instr_mem_align_err_d),
-                                 .instr_mem_align_err_e(instr_mem_align_err_e));
+//TODO: substitute
+wire [15:0] imm5_ext_d, imm5_ext_e;
+wire [15:0] imm8_ext_d, imm8_ext_e, imm8_ext_m, imm8_ext_wb;
+wire [15:0] imm11_ext_d, imm11_ext_e;
+wire immSel_d, immSel_e;
 
-   alu_control iCONTROL_ALU0(// Inputs
-                              .opcode(instruction_e[15:11]), 
-                              .extension(instruction_e[1:0]), 
-                              // Outputs
-                              .aluOp(aluSel));
+wire [15:0] aluOut_e, aluOut_m, aluOut_wb;
+wire [15:0] readData_m, readData_wb;
 
-   execute iEXECUTE0(// Inputs
-                     .read1Data(read1Data_e), 
-                     .read2Data(read2Data_e), 
-                     .aluOp(aluSel), 
-                     .aluSrc(aluSrc_e), 
-                     .immExt(immExt_e), 
-                     // Outputs
-                     .aluOut(aluOut_e), 
-                     .zf(zero_flag), 
-                     .sf(signed_flag), 
-                     .of(overflow_flag), 
-                     .cf(carry_flag));
+wire [1:0] regSrc_d, regSrc_e, regSrc_m, regSrc_wb; // combo of link and memToReg signals
+wire [1:0] B_int_d, B_int_e;
+wire [1:0] extension_d, extension_e;
+wire [1:0] branchSel_d, branchSel_e;
+wire [3:0] aluOp_d, aluOp_e;
+wire PCSrc_d, PCSrc_m;
 
-   br_control iBRANCH_CONTROL0(// Inputs
-                              .zf(zero_flag), 
-                              .sf(signed_flag), 
-                              .of(overflow_flag), 
-                              .cf(carry_flag), 
-                              .br_sig(branch_e), 
-                              // Outputs
-                              .br_contr_sig(br_contr_e));
+wire invA_d, invA_e;
+wire invB_d, invB_e;
+wire subtract_d, subtract_e;
+wire shift_d, shift_e;
+wire branch_d, branch_e;
+wire jmp_d, jmp_e;
+wire aluJmp_d, aluJmp_e;
+wire slbi_d, slbi_e;
+wire btr_d, btr_e;
+wire memEnable_d, memEnable_e, memEnable_m;
+// wire memRead_d, memRead_e, memRead_m;
+// wire memToReg_d, memToReg_e, memToReg_m, memToReg_wb; // might not need
+wire memWrite_d, memWrite_e, memWrite_m;
 
-   execute_memory_latch iEMLATCH0(// Inputs
-                                 .clk(internal_clock), 
-                                 .rst(rst),
-                                 .disableEXMEMWrite(disableEXMEMWrite),
-                                 // Input followed by latched output
-                                 .PC_e(PC_e),
-                                 .PC_m(PC_m),
-                                 .instruction_e(instruction_e), 
-                                 .instruction_m(instruction_m), 
-                                 .aluOut_e(aluOut_e), 
-                                 .aluOut_m(aluOut_m), 
-                                 .read2Data_e(read2Data_e), 
-                                 .read2Data_m(read2Data_m), 
-                                 .memRead_e(memRead_e), 
-                                 .memRead_m(memRead_m), 
-                                 .memToReg_e(memToReg_e), 
-                                 .memToReg_m(memToReg_m), 
-                                 .memWrite_e(memWrite_e), 
-                                 .memWrite_m(memWrite_m), 
-                                 .halt_e(halt_e), 
-                                 .halt_m(halt_m), 
-                                 .link_e(link_e), 
-                                 .link_m(link_m), 
-                                 .jumpImm_e(jumpImm_e), 
-                                 .jumpImm_m(jumpImm_m), 
-                                 .jump_e(jump_e), 
-                                 .jump_m(jump_m), 
-                                 .read1Data_e(read1Data_e), 
-                                 .read1Data_m(read1Data_m), 
-                                 .immExt_e(immExt_e), 
-                                 .immExt_m(immExt_m), 
-                                 .writeRegSel_e(writeRegSel_e), 
-                                 .writeRegSel_m(writeRegSel_m),
-                                 .regWrite_e(regWrite_e),
-                                 .regWrite_m(regWrite_m),
-                                 .br_contr_e(br_contr_e),
-                                 .br_contr_m(br_contr_m),
-                                 .instr_mem_align_err_e(instr_mem_align_err_e),
-                                 .instr_mem_align_err_m(instr_mem_align_err_m));
+wire regWrite_d, regWrite_e, regWrite_m, regWrite_wb;
+wire [2:0] writeRegSel_d, writeRegSel_e, writeRegSel_m, writeRegSel_wb;
+wire [2:0] regRs_d, regRt_d, regRs_e, regRt_e;
+wire halt_d, halt_e, halt_m, halt_wb;
 
-   memory memory0(// Inputs
-                  .clk(internal_clock), 
-                  .rst(rst), 
-                  .aluResult(aluOut_m), 
-                  .writeData(read2Data_m), 
-                  .memWrite(memWrite_m), 
-                  .memRead(memRead_m), 
-                  .halt(halt_m), 
-                  // Outputs
-                  .readData(readData_m),
-                  .align_err(data_mem_align_err_m),
-                  .data_mem_done(data_mem_done), 
-                  .data_mem_stall(data_mem_stall), 
-                  .data_mem_cache_hit(data_mem_cache_hit));
+wire data_hazard, flush;
 
-   memory_wb_latch iMWLATCH0(// Inputs
-                              .clk(internal_clock), 
-                              .rst(rst), 
-                              .disableMEMWBWrite(disableMEMWBWrite),
-                              // Input followed by latched output
-                              .PC_m(PC_m),
-                              .PC_wb(PC_wb), 
-                              .instruction_m(instruction_m), 
-                              .instruction_wb(instruction_wb),
-                              .readData_m(readData_m), 
-                              .readData_wb(readData_wb), 
-                              .aluOut_m(aluOut_m), 
-                              .aluOut_wb(aluOut_wb), 
-                              .memToReg_m(memToReg_m), 
-                              .memToReg_wb(memToReg_wb),
-                              .link_m(link_m), 
-                              .link_wb(link_wb), 
-                              .writeRegSel_m(writeRegSel_m), 
-                              .writeRegSel_wb(writeRegSel_wb),
-                              .regWrite_m(regWrite_m),
-                              .regWrite_wb(regWrite_wb),
-                              .halt_m(halt_m),
-                              .halt_wb(halt_wb),
-                              .immExt_m(immExt_m),
-                              .immExt_wb(immExt_wb),
-                              .read1Data_m(read1Data_m), 
-                              .read1Data_wb(read1Data_wb),
-                              .br_contr_m(br_contr_m),
-                              .br_contr_wb(br_contr_wb),
-                              .jump_m(jump_m),
-                              .jump_wb(jump_wb),
-                              .jumpImm_m(jumpImm_m), 
-                              .jumpImm_wb(jumpImm_wb),
-                              .instr_mem_align_err_m(instr_mem_align_err_m),
-                              .instr_mem_align_err_wb(instr_mem_align_err_wb),
-                              .data_mem_align_err_m(data_mem_align_err_m),
-                              .data_mem_align_err_wb(data_mem_align_err_wb));
+wire instrMem_err_f, instrMem_err_d, instrMem_err_e, instrMem_err_m, instrMem_err_wb;
+wire dataMem_err_m;
+wire dataMem_stall, instrMem_stall, instrMem_done, dataMem_done;
 
-   wb iWRITEBACK0(// Inputs
-                  .readData(readData_wb), 
-                  .addr(aluOut_wb), 
-                  .nextPC(PC_wb), 
-                  .memToReg(memToReg_wb), 
-                  .link(link_wb), 
-                  .instr_mem_align_err(instr_mem_align_err_wb),
-                  .data_mem_align_err(data_mem_align_err_wb),
-                  .halt(halt_wb),
-                  // Outputs
-                  .writeData(writeData),
-                  .haltxout(haltxout));
-   
+wire err_decode;
+assign err = err_decode;
+
+// Fetch
+fetch fetch ( // Inputs
+			.clk(clk),       
+			.rst(rst),       
+			.halt_sig(halt_m),
+			.dataMem_stall(dataMem_stall),
+			.data_hazard(data_hazard),
+			.flush(flush),
+			.PCSrc_m(PCSrc_m),
+			.PC_jmp_m(PC_jmp_m),
+			// Outputs
+			.instrMem_err_f(instrMem_err_f),
+			.instrMem_stall(instrMem_stall),
+			.instrMem_done(instrMem_done),
+			.PC_f(PC_f),
+			.instruction_f(instruction_f));
+
+fetch_decode_latch iFD (// Inputs
+						.clk(clk),
+						.rst(rst),
+						.PC_f(PC_f),
+						.instruction_f(instruction_f),
+						.flush(flush),
+						.instrMem_err_f(instrMem_err_f),
+						.instrMem_done(instrMem_done),
+						.dataMem_stall(dataMem_stall),
+						// Outputs
+						.instrMem_err_d(instrMem_err_d),
+						.PC_d(PC_d),
+						.instruction_fd(instruction_fd));
+
+// Instantiate decode module
+decode decode (	// Inputs
+				.clk(clk),            
+				.rst(rst),
+				.instrMem_stall(instrMem_stall),
+				.dataMem_stall(dataMem_stall),
+				.instruction_fd(instruction_fd),
+				.regWrite_wb(regWrite_wb),
+				.writeRegSel_wb(writeRegSel_wb),    
+				.writeData(writeData),     
+				.read1Data_d(read1Data_d),     
+				.read2Data_d(read2Data_d),
+				.memRead(~memWrite_e & memEnable_e),  
+				.regRt_e(regRt_e),   
+				.imm5_ext_d(imm5_ext_d),       
+				.imm8_ext_d(imm8_ext_d),       
+				.imm11_ext_d(imm11_ext_d),      
+				.immSel_d(immSel_d),         
+				.B_int_d(B_int_d),           
+				.regSrc_d(regSrc_d),         
+				.extension_d(extension_d),
+				.branchSel_d(branchSel_d),
+				.aluOp_d(aluOp_d),                    
+				.invA_d(invA_d),           
+				.invB_d(invB_d),           
+				.memWrite_d(memWrite_d),
+				.regWrite_d(regWrite_d),
+				.writeRegSel_d(writeRegSel_d),
+				.regRs_d(regRs_d),
+				.regRt_d(regRt_d),        
+				.branch_d(branch_d),         
+				.shift_d(shift_d),            
+				.subtract_d(subtract_d),            
+				.memEnable_d(memEnable_d),          
+				.aluJmp_d(aluJmp_d),         
+				.slbi_d(slbi_d),
+				.halt_d(halt_d),
+				.btr_d(btr_d),
+				.jmp_d(jmp_d),
+				.data_hazard(data_hazard),
+				.PCSrc_d(PCSrc_d),
+				.flush(flush),
+				.instruction_d(instruction_d),
+				.err(err_decode));
+
+// 2nd pipeline registers (DECODE & EXECUTE)
+id_ex id_ex (
+	.clk					(clk),
+	.rst					(rst),
+	.pc_out					(PC_d),
+	.read_data1				(read1Data_d),
+	.read_data2				(read2Data_d),
+	.imm5_ext				(imm5_ext_d),
+	.imm8_ext				(imm8_ext_d),
+	.imm11_ext				(imm11_ext_d),
+	.ImmSrc					(immSel_d),
+	.BSrc					(B_int_d),
+	.RegSrc					(regSrc_d),
+	.Instr_Funct_out		(extension_d),
+	.Instr_BrchCnd_sel		(branchSel_d),
+	.ALUOp					(aluOp_d),
+	.InvA					(invA_d),
+	.InvB					(invB_d),
+	.MemWrt					(memWrite_d),
+	.RegWrt					(regWrite_d),
+	.RegisterRs				(regRs_d),
+	.RegisterRt				(regRt_d),
+	.writeRegSel			(writeRegSel_d),
+	.Branch					(branch_d),
+	.Set					(shift_d),
+	.Sub					(subtract_d),
+	.MemEn					(memEnable_d),
+	.ALUJmp					(aluJmp_d),
+	.SLBI					(slbi_d),
+	.halt					(halt_d),
+	.btr					(btr_d),
+	.jmp					(jmp_d),
+	.stall_mem_stg			(dataMem_stall),
+	.halt_fetch				(instrMem_err_d),
+	.halt_fetch_q			(instrMem_err_e),
+	.pc_out_q				(PC_e),
+	.read_data1_q			(read1Data_e),
+	.read_data2_q			(read2Data_e),
+	.imm5_ext_q				(imm5_ext_e),
+	.imm8_ext_q				(imm8_ext_e),
+	.imm11_ext_q			(imm11_ext_e),
+	.ImmSrc_q				(immSel_e),
+	.BSrc_q					(B_int_e),
+	.RegSrc_q				(regSrc_e),
+	.Instr_Funct_out_q		(extension_e),
+	.Instr_BrchCnd_sel_q	(branchSel_e),
+	.ALUOp_q				(aluOp_e),
+	.InvA_q					(invA_e),
+	.InvB_q					(invB_e),
+	.MemWrt_q				(memWrite_e),
+	.RegWrt_q				(regWrite_e),
+	.writeRegSel_q			(writeRegSel_e),
+	.RegisterRs_q			(regRs_e),
+	.RegisterRt_q			(regRt_e),
+	.Branch_q				(branch_e),
+	.Set_q					(shift_e),
+	.Sub_q					(subtract_e),
+	.MemEn_q				(memEnable_e),
+	.ALUJmp_q				(aluJmp_e),
+	.SLBI_q					(slbi_e),
+	.halt_q					(halt_e),
+	.btr_q					(btr_e),
+	.jmp_q					(jmp_e),
+	.flush_in				(flush), //TODO Implement flush
+	.instruction            (instruction_d),
+	.instruction_q			(instruction_e)
+);
+
+// Instantiate execute module
+execute execute (
+	.exec_out_fmem		((instruction_m[15:11]==5'b11000) ? imm8_ext_m : aluOut_m),
+	.instruction		(instruction_e),
+    .write_data         (writeData),              
+    .pc_in              (PC_e),
+	.stall_mem_stg		(dataMem_stall),
+	.RegisterRs_id_ex	(regRs_e),
+	.RegisterRt_id_ex	(regRt_e),
+	.write_reg_ex_mem   (writeRegSel_m),
+   	.write_reg_mem_wb   (writeRegSel_wb),
+   	.write_en_ex_mem    (regWrite_m),
+   	.write_en_mem_wb    (regWrite_wb),              
+    .read_data1         (read1Data_e),              
+    .read_data2         (read2Data_e),              
+    .imm5_ext           (imm5_ext_e),                  
+    .imm8_ext           (imm8_ext_e),                  
+    .imm11_ext          (imm11_ext_e),                
+    .ImmSrc             (immSel_e),                      
+    .BSrc               (B_int_e),                          
+    .Instr_Funct_out    (extension_e),    
+    .ALUOp              (aluOp_e),                                                  
+    .ALUJump            (aluJmp_e),                     
+    .InvB               (invB_e),                          
+    .InvA               (invA_e),                          
+    .Sub                (subtract_e),                            
+    .Set                (shift_e),                            
+    .Branch             (branch_e),                      
+    .SLBI               (slbi_e),                          
+    .BTR                (btr_e),
+    .jmp                (jmp_e),
+    .Instr_BrchCnd_sel  (branchSel_e),
+	.PCSrc				(PCSrc_d),
+    .exec_out           (aluOut_e),     
+	.mem_addr_out		(read2Data_em),             
+    .pc_jmp_out         (PC_jmp_e)
+);
+
+// 3rd pipeline registers (EXECUTE & MEMORY)
+ex_mem ex_mem (
+	.clk			(clk),
+	.rst			(rst),
+	.halt			(halt_e),
+	.PCSrc			(PCSrc_d),
+	.exec_out		(aluOut_e),
+	.pc_jmp_out		(PC_jmp_e),
+	.pc_plus_2		(PC_e),
+	.MemEn			(memEnable_e),
+	.MemWrt			(memWrite_e),
+	.RegWrt			(regWrite_e),
+	.writeRegSel	(writeRegSel_e),
+	.read_data2		(read2Data_em),
+	.imm8_ext		(imm8_ext_e),
+	.RegSrc			(regSrc_e),
+	.stall_mem_stg	(dataMem_stall),
+	.halt_fetch		(instrMem_err_e),
+	.halt_fetch_q	(instrMem_err_m),
+	.halt_q			(halt_m),
+	.PCSrc_q		(PCSrc_m),
+	.exec_out_q		(aluOut_m),
+	.pc_jmp_out_q	(PC_jmp_m),
+	.pc_plus_2_q	(PC_m),
+	.MemEn_q		(memEnable_m),
+	.MemWrt_q		(memWrite_m),
+	.RegWrt_q		(regWrite_m),
+	.writeRegSel_q	(writeRegSel_m),
+	.read_data2_q	(read2Data_m),
+	.imm8_ext_q		(imm8_ext_m),
+	.RegSrc_q		(regSrc_m),
+	.flush_in		(flush),
+	.instruction    (instruction_e),
+	.instruction_q  (instruction_m)
+);
+
+// Instantiate memory module
+memory memory (
+    .clk			(clk),                     
+    .rst            (rst),
+    .mem_en         (memEnable_m),            
+    .write_en       (memWrite_m),         
+    .addr_in        (aluOut_m),            
+    .write_data_in  (read2Data_m),
+    .read_data      (readData_m),
+	.halt_mem		(dataMem_err_m),
+	.stall_out		(dataMem_stall),
+	.done_out		(dataMem_done)         
+);
+
+// 4th pipeline registers (MEMORY & WRITE BACK)
+mem_wb mem_wb (
+	.clk			(clk),
+	.rst			(rst),
+	.RegSrc			(regSrc_m),
+	.RegWrt			(regWrite_m),
+	.writeRegSel	(writeRegSel_m),
+	.read_data		(readData_m),
+	.pc_out			(PC_m),
+	.exec_out		(aluOut_m),
+	.imm8_ext		(imm8_ext_m),
+	.halt			(halt_m),
+	.halt_fetch		(instrMem_err_m),
+	.stall_mem_stg	(dataMem_stall),
+	.done_mem		(dataMem_done),
+	.halt_q			(halt_wb),
+	.halt_fetch_q	(instrMem_err_wb),
+	.RegSrc_q		(regSrc_wb),
+	.RegWrt_q		(regWrite_wb),
+	.writeRegSel_q	(writeRegSel_wb),
+	.read_data_q	(readData_wb),
+	.pc_out_q		(PC_wb),
+	.exec_out_q		(aluOut_wb),
+	.imm8_ext_q		(imm8_ext_wb),
+	.instruction	(instruction_m),
+	.instruction_q	(instruction_wb)
+);
+
+// Instantiate wb module
+wb wb (
+    .RegSrc     (regSrc_wb),       
+    .addr       (aluOut_wb),           
+    .read_data  (readData_wb),
+    .pc         (PC_wb),           
+    .imm8_ext   (imm8_ext_wb),
+    .write_data (writeData)   
+);
+
 endmodule // proc
 `default_nettype wire
 // DUMMY LINE FOR REV CONTROL :0:

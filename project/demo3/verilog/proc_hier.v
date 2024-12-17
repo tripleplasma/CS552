@@ -10,7 +10,6 @@ module proc_hier();
    wire                 clk;                    // From c0 of clkrst.v
    wire                 err;                    // From p0 of proc.v
    wire                 rst;                    // From c0 of clkrst.v
-
    // End of automatics
    clkrst c0(/*AUTOINST*/
              // Outputs
@@ -25,8 +24,6 @@ module proc_hier();
            // Inputs
            .clk                         (clk),
            .rst                         (rst));   
-
-
    
 
 endmodule

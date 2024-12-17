@@ -9,14 +9,14 @@ module regFile_bypass (
                        // Outputs
                        read1Data, read2Data, err,
                        // Inputs
-                       clk, rst, read1RegSel, read2RegSel, writeregsel, writedata, write
+                       clk, rst, read1RegSel, read2RegSel, writeRegSel, writeData, writeEn
                        );
    input        clk, rst;
    input [2:0]  read1RegSel;
    input [2:0]  read2RegSel;
-   input [2:0]  writeregsel;
-   input [15:0] writedata;
-   input        write;
+   input [2:0]  writeRegSel;
+   input [15:0] writeData;
+   input        writeEn;
 
    output [15:0] read1Data;
    output [15:0] read2Data;
@@ -37,12 +37,12 @@ module regFile_bypass (
                 .rst                          (rst),
                 .read1RegSel                  (read1RegSel[2:0]),
                 .read2RegSel                  (read2RegSel[2:0]),
-                .writeRegSel                  (writeregsel[2:0]),
-                .writeData                    (writedata[15:0]),
-                .writeEn                      (write));
+                .writeRegSel                  (writeRegSel[2:0]),
+                .writeData                    (writeData[15:0]),
+                .writeEn                      (writeEn));
    
    // Remove bypassing for now
-   assign read1Data = (write & (read1RegSel == writeregsel)) ? writedata : reg_out[0];
-   assign read2Data = (write & (read2RegSel == writeregsel)) ? writedata : reg_out[1];
+   assign read1Data = (writeEn & (read1RegSel == writeRegSel)) ? writeData : reg_out[0];
+   assign read2Data = (writeEn & (read2RegSel == writeRegSel)) ? writeData : reg_out[1];
 
 endmodule
