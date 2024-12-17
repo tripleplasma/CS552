@@ -327,14 +327,14 @@ mem_wb_latch mem_wb (// Inputs
 	// Outputs
 	.halt_q			(halt_wb),
 	.halt_fetch_q	(instrMem_err_wb),
-	.RegSrc_q		(wbSel_wb),
-	.RegWrt_q		(regWrite_wb),
-	.writeRegSel_q	(writeRegSel_wb),
-	.read_data_q	(readData_wb),
-	.pc_out_q		(PC_wb),
-	.exec_out_q		(aluOut_wb),
-	.imm8_ext_q		(imm8Ext_wb),
-	.instruction_q	(instruction_wb));
+	.RegSrcSel_wb		(wbSel_wb),
+	.RegWrtSel_wb		(regWrite_wb),
+	.writeRegSel_wb	(writeRegSel_wb),
+	.read_data_wb	(readData_wb),
+	.PC_wb		(PC_wb),
+	.exec_out_wb		(aluOut_wb),
+	.imm8_ext_wb		(imm8Ext_wb),
+	.instruction_wb	(instruction_wb));
 
 // Instantiate wb module
 wb wb (
