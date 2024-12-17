@@ -4,7 +4,7 @@
     
     a 1-bit full adder
 */
-module fullAdder_1b(s, c_out, a, b, c_in);
+module fulladder1(s, c_out, a, b, c_in);
     output s;
     output c_out;
     input  a, b;
