@@ -14,7 +14,7 @@ module decode (
   input  wire			    regWrite_wb,
   input  wire [2:0]	  writeRegSel_wb,
   input  wire [15:0]  writeData,
-  input  wire         PCSrc_X,  
+  input  wire         PCSrc_d,  
   input  wire         memRead,
   input  wire [2:0]   regRt_e,
   output wire [15:0]  read1Data_d,
@@ -27,26 +27,26 @@ module decode (
   output wire [1:0]   wbSel_d,			
   output wire [1:0]   extension_d,
   output wire [1:0]	  branchSel_d, 
-  output wire [3:0]   ALUOp,
-  output wire         InvA,
-  output wire         InvB,
-  output wire         MemWrt,
-  output wire			    RegWrt_out,
-  output wire [2:0]	  RegisterRs,
-  output wire [2:0]	  RegisterRt,
-  output wire [2:0]	  writeRegSel_out,
-  output wire         Branch,
-  output wire         Set, 
-  output wire         Sub,
-  output wire         MemEn,
-  output wire         ALUJmp,
-  output wire         SLBI,
-  output wire         halt,
-  output wire         btr,
-  output wire 			  jmp,
-  output wire         hazard,
-  output wire         flush_out,
-  output wire [15:0]        instruction_out
+  output wire [3:0]   aluOp_d,
+  output wire         invA_d,
+  output wire         invB_d,
+  output wire         memWrite_d,
+  output wire			    regWrite_d,
+  output wire [2:0]	  regRs_d,
+  output wire [2:0]	  regRt_d,
+  output wire [2:0]	  writeRegSel_d,
+  output wire         branch_d,
+  output wire         shift_d, 
+  output wire         subtract_d,
+  output wire         memEnable_d,
+  output wire         aluJmp_d,
+  output wire         slbi_d,
+  output wire         halt_d,
+  output wire         btr_d,
+  output wire 			  jmp_d,
+  output wire         data_hazard,
+  output wire         flush,
+  output wire [15:0]  instruction_d
 );
    
 wire [1:0]  RegDst, RegDst_haz;
@@ -57,34 +57,34 @@ wire [15:0] instruction;
 wire [15:0] prev_instr;
 wire prev_haz;
 dff instr_ff [15:0] (.clk(clk), .rst(rst), .d(instruction_fd), .q(prev_instr));
-dff haz_ff (.clk(clk), .rst(rst), .d(hazard), .q(prev_haz));
+dff haz_ff (.clk(clk), .rst(rst), .d(data_hazard), .q(prev_haz));
 
-assign instruction = (hazard | flush_out | dataMem_stall) ? 16'h0800 : (prev_haz & prev_instr!=16'h0800) ? prev_instr : instruction_fd; 
-assign RegisterRs = instruction[10:8];
-assign RegisterRt = instruction[7:5];
-assign instruction_out = instruction;
+assign instruction = (data_hazard | flush | dataMem_stall) ? 16'h0800 : (prev_haz & prev_instr!=16'h0800) ? prev_instr : instruction_fd; 
+assign regRs_d = instruction[10:8];
+assign regRt_d = instruction[7:5];
+assign instruction_d = instruction;
 // Decode logic 
 instruction_decoder my_instruction_decoder (
   .Opcode(instruction[15:11]),   //Input
-  .ALUOp(ALUOp),  //FLUSH                 
+  .ALUOp(aluOp_d),  //FLUSH                 
   .RegSrc(wbSel_d),  //FLUSH              
   .BSrc(B_int_d), //FLUSH                   
   .RegDst(RegDst),     //Dealth with in Decode           
-  .RegWrt(RegWrt_out),  //FLUSH              
-  .SLBI(SLBI),             //FLUSH       
-  .Branch(Branch),      //FLUSH          
+  .RegWrt(regWrite_d),  //FLUSH              
+  .SLBI(slbi_d),             //FLUSH       
+  .Branch(branch_d),      //FLUSH          
   .ZeroExt(ZeroExt),   //Dealth with in Decode          
-  .Set(Set),       //FLUSH
-  .Sub(Sub),      //FLUSH
-  .MemEn(MemEn),  //FLUSH
-  .InvA(InvA),    //FLUSH
-  .InvB(InvB),    //FLUSH
-  .MemWrt(MemWrt), //FLUSH
+  .Set(shift_d),       //FLUSH
+  .Sub(subtract_d),      //FLUSH
+  .MemEn(memEnable_d),  //FLUSH
+  .InvA(invA_d),    //FLUSH
+  .InvB(invB_d),    //FLUSH
+  .MemWrt(memWrite_d), //FLUSH
   .ImmSrc(immExtSel_d), //FLUSH
-  .ALUJmp(ALUJmp), //FLUSH
-  .halt(halt), //FLUSH
-  .btr(btr), //FLUSH
-  .jmp(jmp) //FLUSH
+  .ALUJmp(aluJmp_d), //FLUSH
+  .halt(halt_d), //FLUSH
+  .btr(btr_d), //FLUSH
+  .jmp(jmp_d) //FLUSH
 );
 
 // Sign or Zero extend the immediate values from I type instructions
@@ -93,9 +93,9 @@ assign imm8Ext_d  = (ZeroExt) ? {8'h00, instruction[7:0]}   : {{8{instruction[7]
 assign imm11Ext_d = {{5{instruction[10]}}, instruction[10:0]};
 
 // Mux to select write register
-assign writeRegSel_out = (RegDst == 0) ? instruction[10:8] :
-                         (RegDst == 1) ? instruction[7:5]  :
-                         (RegDst == 2) ? instruction[4:2]  : 3'h7;
+assign writeRegSel_d =  (RegDst == 0) ? instruction[10:8] :
+                        (RegDst == 1) ? instruction[7:5]  :
+                        (RegDst == 2) ? instruction[4:2]  : 3'h7;
 
 // Pass through signals from fetch to next stages
 assign extension_d = instruction[1:0];
@@ -106,8 +106,8 @@ regFile_bypass regfile(
   // Inputs
   .clk              (clk),
   .rst              (rst),
-  .read1RegSel      (RegisterRs),
-  .read2RegSel      (RegisterRt),
+  .read1RegSel      (regRs_d),
+  .read2RegSel      (regRt_d),
   .writeRegSel      (writeRegSel_wb),
   .writeData        (writeData),
   .writeEn          (regWrite_wb),
@@ -122,12 +122,12 @@ hazard_detect hazard_detect(
   .rst                (rst),
   .stall              (dataMem_stall | instrMem_stall),
   .MemRd              (memRead),
-  .PCSrc_X            (PCSrc_X),
+  .PCSrc_X            (PCSrc_d),
   .RegisterRt_id_ex   (regRt_e),
   .read_reg1          (instruction_fd[10:8]),
   .read_reg2          (instruction_fd[7:5]),
-  .hazard_out         (hazard),
-  .flush_out          (flush_out)
+  .hazard_out         (data_hazard),
+  .flush_out          (flush)
 );
    
 endmodule
