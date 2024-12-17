@@ -140,7 +140,7 @@ decode decode (// Inputs
    .RegWrt_out			(regWrite_d),
    .writeRegSel_out		(writeRegSel_d),
    .RegisterRs			(regRs_d),
-   .RegisterRt			(regRt_e),        
+   .RegisterRt			(regRt_d),        
    .Branch				(branch_d),         
    .Set					(shift_d),            
    .Sub					(subtract_d),            
@@ -272,7 +272,7 @@ execute execute ( // Inputs
 ex_mem ex_mem (// Inputs
 	.clk			(clk),
 	.rst			(rst),
-	.halt			(halt_ee),
+	.halt			(halt_e),
 	.PCSrc			(PCSrc_d),
 	.exec_out		(aluOut_e),
 	.pc_jmp_out		(PC_jmp_e),
