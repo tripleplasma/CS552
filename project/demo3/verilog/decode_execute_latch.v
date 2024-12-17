@@ -31,14 +31,14 @@ module decode_execute_latch(clk, rst, nop, disableIDEXWrite, PC_d, PC_e, instruc
     assign instruction_de_int = (nop) ? 16'b0000_1000_0000_0000 : instruction_d;
     register iINSTRUCTION_LATCH_DE(.clk(clk), .rst(rst), .writeEn(~disableIDEXWrite), .writeData(instruction_de_int), .readData(instruction_e));
 
-    assign read1Data_de_int = (nop) ? 16'hffff : read1Data_d;
+    assign read1Data_de_int = (nop) ? 16'h0000 : read1Data_d;
     register iREAD1DATA_LATCH_DE(.clk(clk), .rst(rst), .writeEn(~disableIDEXWrite), .writeData(read1Data_de_int), .readData(read1Data_e));
 
     //NOTE: We're doing a check if instruction_d is a NOP because of setFetchNOP propagating through the pipeline
-    assign read2Data_de_int = (nop | (instruction_d == 16'b0000_1000_0000_0000)) ? 16'hffff : read2Data_d;
+    assign read2Data_de_int = (nop | (instruction_d == 16'b0000_1000_0000_0000)) ? 16'h0000 : read2Data_d;
     register iREAD2DATA_LATCH_DE(.clk(clk), .rst(rst), .writeEn(~disableIDEXWrite), .writeData(read2Data_de_int), .readData(read2Data_e));
 
-    assign immExt_de_int = (nop) ? 16'hffff : immExt_d;
+    assign immExt_de_int = (nop) ? 16'h0000 : immExt_d;
     register iIMMEXT_LATCH_DE(.clk(clk), .rst(rst), .writeEn(~disableIDEXWrite), .writeData(immExt_de_int), .readData(immExt_e));
     
     assign halt_de_int = (nop) ? 1'b0 : halt_d;

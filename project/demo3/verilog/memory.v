@@ -26,6 +26,10 @@ module memory (clk, rst, aluResult, writeData, memWrite, memRead, halt, readData
    wire memReadorWrite;
    assign memReadorWrite = memWrite | memRead;
 
+   wire memReadDone, memWriteDone, memReadDone_pre, memWriteDone_pre;
+   assign memReadDone = memRead & mem_done;
+   assign memWriteDone = memWrite & mem_done;
+
    // memory2c_align iMEMORY( // output wires
    //                   .data_out(readData), 
    //                   .err(align_err),

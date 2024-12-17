@@ -209,11 +209,15 @@ module mem_system(/*AUTOARG*/
       case (cache_state)
          // IDLE
          4'b0000: begin
-            cache_en_0 = (Rd | Wr);
-            cache_en_1 = (Rd | Wr);
-            cache_comp = (Rd | Wr);
-            nxt_state = (Rd | Wr);
-            nxt_state = (Rd | Wr) ? 4'b0010 : 4'b0000;
+            // cache_en_0 = (Rd | Wr);
+            // cache_en_1 = (Rd | Wr);
+            // cache_comp = (Rd | Wr);
+            // nxt_state = (Rd | Wr);
+            nxt_state = (Rd | Wr) ? 4'b0001 : 4'b0000;
+         end
+
+         4'b1111: begin
+            nxt_state = 4'b0000;
          end
 
          // Read or write comparison
@@ -243,10 +247,11 @@ module mem_system(/*AUTOARG*/
 
             //Hit so done
             Done = real_hit;
+            Stall = ~real_hit;
             toggle_victimway = real_hit;
             CacheHit = real_hit;
 
-            nxt_state = (~real_hit) ? 4'b0011 : ((Wr | Rd) ? 4'b0001 : 4'b0000);
+            nxt_state = (~real_hit) ? 4'b0011 : 4'b1111;
          end
 
          // Check if dirty state
@@ -388,13 +393,14 @@ module mem_system(/*AUTOARG*/
          4'b1110: begin
             //By here, the cache_out will be the correct value
             Done = 1'b1;
+            Stall = 1'b0;
             toggle_victimway = 1'b1;
 
-            cache_en_0 = (Wr | Rd) ? 1'b1 : cache_en_0;
-            cache_en_1 = (Wr | Rd) ? 1'b1 : cache_en_1;
-            cache_comp = (Wr | Rd) ? 1'b1 : cache_comp;
+            // cache_en_0 = (Wr | Rd) ? 1'b1 : cache_en_0;
+            // cache_en_1 = (Wr | Rd) ? 1'b1 : cache_en_1;
+            // cache_comp = (Wr | Rd) ? 1'b1 : cache_comp;
             
-            nxt_state = (Wr | Rd) ? 4'b0010 : 4'b0000;
+            nxt_state = 4'b1111;
          end
 
          default: nxt_state = 4'b0000;
