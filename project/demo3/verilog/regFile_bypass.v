@@ -29,8 +29,6 @@ module regFile_bypass (
                 // Outputs
                 .read1Data                    (reg_out[0]),
                 .read2Data                    (reg_out[1]),
-               //  .read1Data                    (read1Data),
-               //  .read2Data                    (read2Data),
                 .err                          (err),
                 // Inputs
                 .clk                          (clk),

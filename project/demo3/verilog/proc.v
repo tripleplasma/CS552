@@ -12,12 +12,15 @@ module proc (/*AUTOARG*/
    input wire clk;
    input wire rst;
 
-   output reg err;
+   output wire err;
 
    // None of the above lines can be modified
 
    // OR all the err ouputs for every sub-module and assign it as this
    // err output
+
+	wire err_decode;
+	assign err = err_decode;
    
    // As desribed in the homeworks, use the err signal to trap corner
    // cases that you think are illegal in your statemachines
@@ -147,7 +150,8 @@ decode decode (// Inputs
    .data_hazard(data_hazard),
    .PCSrc_d(PCSrc_d),
    .flush(flush),
-   .instruction_d(instruction_d)
+   .instruction_d(instruction_d),
+   .err(err_decode)
 );
 
 // 2nd pipeline registers (DECODE & EXECUTE)

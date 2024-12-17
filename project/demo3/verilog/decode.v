@@ -8,7 +8,7 @@
 module decode (clk, rst, dataMem_stall, instrMem_stall, instruction_fd, regWrite_wb, writeRegSel_wb, writeData, PCSrc_d, 
               memRead, regRt_e, read1Data_d, read2Data_d, imm5Ext_d, imm8Ext_d, imm11Ext_d, immExtSel_d, B_int_d, wbSel_d, extension_d, 
               branchSel_d, aluOp_d, invA_d, invB_d, memWrite_d, regWrite_d, regRs_d, regRt_d, writeRegSel_d, branch_d, shift_d, 
-              subtract_d, memEnable_d, aluJmp_d, slbi_d, halt_d, btr_d, jmp_d, data_hazard, flush, instruction_d);
+              subtract_d, memEnable_d, aluJmp_d, slbi_d, halt_d, btr_d, jmp_d, data_hazard, flush, instruction_d, err);
 
 input wire clk, rst;
 input wire dataMem_stall, instrMem_stall, regWrite_wb, PCSrc_d, memRead;
@@ -16,13 +16,13 @@ input wire [2:0] writeRegSel_wb, regRt_e;
 input wire [15:0] instruction_fd, writeData;
 
 output wire immExtSel_d, invA_d, invB_d, memWrite_d, regWrite_d, branch_d, shift_d, subtract_d, memEnable_d, aluJmp_d, 
-            slbi_d, halt_d, btr_d, jmp_d, data_hazard, flush;
+            slbi_d, halt_d, btr_d, jmp_d, data_hazard, flush, err;
 output wire [1:0] B_int_d, wbSel_d,	extension_d, branchSel_d;
 output wire [2:0] regRs_d, regRt_d, writeRegSel_d;
 output wire [3:0] aluOp_d;
 output wire [15:0] read1Data_d, read2Data_d, imm5Ext_d, imm8Ext_d, imm11Ext_d, instruction_d;
    
-wire err, zeroExt, data_hazard_prev;
+wire zeroExt, data_hazard_prev;
 wire [1:0]  regDst;
 wire [15:0] instruction_fd_prev, instruction_d_int;
 
