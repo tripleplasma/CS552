@@ -46,20 +46,20 @@ module decode (
   output wire 			  jmp_d,
   output wire         data_hazard,
   output wire         flush,
-  output wire [15:0]  instruction_d
-);
+  output wire [15:0]  instruction_d);
+
+
    
-wire [1:0]  RegDst, RegDst_haz;
-wire        err;
-wire        ZeroExt;
+wire err, zeroExt;
+wire [1:0]  regDst;
 wire [15:0] instruction;
 
-wire [15:0] prev_instr;
-wire prev_haz;
-dff instr_ff [15:0] (.clk(clk), .rst(rst), .d(instruction_fd), .q(prev_instr));
-dff haz_ff (.clk(clk), .rst(rst), .d(data_hazard), .q(prev_haz));
+wire [15:0] instruction_fd_prev;
+wire data_hazard_prev;
+dff instr_ff [15:0] (.clk(clk), .rst(rst), .d(instruction_fd), .q(instruction_fd_prev));
+dff haz_ff (.clk(clk), .rst(rst), .d(data_hazard), .q(data_hazard_prev));
 
-assign instruction = (data_hazard | flush | dataMem_stall) ? 16'h0800 : (prev_haz & prev_instr!=16'h0800) ? prev_instr : instruction_fd; 
+assign instruction = (data_hazard | flush | dataMem_stall) ? 16'h0800 : (data_hazard_prev & instruction_fd_prev!=16'h0800) ? instruction_fd_prev : instruction_fd; 
 assign regRs_d = instruction[10:8];
 assign regRt_d = instruction[7:5];
 assign instruction_d = instruction;
@@ -69,11 +69,11 @@ instruction_decoder my_instruction_decoder (
   .ALUOp(aluOp_d),  //FLUSH                 
   .RegSrc(wbSel_d),  //FLUSH              
   .BSrc(B_int_d), //FLUSH                   
-  .RegDst(RegDst),     //Dealth with in Decode           
+  .RegDst(regDst),     //Dealth with in Decode           
   .RegWrt(regWrite_d),  //FLUSH              
   .SLBI(slbi_d),             //FLUSH       
   .Branch(branch_d),      //FLUSH          
-  .ZeroExt(ZeroExt),   //Dealth with in Decode          
+  .ZeroExt(zeroExt),   //Dealth with in Decode          
   .Set(shift_d),       //FLUSH
   .Sub(subtract_d),      //FLUSH
   .MemEn(memEnable_d),  //FLUSH
@@ -88,14 +88,14 @@ instruction_decoder my_instruction_decoder (
 );
 
 // Sign or Zero extend the immediate values from I type instructions
-assign imm5Ext_d  = (ZeroExt) ? {11'h000, instruction[4:0]} : {{11{instruction[4]}}, instruction[4:0]};
-assign imm8Ext_d  = (ZeroExt) ? {8'h00, instruction[7:0]}   : {{8{instruction[7]}}, instruction[7:0]};
+assign imm5Ext_d  = (zeroExt) ? {11'h000, instruction[4:0]} : {{11{instruction[4]}}, instruction[4:0]};
+assign imm8Ext_d  = (zeroExt) ? {8'h00, instruction[7:0]}   : {{8{instruction[7]}}, instruction[7:0]};
 assign imm11Ext_d = {{5{instruction[10]}}, instruction[10:0]};
 
 // Mux to select write register
-assign writeRegSel_d =  (RegDst == 0) ? instruction[10:8] :
-                        (RegDst == 1) ? instruction[7:5]  :
-                        (RegDst == 2) ? instruction[4:2]  : 3'h7;
+assign writeRegSel_d =  (regDst == 0) ? instruction[10:8] :
+                        (regDst == 1) ? instruction[7:5]  :
+                        (regDst == 2) ? instruction[4:2]  : 3'h7;
 
 // Pass through signals from fetch to next stages
 assign extension_d = instruction[1:0];
