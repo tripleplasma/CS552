@@ -76,21 +76,20 @@ wire dataMem_stall, instrMem_stall, instrMem_done, dataMem_done;
 
 // Instantiate fetch module
 fetch fetch (// Inputs
-   .clk         	(clk),       
-   .rst         	(rst),       
-   .halt        	(halt_m),
-   .stall_mem_stg	(dataMem_stall),
-   .hazard 			(data_hazard),
-   .flush			(flush),
-   .PCSrc			(PCSrc_m),
-   .pc_in       	(PC_jmp_m),
-   // Outputs
-   .stall_out		(instrMem_stall),
-   .done_out		(instrMem_done),
-   .halt_out		(instrMem_err_f),
-   .pc_out      	(PC_f),
-   .instruction_out	(instruction_f)
-);
+			.clk(clk),       
+			.rst(rst),       
+			.halt_sig(halt_m),
+			.dataMem_stall(dataMem_stall),
+			.data_hazard(data_hazard),
+			.flush(flush),
+			.PCSrc_m(PCSrc_m),
+			.PC_jmp_m(PC_jmp_m),
+			// Outputs
+			.instrMem_stall(instrMem_stall),
+			.instrMem_done(instrMem_done),
+			.instrMem_err_f(instrMem_err_f),
+			.PC_f(PC_f),
+			.instruction_f(instruction_f));
 
 // 1st pipeline registers (FETCH & DECODE)
 if_id if_id (// Inputs
