@@ -52,20 +52,20 @@ module decode (
    
 wire err, zeroExt;
 wire [1:0]  regDst;
-wire [15:0] instruction;
+wire [15:0] instruction_d_int;
 
 wire [15:0] instruction_fd_prev;
 wire data_hazard_prev;
 dff instr_ff [15:0] (.clk(clk), .rst(rst), .d(instruction_fd), .q(instruction_fd_prev));
 dff haz_ff (.clk(clk), .rst(rst), .d(data_hazard), .q(data_hazard_prev));
 
-assign instruction = (data_hazard | flush | dataMem_stall) ? 16'h0800 : (data_hazard_prev & instruction_fd_prev!=16'h0800) ? instruction_fd_prev : instruction_fd; 
-assign regRs_d = instruction[10:8];
-assign regRt_d = instruction[7:5];
-assign instruction_d = instruction;
+assign instruction_d_int = (data_hazard | flush | dataMem_stall) ? 16'h0800 : (data_hazard_prev & instruction_fd_prev!=16'h0800) ? instruction_fd_prev : instruction_fd; 
+assign regRs_d = instruction_d_int[10:8];
+assign regRt_d = instruction_d_int[7:5];
+assign instruction_d = instruction_d_int;
 // Decode logic 
 instruction_decoder my_instruction_decoder (
-  .Opcode(instruction[15:11]),   //Input
+  .Opcode(instruction_d_int[15:11]),   //Input
   .ALUOp(aluOp_d),  //FLUSH                 
   .RegSrc(wbSel_d),  //FLUSH              
   .BSrc(B_int_d), //FLUSH                   
@@ -88,18 +88,18 @@ instruction_decoder my_instruction_decoder (
 );
 
 // Sign or Zero extend the immediate values from I type instructions
-assign imm5Ext_d  = (zeroExt) ? {11'h000, instruction[4:0]} : {{11{instruction[4]}}, instruction[4:0]};
-assign imm8Ext_d  = (zeroExt) ? {8'h00, instruction[7:0]}   : {{8{instruction[7]}}, instruction[7:0]};
-assign imm11Ext_d = {{5{instruction[10]}}, instruction[10:0]};
+assign imm5Ext_d  = (zeroExt) ? {11'h000, instruction_d_int[4:0]} : {{11{instruction_d_int[4]}}, instruction_d_int[4:0]};
+assign imm8Ext_d  = (zeroExt) ? {8'h00, instruction_d_int[7:0]}   : {{8{instruction_d_int[7]}}, instruction_d_int[7:0]};
+assign imm11Ext_d = {{5{instruction_d_int[10]}}, instruction_d_int[10:0]};
 
 // Mux to select write register
-assign writeRegSel_d =  (regDst == 0) ? instruction[10:8] :
-                        (regDst == 1) ? instruction[7:5]  :
-                        (regDst == 2) ? instruction[4:2]  : 3'h7;
+assign writeRegSel_d =  (regDst == 0) ? instruction_d_int[10:8] :
+                        (regDst == 1) ? instruction_d_int[7:5]  :
+                        (regDst == 2) ? instruction_d_int[4:2]  : 3'h7;
 
 // Pass through signals from fetch to next stages
-assign extension_d = instruction[1:0];
-assign branchSel_d = instruction[12:11];
+assign extension_d = instruction_d_int[1:0];
+assign branchSel_d = instruction_d_int[12:11];
 
 // Register file with bypass logic
 regFile_bypass regfile(
