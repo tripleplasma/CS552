@@ -55,12 +55,12 @@ module fetch ( clk, rst, hazard, setFetchNOP,
    //output_clk is for managing the Halt instruction
    assign output_clk = halt_sig ? 1'b0 : clk;
    // assign nextPC = rst ? 16'b0 : (except_sig ? 16'h02 : addr_pre_exception);
-   assign nextPC = (rst) ? 16'b0 : (hazard) ? pcCurrent : addr_pre_exception;
+   assign nextPC = (rst) ? 16'b0 : (hazard | (mem_stall & (~mem_cache_hit))) ? pcCurrent : addr_pre_exception; // | (~mem_done)
    // assign EPC = except_sig ? PC_2 : EPC;
 
-   assign instr = (setFetchNOP) ? 16'b0000_1000_0000_0000 : instr_int;
+   assign instr = (setFetchNOP | (mem_stall & (~mem_cache_hit))) ? 16'b0000_1000_0000_0000 : instr_int; // & (~mem_done)
    // memory2c_align instr_mem(.data_out(instr_int), .data_in(16'b0), .addr(pcCurrent), .enable(1'b1), .wr(1'b0), .createdump(1'b0), .clk(output_clk), .rst(rst), .err(align_err));
-   stallmem instr_mem(// Outputs
+   mem_system #(0) instr_mem(// Outputs
                       .DataOut(instr_int), 
                       .Done(mem_done), 
                       .Stall(mem_stall), 
