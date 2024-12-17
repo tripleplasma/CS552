@@ -10,7 +10,7 @@ module decode (
   input  wire         rst,
   input  wire         dataMem_stall,
   input  wire         instrMem_stall,
-  input  wire [15:0]  instruction_in,
+  input  wire [15:0]  instruction_fd,
   input  wire			    regWrite_wb,
   input  wire [2:0]	  writeRegSel_wb,
   input  wire [15:0]  writeData,
@@ -56,10 +56,10 @@ wire [15:0] instruction;
 
 wire [15:0] prev_instr;
 wire prev_haz;
-dff instr_ff [15:0] (.clk(clk), .rst(rst), .d(instruction_in), .q(prev_instr));
+dff instr_ff [15:0] (.clk(clk), .rst(rst), .d(instruction_fd), .q(prev_instr));
 dff haz_ff (.clk(clk), .rst(rst), .d(hazard), .q(prev_haz));
 
-assign instruction = (hazard | flush_out | dataMem_stall) ? 16'h0800 : (prev_haz & prev_instr!=16'h0800) ? prev_instr : instruction_in; 
+assign instruction = (hazard | flush_out | dataMem_stall) ? 16'h0800 : (prev_haz & prev_instr!=16'h0800) ? prev_instr : instruction_fd; 
 assign RegisterRs = instruction[10:8];
 assign RegisterRt = instruction[7:5];
 assign instruction_out = instruction;
@@ -124,8 +124,8 @@ hazard_detect hazard_detect(
   .MemRd              (MemRd),
   .PCSrc_X            (PCSrc_X),
   .RegisterRt_id_ex   (RegisterRt_id_ex),
-  .read_reg1          (instruction_in[10:8]),
-  .read_reg2          (instruction_in[7:5]),
+  .read_reg1          (instruction_fd[10:8]),
+  .read_reg2          (instruction_fd[7:5]),
   .hazard_out         (hazard),
   .flush_out          (flush_out)
 );

@@ -111,7 +111,7 @@ decode decode (// Inputs
    .rst(rst),
    .dataMem_stall(dataMem_stall),
    .instrMem_stall(instrMem_stall),
-   .instruction_in		(instruction_fd),
+   .instruction_fd(instruction_fd),
    .regWrite_wb(regWrite_wb),
    .writeRegSel_wb(writeRegSel_wb),    
    .writeData(writeData),     
