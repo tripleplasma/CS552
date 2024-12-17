@@ -32,7 +32,7 @@ module proc (/*AUTOARG*/
 wire [15:0] PC_jmp_m, PC_f, PC_d, PC_e, PC_m, PC_wb, PC_jmp_e;
 wire [15:0] instruction_f, instruction_fd, instruction_d, instruction_e, instruction_m, instruction_wb;
 
-wire [15:0] writeData;
+wire [15:0] writeData_wb;
 wire [15:0] read1Data_d, read1Data_e;
 wire [15:0] read2Data_d, read2Data_e, read2Data_em, read2Data_m;
 
@@ -117,7 +117,7 @@ decode decode (// Inputs
    .instruction_fd(instruction_fd),
    .regWrite_wb(regWrite_wb),
    .writeRegSel_wb(writeRegSel_wb),    
-   .writeData(writeData),     
+   .writeData(writeData_wb),     
    .read1Data_d(read1Data_d),     
    .read2Data_d(read2Data_d),
    .memRead(~memWrite_e & memEnable_e),
@@ -227,7 +227,7 @@ id_ex id_ex (// Inputs
 execute execute ( // Inputs
 	.exec_out_fmem		((instruction_m[15:11]==5'b11000) ? imm8Ext_m : aluOut_m),
 	.instruction		(instruction_e),
-    .write_data         (writeData),              
+    .write_data         (writeData_wb),              
     .pc_in              (PC_e),
 	.stall_mem_stg		(dataMem_stall),
 	.RegisterRs_id_ex	(regRs_e),
@@ -313,41 +313,43 @@ memory memory (// Inputs
 );
 
 // 4th pipeline registers (MEMORY & WRITE BACK)
-mem_wb mem_wb (// Inputs
+mem_wb_latch mem_wb (// Inputs
 	.clk			(clk),
 	.rst			(rst),
-	.RegSrc			(wbSel_m),
-	.RegWrt			(regWrite_m),
-	.writeRegSel	(writeRegSel_m),
-	.read_data		(readData_m),
-	.pc_out			(PC_m),
-	.exec_out		(aluOut_m),
-	.imm8_ext		(imm8Ext_m),
-	.halt			(halt_m),
-	.halt_fetch		(instrMem_err_m),
-	.stall_mem_stg	(dataMem_stall),
-	.done_mem		(dataMem_done),
+	.instruction_m	(instruction_m),
+	.RegSrcSel_m			(wbSel_m),
+	.RegWrtSel_m			(regWrite_m),
+	.writeRegSel_m	(writeRegSel_m),
+	.read_data_m		(readData_m),
+	.PC_m			(PC_m),
+	.exec_out_m		(aluOut_m),
+	.imm8_ext_m		(imm8Ext_m),
+	.halt_m			(halt_m),
+	.halt_fetch_m		(instrMem_err_m),
+	.dataMem_stall	(dataMem_stall),
+	.done_mem	(dataMem_done),
 	// Outputs
 	.halt_q			(halt_wb),
 	.halt_fetch_q	(instrMem_err_wb),
-	.RegSrc_q		(wbSel_wb),
-	.RegWrt_q		(regWrite_wb),
-	.writeRegSel_q	(writeRegSel_wb),
-	.read_data_q	(readData_wb),
-	.pc_out_q		(PC_wb),
-	.exec_out_q		(aluOut_wb),
-	.imm8_ext_q		(imm8Ext_wb),
-	.instruction	(instruction_m),
-	.instruction_q	(instruction_wb));
+	.RegSrcSel_wb		(wbSel_wb),
+	.RegWrtSel_wb		(regWrite_wb),
+	.writeRegSel_wb	(writeRegSel_wb),
+	.read_data_wb	(readData_wb),
+	.PC_wb		(PC_wb),
+	.exec_out_wb		(aluOut_wb),
+	.imm8_ext_wb		(imm8Ext_wb),
+	.instruction_wb	(instruction_wb));
 
 // Instantiate wb module
 wb wb (
-    .RegSrc     (wbSel_wb),       
-    .addr       (aluOut_wb),           
-    .read_data  (readData_wb),
-    .pc         (PC_wb),           
-    .imm8_ext   (imm8Ext_wb),
-    .write_data (writeData)   
+	//Inputs
+    .RegSrcSel     (wbSel_wb),       
+    .Addr       (aluOut_wb),           
+    .Read_Data  (readData_wb),
+    .PC         (PC_wb),           
+    .Imm8_Ext   (imm8Ext_wb),
+	//Outputs
+    .Write_Data (writeData_wb)   
 );
 
 endmodule // proc
