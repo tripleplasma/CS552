@@ -309,20 +309,21 @@ memory memory (// Inputs
 );
 
 // 4th pipeline registers (MEMORY & WRITE BACK)
-mem_wb mem_wb (// Inputs
+mem_wb_latch mem_wb (// Inputs
 	.clk			(clk),
 	.rst			(rst),
-	.RegSrc			(wbSel_m),
-	.RegWrt			(regWrite_m),
-	.writeRegSel	(writeRegSel_m),
-	.read_data		(readData_m),
-	.pc_out			(PC_m),
-	.exec_out		(aluOut_m),
-	.imm8_ext		(imm8Ext_m),
-	.halt			(halt_m),
-	.halt_fetch		(instrMem_err_m),
-	.stall_mem_stg	(dataMem_stall),
-	.done_mem		(dataMem_done),
+	.instruction_m	(instruction_m),
+	.RegSrcSel_m			(wbSel_m),
+	.RegWrtSel_m			(regWrite_m),
+	.writeRegSel_m	(writeRegSel_m),
+	.read_data_m		(readData_m),
+	.PC_m			(PC_m),
+	.exec_out_m		(aluOut_m),
+	.imm8_ext_m		(imm8Ext_m),
+	.halt_m			(halt_m),
+	.halt_fetch_m		(instrMem_err_m),
+	.dataMem_stall	(dataMem_stall),
+	.done_mem	(dataMem_done),
 	// Outputs
 	.halt_q			(halt_wb),
 	.halt_fetch_q	(instrMem_err_wb),
@@ -333,7 +334,6 @@ mem_wb mem_wb (// Inputs
 	.pc_out_q		(PC_wb),
 	.exec_out_q		(aluOut_wb),
 	.imm8_ext_q		(imm8Ext_wb),
-	.instruction	(instruction_m),
 	.instruction_q	(instruction_wb));
 
 // Instantiate wb module
