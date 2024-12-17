@@ -34,15 +34,15 @@ wire [15:0] read1Data_d, read1Data_e;
 wire [15:0] read2Data_d, read2Data_e, read2Data_em, read2Data_m;
 
 //TODO: substitute
-wire [15:0] imm5_ext_d, imm5_ext_e;
-wire [15:0] imm8_ext_d, imm8_ext_e, imm8_ext_m, imm8_ext_wb;
-wire [15:0] imm11_ext_d, imm11_ext_e;
-wire immSel_d, immSel_e;
+wire [15:0] imm5Ext_d, imm5Ext_e;
+wire [15:0] imm8Ext_d, imm8Ext_e, imm8Ext_m, imm8Ext_wb;
+wire [15:0] imm11Ext_d, imm11Ext_e;
+wire immExtSel_d, immExtSel_e;
 
 wire [15:0] aluOut_e, aluOut_m, aluOut_wb;
 wire [15:0] readData_m, readData_wb;
 
-wire [1:0] regSrc_d, regSrc_e, regSrc_m, regSrc_wb; // combo of link and memToReg signals
+wire [1:0] wbSel_d, wbSel_e, wbSel_m, wbSel_wb; // combo of link and memToReg signals
 wire [1:0] B_int_d, B_int_e;
 wire [1:0] extension_d, extension_e;
 wire [1:0] branchSel_d, branchSel_e;
@@ -106,57 +106,50 @@ fetch_decode_latch iFD (// Inputs
 						.instruction_fd(instruction_fd));
 
 // Instantiate decode module
-decode decode (// Inputs
-   .clk					(clk),            
-   .rst					(rst),
-   .stall_mem_stg		(dataMem_stall),
-   .stall_fetch			(instrMem_stall),
-   .instruction_in		(instruction_fd),
-   .instruction_f		(instruction_f),
-   .RegWrt_in			(regWrite_wb),
-   .writeRegSel_in		(writeRegSel_wb),    
-   .write_data			(writeData),     
-   .read_data1			(read1Data_d),     
-   .read_data2			(read2Data_d),
-   .MemRd				(~memWrite_e & memEnable_e),  
-   .RegisterRs_id_ex	(regRs_e),
-   .RegisterRt_id_ex	(regRt_e),   
-   .imm5_ext			(imm5_ext_d),       
-   .imm8_ext			(imm8_ext_d),       
-   .imm11_ext			(imm11_ext_d),      
-   .ImmSrc				(immSel_d),         
-   .BSrc				(B_int_d),           
-   .RegSrc				(regSrc_d),         
-   .Instr_Funct_out		(extension_d),
-   .Instr_BrchCnd_sel	(branchSel_d),
-   .ALUOp				(aluOp_d),                    
-   .InvA				(invA_d),           
-   .InvB				(invB_d),           
-   .MemWrt				(memWrite_d),
-   .RegWrt_out			(regWrite_d),
-   .writeRegSel_out		(writeRegSel_d),
-   .RegisterRs			(regRs_d),
-   .RegisterRt			(regRt_d),        
-   .Branch				(branch_d),         
-   .Set					(shift_d),            
-   .Sub					(subtract_d),            
-   .MemEn				(memEnable_d),          
-   .ALUJmp				(aluJmp_d),         
-   .SLBI				(slbi_d),
-   .halt				(halt_d),
-   .btr					(btr_d),
-   .jmp					(jmp_d),
-   .write_reg_id_ex     (writeRegSel_e),
-   .write_reg_ex_mem    (writeRegSel_m),
-   .write_reg_mem_wb    (writeRegSel_wb),
-   .write_en_id_ex      (regWrite_e),
-   .write_en_ex_mem     (regWrite_m),
-   .write_en_mem_wb     (regWrite_wb),
-   .hazard				(data_hazard),
-   .PCSrc_X             (PCSrc_d),
-   .flush_out           (flush),
-   .instruction_out		(instruction_d)
-);
+// Instantiate decode module
+decode decode (	// Inputs
+				.clk(clk),            
+				.rst(rst),
+				.instrMem_stall(instrMem_stall),
+				.dataMem_stall(dataMem_stall),
+				.instruction_fd(instruction_fd),
+				.regWrite_wb(regWrite_wb),
+				.writeRegSel_wb(writeRegSel_wb),    
+				.writeData(writeData),     
+				.read1Data_d(read1Data_d),     
+				.read2Data_d(read2Data_d),
+				.memRead(~memWrite_e & memEnable_e),  
+				.regRt_e(regRt_e),   
+				.imm5Ext_d(imm5Ext_d),       
+				.imm8Ext_d(imm8Ext_d),       
+				.imm11Ext_d(imm11Ext_d),      
+				.immSel_d(immSel_d),         
+				.B_int_d(B_int_d),           
+				.wbSel_d(wbSel_d),         
+				.extension_d(extension_d),
+				.branchSel_d(branchSel_d),
+				.aluOp_d(aluOp_d),                    
+				.invA_d(invA_d),           
+				.invB_d(invB_d),           
+				.memWrite_d(memWrite_d),
+				.regWrite_d(regWrite_d),
+				.writeRegSel_d(writeRegSel_d),
+				.regRs_d(regRs_d),
+				.regRt_d(regRt_d),        
+				.branch_d(branch_d),         
+				.shift_d(shift_d),            
+				.subtract_d(subtract_d),            
+				.memEnable_d(memEnable_d),          
+				.aluJmp_d(aluJmp_d),         
+				.slbi_d(slbi_d),
+				.halt_d(halt_d),
+				.btr_d(btr_d),
+				.jmp_d(jmp_d),
+				.data_hazard(data_hazard),
+				.PCSrc_d(PCSrc_d),
+				.flush(flush),
+				.instruction_d(instruction_d),
+				.err(err_decode));
 
 // 2nd pipeline registers (DECODE & EXECUTE)
 id_ex id_ex (// Inputs
@@ -165,12 +158,12 @@ id_ex id_ex (// Inputs
 	.pc_out					(PC_d),
 	.read_data1				(read1Data_d),
 	.read_data2				(read2Data_d),
-	.imm5_ext				(imm5_ext_d),
-	.imm8_ext				(imm8_ext_d),
-	.imm11_ext				(imm11_ext_d),
-	.ImmSrc					(immSel_d),
+	.imm5_ext				(imm5Ext_d),
+	.imm8_ext				(imm8Ext_d),
+	.imm11_ext				(imm11Ext_d),
+	.ImmSrc					(immExtSel_d),
 	.BSrc					(B_int_d),
-	.RegSrc					(regSrc_d),
+	.RegSrc					(wbSel_d),
 	.Instr_Funct_out		(extension_d),
 	.Instr_BrchCnd_sel		(branchSel_d),
 	.ALUOp					(aluOp_d),
@@ -197,12 +190,12 @@ id_ex id_ex (// Inputs
 	.pc_out_q				(PC_e),
 	.read_data1_q			(read1Data_e),
 	.read_data2_q			(read2Data_e),
-	.imm5_ext_q				(imm5_ext_e),
-	.imm8_ext_q				(imm8_ext_e),
-	.imm11_ext_q			(imm11_ext_e),
-	.ImmSrc_q				(immSel_e),
+	.imm5_ext_q				(imm5Ext_e),
+	.imm8_ext_q				(imm8Ext_e),
+	.imm11_ext_q			(imm11Ext_e),
+	.ImmSrc_q				(immExtSel_e),
 	.BSrc_q					(B_int_e),
-	.RegSrc_q				(regSrc_e),
+	.RegSrc_q				(wbSel_e),
 	.Instr_Funct_out_q		(extension_e),
 	.Instr_BrchCnd_sel_q	(branchSel_e),
 	.ALUOp_q				(aluOp_e),
@@ -229,7 +222,7 @@ id_ex id_ex (// Inputs
 
 // Instantiate execute module
 execute execute ( // Inputs
-	.exec_out_fmem		((instruction_m[15:11]==5'b11000) ? imm8_ext_m : aluOut_m),
+	.exec_out_fmem		((instruction_m[15:11]==5'b11000) ? imm8Ext_m : aluOut_m),
 	.instruction		(instruction_e),
     .write_data         (writeData),              
     .pc_in              (PC_e),
@@ -242,10 +235,10 @@ execute execute ( // Inputs
    	.write_en_mem_wb    (regWrite_wb),              
     .read_data1         (read1Data_e),              
     .read_data2         (read2Data_e),              
-    .imm5_ext           (imm5_ext_e),                  
-    .imm8_ext           (imm8_ext_e),                  
-    .imm11_ext          (imm11_ext_e),                
-    .ImmSrc             (immSel_e),                      
+    .imm5_ext           (imm5Ext_e),                  
+    .imm8_ext           (imm8Ext_e),                  
+    .imm11_ext          (imm11Ext_e),                
+    .ImmSrc             (immExtSel_e),                      
     .BSrc               (B_int_e),                          
     .Instr_Funct_out    (extension_e),    
     .ALUOp              (aluOp_e),                                                  
@@ -278,8 +271,8 @@ ex_mem ex_mem (// Inputs
 	.RegWrt			(regWrite_e),
 	.writeRegSel	(writeRegSel_e),
 	.read_data2		(read2Data_em),
-	.imm8_ext		(imm8_ext_e),
-	.RegSrc			(regSrc_e),
+	.imm8_ext		(imm8Ext_e),
+	.RegSrc			(wbSel_e),
 	.stall_mem_stg	(dataMem_stall),
 	.halt_fetch		(instrMem_err_e),
 	// Outputs
@@ -294,8 +287,8 @@ ex_mem ex_mem (// Inputs
 	.RegWrt_q		(regWrite_m),
 	.writeRegSel_q	(writeRegSel_m),
 	.read_data2_q	(read2Data_m),
-	.imm8_ext_q		(imm8_ext_m),
-	.RegSrc_q		(regSrc_m),
+	.imm8_ext_q		(imm8Ext_m),
+	.RegSrc_q		(wbSel_m),
 	.flush_in		(flush),
 	.instruction    (instruction_e),
 	.instruction_q  (instruction_m)
@@ -320,13 +313,13 @@ memory memory (// Inputs
 mem_wb mem_wb (// Inputs
 	.clk			(clk),
 	.rst			(rst),
-	.RegSrc			(regSrc_m),
+	.RegSrc			(wbSel_m),
 	.RegWrt			(regWrite_m),
 	.writeRegSel	(writeRegSel_m),
 	.read_data		(readData_m),
 	.pc_out			(PC_m),
 	.exec_out		(aluOut_m),
-	.imm8_ext		(imm8_ext_m),
+	.imm8_ext		(imm8Ext_m),
 	.halt			(halt_m),
 	.halt_fetch		(instrMem_err_m),
 	.stall_mem_stg	(dataMem_stall),
@@ -334,23 +327,23 @@ mem_wb mem_wb (// Inputs
 	// Outputs
 	.halt_q			(halt_wb),
 	.halt_fetch_q	(instrMem_err_wb),
-	.RegSrc_q		(regSrc_wb),
+	.RegSrc_q		(wbSel_wb),
 	.RegWrt_q		(regWrite_wb),
 	.writeRegSel_q	(writeRegSel_wb),
 	.read_data_q	(readData_wb),
 	.pc_out_q		(PC_wb),
 	.exec_out_q		(aluOut_wb),
-	.imm8_ext_q		(imm8_ext_wb),
+	.imm8_ext_q		(imm8Ext_wb),
 	.instruction	(instruction_m),
 	.instruction_q	(instruction_wb));
 
 // Instantiate wb module
 wb wb (
-    .RegSrc     (regSrc_wb),       
+    .RegSrc     (wbSel_wb),       
     .addr       (aluOut_wb),           
     .read_data  (readData_wb),
     .pc         (PC_wb),           
-    .imm8_ext   (imm8_ext_wb),
+    .imm8_ext   (imm8Ext_wb),
     .write_data (writeData)   
 );
 
