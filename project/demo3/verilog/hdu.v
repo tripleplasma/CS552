@@ -40,11 +40,11 @@ module hdu (clk, rst,
 
 
     //NOTE: We're disabling the PCWrite when the HALT is read because otherwise we'll get XXXX's as the instruction and it will break everything, thats whay the opcode_f== is for
-    assign disablePCWrite = data_hazard | control_hazard | (opcode_f == 5'b00000);
+    assign disablePCWrite = data_hazard | control_hazard | (opcode_f == 5'b00000) | (data_mem_stall & ~(data_mem_done & data_mem_cache_hit));
 
     //NOTE: If we setExNOP, we need to keep the decode instruction at the IFID latch so that when the hazard is gone, the instruction is still there
     //NOTE: We don't disableIFID write during a control hazard becuse we want the BR/JMP to propagate through the pipeline
-    assign disableIFIDWrite = data_hazard; 
+    assign disableIFIDWrite = data_hazard | (data_mem_stall & ~(data_mem_done & data_mem_cache_hit)); 
     
     assign disableIDEXWrite = 1'b0;
     assign disableEXMEMWrite = (data_mem_stall & ~(data_mem_done & data_mem_cache_hit));
