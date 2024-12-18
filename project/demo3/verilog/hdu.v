@@ -67,6 +67,5 @@ module hdu (clk, rst,
     //These signals require a register because they need to be delayed a cycle to properly tell the pipeline to input a NOP during the E or F phase
     // wire l = data_hazard & opcode_f == 5'b00001;
     wire setFetchNOP_int = ((control_hazard & ~data_hazard) | (control_hazard & data_hazard & opcode_f == 5'b00001)) & ~br_contr_sig;
-    wire setFetchNOP_int = (control_hazard & ~data_hazard) | (control_hazard & data_hazard & opcode_f == 5'b00001);
     register #(.REGISTER_WIDTH(1)) setFetchNOPReg(.clk(clk), .rst(rst), .writeEn(1'b1), .writeData(setFetchNOP_int), .readData(setFetchNOP));
 endmodule

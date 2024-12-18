@@ -58,7 +58,7 @@ module fetch ( clk, rst, hazard, setFetchNOP, PC_2_br, br_extend,
    assign output_clk = halt_sig ? 1'b0 : clk;
    // assign nextPC = rst ? 16'b0 : (except_sig ? 16'h02 : addr_pre_exception);
 
-   assign nextPC = (rst) ? 16'b0 : (hazard | (mem_stall & ~(mem_done & mem_cache_hit))) ? pcCurrent : addr_pre_exception;
+   assign nextPC = (rst) ? 16'b0 : (hazard | ((mem_stall & ~(mem_done & mem_cache_hit)) & ~br_contr_sig)) ? pcCurrent : addr_pre_exception;
    // assign EPC = except_sig ? PC_2 : EPC;
 
    assign instr = (setFetchNOP | (mem_stall & ~(mem_done & mem_cache_hit))) ? 16'b0000_1000_0000_0000 : instr_int;

@@ -20,7 +20,7 @@ module fetch_decode_latch(clk, rst, nop, stall, rst_d, PC_f, PC_d, instruction_f
     assign instruction_fd_int = (nop) ? 16'b0000_1000_0000_0000 : instruction_f;
     register iINSTRUCTION_LATCH_FD(.clk(clk), .rst(rst), .writeEn(~stall), .writeData(instruction_fd_int), .readData(instruction_d));
 
-    assign instr_mem_align_err_fd_int = (disableIFIDWrite) ? 1'b0 : instr_mem_align_err_f;
+    assign instr_mem_align_err_fd_int = (stall) ? 1'b0 : instr_mem_align_err_f;
     register #(.REGISTER_WIDTH(1)) iINSTR_MEM_ALIGN_ERR_FD(.clk(clk), .rst(1'b0), .writeEn(1'b1), .writeData(instr_mem_align_err_fd_int), .readData(instr_mem_align_err_d));
     
 endmodule
