@@ -1,7 +1,7 @@
-module fetch_decode_latch(clk, rst, disableIFIDWrite, rst_d, PC_f, PC_d, instruction_f, instruction_d, instr_mem_align_err_f, instr_mem_align_err_d);
+module fetch_decode_latch(clk, rst, nop, stall, rst_d, PC_f, PC_d, instruction_f, instruction_d, instr_mem_align_err_f, instr_mem_align_err_d);
 
     input wire clk, rst;
-    input wire disableIFIDWrite;
+    input wire nop, stall;
     input wire [15:0] PC_f, instruction_f;
     input wire instr_mem_align_err_f;
     output wire rst_d;
@@ -10,17 +10,17 @@ module fetch_decode_latch(clk, rst, disableIFIDWrite, rst_d, PC_f, PC_d, instruc
 
     wire [15:0] instruction_fd_int;
     wire instr_mem_align_err_fd_int;
-    // wire [15:0] PC_fd_int;
+    wire [15:0] PC_fd_int;
 
     register #(.REGISTER_WIDTH(1)) iRST_LATCH_FD(.clk(clk), .rst(1'b0), .writeEn(1'b1), .writeData(rst), .readData(rst_d));
     
-    register iPC_LATCH_FD(.clk(clk), .rst(rst), .writeEn(~disableIFIDWrite), .writeData(PC_f), .readData(PC_d));
-    // assign PC_d = (disableIFIDWrite) ? PC_d : PC_fd_int;
+    assign PC_fd_int = (nop) ? 16'hffff : PC_f;
+    register iPC_LATCH_FD(.clk(clk), .rst(rst), .writeEn(~stall), .writeData(PC_fd_int), .readData(PC_d));
 
-    register iINSTRUCTION_LATCH_FD(.clk(clk), .rst(rst), .writeEn(~disableIFIDWrite), .writeData(instruction_f), .readData(instruction_d));
-    // assign instruction_d = (disableIFIDWrite) ? instruction_d : instruction_fd_int;
+    assign instruction_fd_int = (nop) ? 16'b0000_1000_0000_0000 : instruction_f;
+    register iINSTRUCTION_LATCH_FD(.clk(clk), .rst(rst), .writeEn(~stall), .writeData(instruction_fd_int), .readData(instruction_d));
 
     assign instr_mem_align_err_fd_int = (disableIFIDWrite) ? 1'b0 : instr_mem_align_err_f;
     register #(.REGISTER_WIDTH(1)) iINSTR_MEM_ALIGN_ERR_FD(.clk(clk), .rst(1'b0), .writeEn(1'b1), .writeData(instr_mem_align_err_fd_int), .readData(instr_mem_align_err_d));
-
+    
 endmodule

@@ -56,7 +56,7 @@ module proc (/*AUTOARG*/
    wire aluSrc_d, aluSrc_e;
    wire regWrite_d, regWrite_e, regWrite_m, regWrite_wb;
    wire exception;
-   wire br_contr_e, br_contr_m, br_contr_wb;
+   wire br_contr_e, br_contr_m, br_contr_wb, br_contr_sig;
    wire internal_clock;
    wire [2:0] branch_d, branch_e;
    wire [1:0] regDst;
@@ -79,9 +79,11 @@ module proc (/*AUTOARG*/
                .jump_imm_sig(jumpImm_wb), 
                .jump_sig(jump_wb), 
                .except_sig(exception), 
-               .br_contr_sig(br_contr_wb), 
+               .br_contr_sig(br_contr_sig), 
                .imm_jump_reg_val(read1Data_wb), 
                .extend_val(immExt_wb),
+               .PC_2_br(PC_e),
+               .br_extend(immExt_e),
                // Outputs
                .instr(instruction_f), 
                .output_clk(internal_clock), 
@@ -94,7 +96,8 @@ module proc (/*AUTOARG*/
    fetch_decode_latch iFDLATCH0( // Inputs
                                  .clk(internal_clock), 
                                  .rst(rst), 
-                                 .disableIFIDWrite(disableIFIDWrite), 
+                                 .nop(br_contr_sig), 
+                                 .stall(disableIFIDWrite),
                                  // Output
                                  .rst_d(rst_d),
                                  .PC_f(PC_f),
@@ -120,6 +123,7 @@ module proc (/*AUTOARG*/
                .idExWriteRegister(writeRegSel_e), 
                .exMemWriteRegister(writeRegSel_m),
                .memWbWriteRegister(writeRegSel_wb),
+               .br_contr_sig(br_contr_sig),
                .data_mem_done(data_mem_done),
                .data_mem_stall(data_mem_stall),
                .data_mem_cache_hit(data_mem_cache_hit),
@@ -181,7 +185,7 @@ module proc (/*AUTOARG*/
    decode_execute_latch iDELATCH0(// Inputs 
                                  .clk(internal_clock), 
                                  .rst(rst), 
-                                 .nop(setExNOP), 
+                                 .nop(setExNOP | br_contr_sig), 
                                  .disableIDEXWrite(disableIDEXWrite),
                                  // Input followed by latched output
                                  .PC_d(PC_d),
@@ -267,7 +271,7 @@ module proc (/*AUTOARG*/
                               .cf(carry_flag), 
                               .br_sig(branch_e), 
                               // Outputs
-                              .br_contr_sig(br_contr_e));
+                              .br_contr_sig(br_contr_sig));
 
    execute_memory_latch iEMLATCH0(// Inputs
                                  .clk(internal_clock), 
@@ -351,8 +355,6 @@ module proc (/*AUTOARG*/
                               .immExt_wb(immExt_wb),
                               .read1Data_m(read1Data_m), 
                               .read1Data_wb(read1Data_wb),
-                              .br_contr_m(br_contr_m),
-                              .br_contr_wb(br_contr_wb),
                               .jump_m(jump_m),
                               .jump_wb(jump_wb),
                               .jumpImm_m(jumpImm_m), 
