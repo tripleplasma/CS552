@@ -1,6 +1,0 @@
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo1/branchTest.asm SUCCESS CPI:4.3 CYCLES:91 ICOUNT:21 IHITRATE: 0 DHITRATE: 0
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo1/easyTest.asm SUCCESS CPI:4.5 CYCLES:183 ICOUNT:41 IHITRATE: 0 DHITRATE: 0
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo1/finalTest2.asm SUCCESS CPI:2.4 CYCLES:1087 ICOUNT:454 IHITRATE: 100.0 DHITRATE: 100.0
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo1/firstTest.asm SUCCESS CPI:1.2 CYCLES:51 ICOUNT:41 IHITRATE: 0 DHITRATE: 0
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo1/loadStoreTest.asm SUCCESS CPI:1.4 CYCLES:41 ICOUNT:30 IHITRATE: 100.0 DHITRATE: 100.0
-/afs/cs.wisc.edu/u/s/w/swamit/public/html/courses/cs552/fall2024/handouts/testprograms/public/complex_demo1/shiftTest.asm SUCCESS CPI:1.1 CYCLES:105 ICOUNT:98 IHITRATE: 0 DHITRATE: 0

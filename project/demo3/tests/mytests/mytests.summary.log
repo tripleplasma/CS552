@@ -1,4 +1,0 @@
-/home/kung/CS552/CS552/project/demo2/tests/mytests/add_3.asm SUCCESS CPI:3.5 CYCLES:14 ICOUNT:4 IHITRATE: 0 DHITRATE: 0
-/home/kung/CS552/CS552/project/demo2/tests/mytests/add_add.asm SUCCESS CPI:3.7 CYCLES:26 ICOUNT:7 IHITRATE: 0 DHITRATE: 0
-/home/kung/CS552/CS552/project/demo2/tests/mytests/back_back.asm SUCCESS CPI:4.3 CYCLES:13 ICOUNT:3 IHITRATE: 0 DHITRATE: 0
-/home/kung/CS552/CS552/project/demo2/tests/mytests/hazard.asm SUCCESS CPI:4.6 CYCLES:23 ICOUNT:5 IHITRATE: 0 DHITRATE: 0
