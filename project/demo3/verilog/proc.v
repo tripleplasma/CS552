@@ -225,9 +225,31 @@ module proc (/*AUTOARG*/
                               // Outputs
                               .aluOp(aluSel));
 
+   wire[15:0] forwarding_value1_e;
+   wire[15:0] forwarding_value2_e;
+   execute_forwarding IFORWARDING0(
+                     //Inputs  
+                     .opcode_m(instruction_m[15:11]),
+                     .opcode_wb(instruction_wb[15:11]),
+                     .read1RegSel_e(instruction_e[10:8]), //We can grab these values like how the decode stage does this
+                     .read2RegSel_e(instruction_e[7:5]),
+
+                     .writeRegSel_m(writeRegSel_m),
+                     .aluOut_m(aluOut_m), 
+
+                     .writeRegSel_wb(writeRegSel_wb), 
+                     .writeData_wb(writeData),
+
+                     .read1Data_e(read1Data_e), //These are the register file values from the decode stage
+                     .read2Data_e(read2Data_e),
+                     //Outputs
+                     .read1ForwardData_e(forwarding_value1_e),
+                     .read2ForwardData_e(forwarding_value2_e)
+   );
+
    execute iEXECUTE0(// Inputs
-                     .read1Data(read1Data_e), 
-                     .read2Data(read2Data_e), 
+                     .read1Data(forwarding_value1_e), 
+                     .read2Data(forwarding_value2_e), 
                      .aluOp(aluSel), 
                      .aluSrc(aluSrc_e), 
                      .immExt(immExt_e), 
@@ -258,7 +280,7 @@ module proc (/*AUTOARG*/
                                  .instruction_m(instruction_m), 
                                  .aluOut_e(aluOut_e), 
                                  .aluOut_m(aluOut_m), 
-                                 .read2Data_e(read2Data_e), 
+                                 .read2Data_e(forwarding_value2_e), 
                                  .read2Data_m(read2Data_m), 
                                  .memRead_e(memRead_e), 
                                  .memRead_m(memRead_m), 
@@ -274,7 +296,7 @@ module proc (/*AUTOARG*/
                                  .jumpImm_m(jumpImm_m), 
                                  .jump_e(jump_e), 
                                  .jump_m(jump_m), 
-                                 .read1Data_e(read1Data_e), 
+                                 .read1Data_e(forwarding_value1_e), 
                                  .read1Data_m(read1Data_m), 
                                  .immExt_e(immExt_e), 
                                  .immExt_m(immExt_m), 
