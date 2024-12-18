@@ -1,8 +1,0 @@
-/u/s/i/sinclair/courses/cs552/spring2022/handouts/testprograms/public/rand_icache/t_1_icache.asm SUCCESS CPI:39.1 CYCLES:1526 ICOUNT:39 IHITRATE: 44.8 DHITRATE: 0
-/u/s/i/sinclair/courses/cs552/spring2022/handouts/testprograms/public/rand_icache/t_2_icache.asm SUCCESS CPI:14.0 CYCLES:1878 ICOUNT:134 IHITRATE: 57.3 DHITRATE: 0
-/u/s/i/sinclair/courses/cs552/spring2022/handouts/testprograms/public/rand_icache/t_3_icache.asm SUCCESS CPI:46.9 CYCLES:1502 ICOUNT:32 IHITRATE: 40.4 DHITRATE: 0
-/u/s/i/sinclair/courses/cs552/spring2022/handouts/testprograms/public/rand_icache/t_4_icache.asm SUCCESS CPI:90.8 CYCLES:1454 ICOUNT:16 IHITRATE: 37.3 DHITRATE: 0
-/u/s/i/sinclair/courses/cs552/spring2022/handouts/testprograms/public/rand_icache/t_5_icache.asm SUCCESS CPI:21.5 CYCLES:1894 ICOUNT:88 IHITRATE: 48.5 DHITRATE: 0
-/u/s/i/sinclair/courses/cs552/spring2022/handouts/testprograms/public/rand_icache/t_6_icache.asm SUCCESS CPI:25.0 CYCLES:1674 ICOUNT:67 IHITRATE: 48.5 DHITRATE: 0
-/u/s/i/sinclair/courses/cs552/spring2022/handouts/testprograms/public/rand_icache/t_7_icache.asm SUCCESS CPI:37.2 CYCLES:1786 ICOUNT:48 IHITRATE: 40.7 DHITRATE: 0
-/u/s/i/sinclair/courses/cs552/spring2022/handouts/testprograms/public/rand_icache/t_8_icache.asm SUCCESS CPI:28.6 CYCLES:1658 ICOUNT:58 IHITRATE: 45.5 DHITRATE: 0
