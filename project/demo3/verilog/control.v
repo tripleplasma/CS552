@@ -13,7 +13,7 @@ module control(rst_d, opcode, halt, jumpImm, link, regDst, jump, branch, memRead
     output [2:0] branch;
     output [2:0] immExtSel;
    
-    assign halt = (rst_d != 1'b1 & opcode == 5'b0_0000) ? 1'b1 : 1'b0; // need to fix, don't think instruction_d != 16'h0000 is going to work
+    assign halt = (rst_d != 1'b1 & opcode == 5'b0_0000) ? 1'b1 : 1'b0; //  & ~(setFetchNOP) need to fix, don't think instruction_d != 16'h0000 is going to work
    
     assign jumpImm = (opcode[4:2] == 3'b001 & opcode[0] == 1'b1) ? 1'b1 : 1'b0;
    

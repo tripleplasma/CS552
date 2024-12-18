@@ -28,19 +28,25 @@ module proc (/*AUTOARG*/
    wire [15:0] read1Data_d, read1Data_e, read1Data_m, read1Data_wb;
    wire [15:0] read2Data_d, read2Data_e, read2Data_m;
    wire err_decode;
+   wire instr_mem_align_err_f, instr_mem_align_err_d, instr_mem_align_err_e, instr_mem_align_err_m, instr_mem_align_err_wb;
+   wire data_mem_align_err_m, data_mem_align_err_wb;
    wire [15:0] immExt_d, immExt_e, immExt_m, immExt_wb;
    wire [3:0] aluSel;
    wire [15:0] PC_f, PC_d, PC_e, PC_m, PC_wb;
 
    // OR all the err ouputs for every sub-module and assign it as this
    // err output
-   assign err = err_decode;
+   assign err = err_decode; // | instr_mem_align_err_wb | data_mem_align_err_wb;
    
    // hazard signals
-   wire disablePCWrite, disableIFIDWrite, setExNOP, setFetchNOP;
+   wire disablePCWrite, setFetchNOP, disableIFIDWrite, disableIDEXWrite, setExNOP, disableEXMEMWrite, setMemNOP;
+
+   // cache signals
+   wire instr_mem_done, instr_mem_stall, instr_mem_cache_hit;
+   wire data_mem_done, data_mem_stall, data_mem_cache_hit;
 
    // control signals
-   wire halt_d, halt_e, halt_m, haltxout;
+   wire halt_d, halt_e, halt_m, halt_wb, haltxout;
    wire jumpImm_d, jumpImm_e, jumpImm_m, jumpImm_wb;
    wire link_d, link_e, link_m, link_wb;
    wire jump_d, jump_e, jump_m, jump_wb;
@@ -50,7 +56,7 @@ module proc (/*AUTOARG*/
    wire aluSrc_d, aluSrc_e;
    wire regWrite_d, regWrite_e, regWrite_m, regWrite_wb;
    wire exception;
-   wire br_contr_e, br_contr_m, br_contr_wb;
+   wire br_contr_e, br_contr_m, br_contr_wb, br_contr_sig;
    wire internal_clock;
    wire [2:0] branch_d, branch_e;
    wire [1:0] regDst;
@@ -67,30 +73,39 @@ module proc (/*AUTOARG*/
    fetch fetch0(// Inputs
                .clk(clk), 
                .rst(rst), 
-               .hazard(disablePCWrite),             // still a little confused on control_hazard/data_hazard/nop
+               .hazard(disablePCWrite),
                .setFetchNOP(setFetchNOP),
                .halt_sig(haltxout), 
                .jump_imm_sig(jumpImm_wb), 
                .jump_sig(jump_wb), 
                .except_sig(exception), 
-               .br_contr_sig(br_contr_wb), 
+               .br_contr_sig(br_contr_sig), 
                .imm_jump_reg_val(read1Data_wb), 
                .extend_val(immExt_wb),
+               .PC_2_br(PC_e),
+               .br_extend(immExt_e),
                // Outputs
                .instr(instruction_f), 
                .output_clk(internal_clock), 
-               .PC_2(PC_f));
+               .PC_2(PC_f),
+               .align_err(instr_mem_align_err_f),
+               .mem_done(instr_mem_done), 
+               .mem_stall(instr_mem_stall), 
+               .mem_cache_hit(instr_mem_cache_hit));
    
    fetch_decode_latch iFDLATCH0( // Inputs
                                  .clk(internal_clock), 
                                  .rst(rst), 
-                                 .nop(disableIFIDWrite), 
+                                 .nop(br_contr_sig), 
+                                 .stall(disableIFIDWrite),
                                  // Output
                                  .rst_d(rst_d),
                                  .PC_f(PC_f),
                                  .PC_d(PC_d),
                                  .instruction_f(instruction_f), 
-                                 .instruction_d(instruction_d));  // still a little confused on control_hazard/data_hazard/nop
+                                 .instruction_d(instruction_d),
+                                 .instr_mem_align_err_f(instr_mem_align_err_f),
+                                 .instr_mem_align_err_d(instr_mem_align_err_d));
    
    hdu iHDU_0( // Inputs
                .clk(internal_clock), 
@@ -108,11 +123,18 @@ module proc (/*AUTOARG*/
                .idExWriteRegister(writeRegSel_e), 
                .exMemWriteRegister(writeRegSel_m),
                .memWbWriteRegister(writeRegSel_wb),
+               .br_contr_sig(br_contr_sig),
+               .data_mem_done(data_mem_done),
+               .data_mem_stall(data_mem_stall),
+               .data_mem_cache_hit(data_mem_cache_hit),
                // Outputs
                .disablePCWrite(disablePCWrite),
+               .setFetchNOP(setFetchNOP),
                .disableIFIDWrite(disableIFIDWrite),
+               .disableIDEXWrite(disableIDEXWrite),
                .setExNOP(setExNOP),
-               .setFetchNOP(setFetchNOP));
+               .disableEXMEMWrite(disableEXMEMWrite),
+               .setMemNOP(setMemNOP));
 
    // determine control signals based on opcode
    control iCONTROL0(// Inputs
@@ -163,7 +185,8 @@ module proc (/*AUTOARG*/
    decode_execute_latch iDELATCH0(// Inputs 
                                  .clk(internal_clock), 
                                  .rst(rst), 
-                                 .nop(setExNOP), 
+                                 .nop(setExNOP | br_contr_sig), 
+                                 .disableIDEXWrite(disableIDEXWrite),
                                  // Input followed by latched output
                                  .PC_d(PC_d),
                                  .PC_e(PC_e),
@@ -196,7 +219,9 @@ module proc (/*AUTOARG*/
                                  .writeRegSel_d(writeRegSel_d), 
                                  .writeRegSel_e(writeRegSel_e),
                                  .regWrite_d(regWrite_d),
-                                 .regWrite_e(regWrite_e));
+                                 .regWrite_e(regWrite_e),
+                                 .instr_mem_align_err_d(instr_mem_align_err_d),
+                                 .instr_mem_align_err_e(instr_mem_align_err_e));
 
    alu_control iCONTROL_ALU0(// Inputs
                               .opcode(instruction_e[15:11]), 
@@ -204,9 +229,31 @@ module proc (/*AUTOARG*/
                               // Outputs
                               .aluOp(aluSel));
 
+   wire[15:0] forwarding_value1_e;
+   wire[15:0] forwarding_value2_e;
+   execute_forwarding IFORWARDING0(
+                     //Inputs  
+                     .opcode_m(instruction_m[15:11]),
+                     .opcode_wb(instruction_wb[15:11]),
+                     .read1RegSel_e(instruction_e[10:8]), //We can grab these values like how the decode stage does this
+                     .read2RegSel_e(instruction_e[7:5]),
+
+                     .writeRegSel_m(writeRegSel_m),
+                     .aluOut_m(aluOut_m), 
+
+                     .writeRegSel_wb(writeRegSel_wb), 
+                     .writeData_wb(writeData),
+
+                     .read1Data_e(read1Data_e), //These are the register file values from the decode stage
+                     .read2Data_e(read2Data_e),
+                     //Outputs
+                     .read1ForwardData_e(forwarding_value1_e),
+                     .read2ForwardData_e(forwarding_value2_e)
+   );
+
    execute iEXECUTE0(// Inputs
-                     .read1Data(read1Data_e), 
-                     .read2Data(read2Data_e), 
+                     .read1Data(forwarding_value1_e), 
+                     .read2Data(forwarding_value2_e), 
                      .aluOp(aluSel), 
                      .aluSrc(aluSrc_e), 
                      .immExt(immExt_e), 
@@ -224,11 +271,12 @@ module proc (/*AUTOARG*/
                               .cf(carry_flag), 
                               .br_sig(branch_e), 
                               // Outputs
-                              .br_contr_sig(br_contr_e));
+                              .br_contr_sig(br_contr_sig));
 
    execute_memory_latch iEMLATCH0(// Inputs
                                  .clk(internal_clock), 
-                                 .rst(rst), 
+                                 .rst(rst),
+                                 .disableEXMEMWrite(disableEXMEMWrite),
                                  // Input followed by latched output
                                  .PC_e(PC_e),
                                  .PC_m(PC_m),
@@ -236,7 +284,7 @@ module proc (/*AUTOARG*/
                                  .instruction_m(instruction_m), 
                                  .aluOut_e(aluOut_e), 
                                  .aluOut_m(aluOut_m), 
-                                 .read2Data_e(read2Data_e), 
+                                 .read2Data_e(forwarding_value2_e), 
                                  .read2Data_m(read2Data_m), 
                                  .memRead_e(memRead_e), 
                                  .memRead_m(memRead_m), 
@@ -252,7 +300,7 @@ module proc (/*AUTOARG*/
                                  .jumpImm_m(jumpImm_m), 
                                  .jump_e(jump_e), 
                                  .jump_m(jump_m), 
-                                 .read1Data_e(read1Data_e), 
+                                 .read1Data_e(forwarding_value1_e), 
                                  .read1Data_m(read1Data_m), 
                                  .immExt_e(immExt_e), 
                                  .immExt_m(immExt_m), 
@@ -261,7 +309,9 @@ module proc (/*AUTOARG*/
                                  .regWrite_e(regWrite_e),
                                  .regWrite_m(regWrite_m),
                                  .br_contr_e(br_contr_e),
-                                 .br_contr_m(br_contr_m));
+                                 .br_contr_m(br_contr_m),
+                                 .instr_mem_align_err_e(instr_mem_align_err_e),
+                                 .instr_mem_align_err_m(instr_mem_align_err_m));
 
    memory memory0(// Inputs
                   .clk(internal_clock), 
@@ -272,11 +322,16 @@ module proc (/*AUTOARG*/
                   .memRead(memRead_m), 
                   .halt(halt_m), 
                   // Outputs
-                  .readData(readData_m));
+                  .readData(readData_m),
+                  .align_err(data_mem_align_err_m),
+                  .mem_done(data_mem_done), 
+                  .mem_stall(data_mem_stall), 
+                  .mem_cache_hit(data_mem_cache_hit));
 
    memory_wb_latch iMWLATCH0(// Inputs
                               .clk(internal_clock), 
                               .rst(rst), 
+                              .nop(setMemNOP),
                               // Input followed by latched output
                               .PC_m(PC_m),
                               .PC_wb(PC_wb), 
@@ -295,17 +350,19 @@ module proc (/*AUTOARG*/
                               .regWrite_m(regWrite_m),
                               .regWrite_wb(regWrite_wb),
                               .halt_m(halt_m),
-                              .halt_wb(haltxout),
+                              .halt_wb(halt_wb),
                               .immExt_m(immExt_m),
                               .immExt_wb(immExt_wb),
                               .read1Data_m(read1Data_m), 
                               .read1Data_wb(read1Data_wb),
-                              .br_contr_m(br_contr_m),
-                              .br_contr_wb(br_contr_wb),
                               .jump_m(jump_m),
                               .jump_wb(jump_wb),
                               .jumpImm_m(jumpImm_m), 
-                              .jumpImm_wb(jumpImm_wb));
+                              .jumpImm_wb(jumpImm_wb),
+                              .instr_mem_align_err_m(instr_mem_align_err_m),
+                              .instr_mem_align_err_wb(instr_mem_align_err_wb),
+                              .data_mem_align_err_m(data_mem_align_err_m),
+                              .data_mem_align_err_wb(data_mem_align_err_wb));
 
    wb iWRITEBACK0(// Inputs
                   .readData(readData_wb), 
@@ -313,8 +370,12 @@ module proc (/*AUTOARG*/
                   .nextPC(PC_wb), 
                   .memToReg(memToReg_wb), 
                   .link(link_wb), 
+                  .instr_mem_align_err(instr_mem_align_err_wb),
+                  .data_mem_align_err(data_mem_align_err_wb),
+                  .halt(halt_wb),
                   // Outputs
-                  .writeData(writeData));
+                  .writeData(writeData),
+                  .haltxout(haltxout));
    
 endmodule // proc
 `default_nettype wire
